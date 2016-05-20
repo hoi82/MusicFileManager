@@ -1,0 +1,13 @@
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\MusicFileManager.exe.config
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\MusicFileManager.exe
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\MusicFileManager.pdb
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csprojResolveAssemblyReference.cache
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MainWindow.baml
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MainWindow.g.cs
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\App.g.cs
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager_MarkupCompile.cache
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.g.resources
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.Properties.Resources.resources
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csproj.GenerateResource.Cache
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.exe
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.pdb
