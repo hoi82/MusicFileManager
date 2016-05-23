@@ -1,9 +1,14 @@
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\MusicFileManager.exe.config
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\MusicFileManager.exe
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\MusicFileManager.pdb
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Microsoft.Windows.Shell.dll
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\RibbonControlsLibrary.dll
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Microsoft.Windows.Shell.pdb
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\RibbonControlsLibrary.pdb
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\RibbonControlsLibrary.xml
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csprojResolveAssemblyReference.cache
-C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MainWindow.baml
-C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MainWindow.g.cs
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\Main.baml
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\Main.g.cs
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\App.g.cs
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager_MarkupCompile.cache
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.g.resources
@@ -11,3 +16,4 @@ C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.Propertie
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csproj.GenerateResource.Cache
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.exe
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.pdb
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Microsoft.Windows.Shell.xml

@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using System.IO;
 
 namespace MusicFileManager
 {
@@ -20,9 +22,59 @@ namespace MusicFileManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        string searchLocation = null;
+        string regKeyLocation = @"SOFTWARE\\Yong";
+        const string regKeySearch = "SearchLocation";
+
+        RegistryKey regKey = null;
+
         public MainWindow()
         {
             InitializeComponent();
+            regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true);
+
+            if (regKey == null)
+            {
+                regKey = Registry.CurrentUser.CreateSubKey(regKeyLocation, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                regKey.SetValue(regKeySearch, AppDomain.CurrentDomain.BaseDirectory);
+            }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            lblLocation.Content = regKey.GetValue(regKeySearch);
+        }
+
+        private void btnExit_Click(object sender, RoutedEventArgs e)
+        {
+            App.Current.Shutdown();            
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //this.DragMove();
+        }
+
+        private void btnBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.FolderBrowserDialog fd = new System.Windows.Forms.FolderBrowserDialog();
+            fd.RootFolder = Environment.SpecialFolder.Desktop;
+            System.Windows.Forms.DialogResult result = fd.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                searchLocation = fd.SelectedPath;
+                lblLocation.Content = fd.SelectedPath;
+            }
+        }
+
+        private void btnClean_Click(object sender, RoutedEventArgs e)
+        {
+            regKey.SetValue(regKeySearch, searchLocation);
+        }  
     }
 }
