@@ -17,3 +17,5 @@ C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csproj.Ge
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.exe
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.pdb
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Microsoft.Windows.Shell.xml
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Ionic.Zip.dll
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Ionic.Zip.xml

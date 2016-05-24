@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
         xmlns:Custom="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon" x:Class="MusicFileManager.MainWindow"        
-        Title="MainWindow" Height="500" Width="1024" Background="#FF3C3C3C" WindowStyle="None" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded">
+        Title="MainWindow" Height="370" Width="650" Background="#FF3C3C3C" WindowStyle="None" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded">
 
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0"
@@ -18,9 +18,25 @@
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="1" Margin="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <Grid ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Label x:Name="lblLocation" Content="" HorizontalAlignment="Left" Margin="50,50,0,0" VerticalAlignment="Top" Width="300" Foreground="#FF7D7D7D"/>
-                <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="355,54,0,0" VerticalAlignment="Top" Width="75" Click="btnBrowse_Click"/>
-                <Button x:Name="btnClean" Content="Clean Up" HorizontalAlignment="Left" Margin="899,399,0,0" VerticalAlignment="Top" Width="75" Click="btnClean_Click"/>
+                <Button x:Name="btnClean" Content="Clean Up" HorizontalAlignment="Left" Margin="514,270,0,0" VerticalAlignment="Top" Width="75" Click="btnClean_Click"/>
+                <GroupBox Header="검색 위치" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top" Height="60" Width="412" BorderBrush="#FFC8C8C8" Foreground="#FFC8C8C8">
+                    <Grid Margin="0">
+                        <TextBlock x:Name="txbLocation" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="300" TextTrimming="CharacterEllipsis" Text="aaaaaaaaa" Foreground="#FFC8C8C8"/>
+                        <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="315,7,0,0" VerticalAlignment="Top" Width="75" Click="btnBrowse_Click"/>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="필터링" HorizontalAlignment="Left" Margin="49,75,0,0" VerticalAlignment="Top" Height="190" Width="540" Foreground="#FFC8C8C8">
+                    <Grid Margin="0">
+                        <CheckBox Content="압축 파일이 여러 개의 파일을 포함하는 경우 1개 이상의 오디오 파일과 일치하는 경우 삭제" HorizontalAlignment="Left" Margin="10,10,-135,0" VerticalAlignment="Top" Foreground="#FFC8C8C8"/>
+                        <Label Content="비트 전송률" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Foreground="#FFC8C8C8"/>
+                        <Slider x:Name="sldBitRate" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top" Width="333" TickPlacement="Both" Minimum="64" Maximum="320" LargeChange="64" SmallChange="16" TickFrequency="16" IsSnapToTickEnabled="True"/>
+                        <Label Content="재생 시간" HorizontalAlignment="Left" Margin="10,97,0,0" VerticalAlignment="Top" Foreground="#FFC8C8C8"/>
+                        <Slider x:Name="sldDuration" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Width="333" TickPlacement="Both" IsSnapToTickEnabled="True" Maximum="600" Minimum="60" TickFrequency="10" LargeChange="60" SmallChange="10"/>
+                        <Label x:Name="lblBitRate" Content="{Binding Value, ElementName=sldBitRate}" HorizontalAlignment="Left" Margin="348,62,0,0" VerticalAlignment="Top" Width="67" Foreground="#FFC8C8C8"/>
+                        <Label x:Name="lblDuration" Content="{Binding Value, ElementName=sldDuration}" HorizontalAlignment="Left" Margin="348,128,0,0" VerticalAlignment="Top" Width="67" Foreground="#FFC8C8C8"/>
+                    </Grid>
+                </GroupBox>
+                <ProgressBar x:Name="prgCleanUp" HorizontalAlignment="Left" Height="17" Margin="50,275,0,0" VerticalAlignment="Top" Width="230"/>
             </Grid>
         </ScrollViewer>
         <Button x:Name="btnExit" Content="Button" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Width="20" Click="btnExit_Click" Height="20"/>
