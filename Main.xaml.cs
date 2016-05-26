@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
-using Ionic.Zip;
 using System.ComponentModel;
 
 namespace MusicFileManager
@@ -30,9 +29,21 @@ namespace MusicFileManager
 
         RegistryKey regKey = null;
 
+        ArchivedFileExtractor archiveExtractor = null;
+        List<string> archivedFiles = null;
+
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
+
+            InitializeRegistryKey();
+            InitializeArchiveExtractor();
+
+            searchLocation = regKey.GetValue(regKeySearch) as string;
+        }
+
+        private void InitializeRegistryKey()
+        {
             regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true);
 
             if (regKey == null)
@@ -40,8 +51,31 @@ namespace MusicFileManager
                 regKey = Registry.CurrentUser.CreateSubKey(regKeyLocation, RegistryKeyPermissionCheck.ReadWriteSubTree);
                 regKey.SetValue(regKeySearch, AppDomain.CurrentDomain.BaseDirectory);
             }
+        }
 
-            searchLocation = regKey.GetValue(regKeySearch) as string;
+        private void InitializeArchiveExtractor()
+        {
+            archiveExtractor = new ArchivedFileExtractor(prgControl);
+            archiveExtractor.OnStart += archiveExtractor_OnStart;
+            archiveExtractor.OnEnd += archiveExtractor_OnEnd;
+        }
+
+        void archiveExtractor_OnEnd(object sender, ArchivedFileExtractorEndEventArgs e)
+        {
+            btnClean.IsEnabled = true ;
+            btnCancel.IsEnabled = false;
+
+            if (!e.Cancel)
+            {
+                archivedFiles = e.ArchivedFiles;
+                regKey.SetValue(regKeySearch, searchLocation);
+            }                
+        }
+
+        void archiveExtractor_OnStart(object sender)
+        {
+            btnClean.IsEnabled = false;
+            btnCancel.IsEnabled = true;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -77,12 +111,11 @@ namespace MusicFileManager
         }
 
         private void btnClean_Click(object sender, RoutedEventArgs e)
-        {
-            cleanUp();
-            regKey.SetValue(regKeySearch, searchLocation);
+        {            
+            cleanUp();            
         }
 
-        private string[] getFiles(string location)
+        private List<string> getFiles(string location)
         {
             List<string> allFiles = new List<string>();
             string[] allPaths = Directory.GetFiles(searchLocation, "*.*", SearchOption.AllDirectories);
@@ -94,73 +127,17 @@ namespace MusicFileManager
                     allFiles.Add(s);
                 }
             }
-            return allFiles.ToArray();
+            return allFiles.ToList();
         }
 
         private void cleanUp()
         {
-            //프로그레스바 초기화
-            prgCleanUp.Minimum = 0;
-            prgCleanUp.Maximum = 100;
+            archiveExtractor.Run(getFiles(searchLocation));
+        }        
 
-            //백그라운드 작업자 초기화
-            BackgroundWorker worker = new BackgroundWorker();
-
-            worker.WorkerReportsProgress = true;
-            worker.WorkerSupportsCancellation = true;
-
-            worker.DoWork += new DoWorkEventHandler(worker_DoWork);
-            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
-            worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
-
-            worker.RunWorkerAsync();
-            
-        }
-
-        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            prgCleanUp.Value = e.ProgressPercentage;            
-        }
-
-        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled == true)
-            {
-                MessageBox.Show("Cancelled");
-            }
-            else
-            {
-                MessageBox.Show("Completed");
-            }
-
-            if (e.Error != null)
-            {
-                
-            }            
-        }
-
-        void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            
-            BackgroundWorker worker = sender as BackgroundWorker;
-            string[] files = getFiles(searchLocation);
-            
-            for (int i = 0; i < files.Count(); i++)
-            {
-                if (worker.CancellationPending == true)
-                {
-                    e.Cancel = true;
-                    break;
-                }
-
-                if (ZipFile.IsZipFile(files[i]))
-                {
-                    MessageBox.Show(files[i] + " is zip file");
-                }
-                int perc = (int)((float)(i+1) / (float)files.Count() * 100);
-                worker.ReportProgress(perc);
-            }
-            
+            prgControl.Cancel();
         }
     }
 }

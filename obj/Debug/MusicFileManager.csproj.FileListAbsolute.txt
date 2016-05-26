@@ -19,3 +19,7 @@ C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.pdb
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Microsoft.Windows.Shell.xml
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Ionic.Zip.dll
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\Ionic.Zip.xml
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\ProgressControl.baml
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\ProgressControl.g.cs
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager_MarkupCompile.lref
