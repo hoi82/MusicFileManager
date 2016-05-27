@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
 using System.ComponentModel;
+using Ionic.Zip;
 
 namespace MusicFileManager
 {
@@ -29,8 +30,13 @@ namespace MusicFileManager
 
         RegistryKey regKey = null;
 
-        ArchivedFileExtractor archiveExtractor = null;
+        List<string> allFiles = null;
+
+        ArchivedFileFinder archiveExtractor = null;
         List<string> archivedFiles = null;
+
+        AudioFileFinder audioExtractor = null;
+        List<string> audioFiles = null;
 
         public MainWindow()
         {
@@ -38,6 +44,7 @@ namespace MusicFileManager
 
             InitializeRegistryKey();
             InitializeArchiveExtractor();
+            InitializeAudioExtractor();
 
             searchLocation = regKey.GetValue(regKeySearch) as string;
         }
@@ -55,12 +62,37 @@ namespace MusicFileManager
 
         private void InitializeArchiveExtractor()
         {
-            archiveExtractor = new ArchivedFileExtractor(prgControl);
+            archiveExtractor = new ArchivedFileFinder(prgControl);
             archiveExtractor.OnStart += archiveExtractor_OnStart;
             archiveExtractor.OnEnd += archiveExtractor_OnEnd;
         }
 
-        void archiveExtractor_OnEnd(object sender, ArchivedFileExtractorEndEventArgs e)
+        private void InitializeAudioExtractor()
+        {
+            audioExtractor = new AudioFileFinder(prgControl);
+            audioExtractor.OnStart += audioExtractor_OnStart;
+            audioExtractor.OnEnd += audioExtractor_OnEnd;
+        }
+
+        void audioExtractor_OnEnd(object sender, AudioFileFinderEndEventArgs e)
+        {
+            btnClean.IsEnabled = true;
+            btnCancel.IsEnabled = false;
+
+            if (!e.Cancel)
+            {
+                audioFiles = e.AudioFiles;
+                regKey.SetValue(regKeySearch, searchLocation);
+            } 
+        }
+
+        void audioExtractor_OnStart(object sender)
+        {
+            btnClean.IsEnabled = false;
+            btnCancel.IsEnabled = true;
+        }
+
+        void archiveExtractor_OnEnd(object sender, ArchivedFileFinderEndEventArgs e)
         {
             btnClean.IsEnabled = true ;
             btnCancel.IsEnabled = false;
@@ -69,6 +101,8 @@ namespace MusicFileManager
             {
                 archivedFiles = e.ArchivedFiles;
                 regKey.SetValue(regKeySearch, searchLocation);
+
+                audioExtractor.Run(allFiles);
             }                
         }
 
@@ -131,13 +165,15 @@ namespace MusicFileManager
         }
 
         private void cleanUp()
-        {
-            archiveExtractor.Run(getFiles(searchLocation));
+        {            
+            allFiles = getFiles(searchLocation);
+            archiveExtractor.Run(allFiles);            
         }        
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            prgControl.Cancel();
+            archiveExtractor.Cancel();
+            audioExtractor.Cancel();
         }
     }
 }

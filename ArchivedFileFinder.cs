@@ -8,12 +8,12 @@ using Ionic.Zip;
 
 namespace MusicFileManager
 {
-    public class ArchivedFileExtractorEndEventArgs : EventArgs
+    public class ArchivedFileFinderEndEventArgs : EventArgs
     {
         bool cancel = false;
         List<string> archivedFiles = null;        
 
-        public ArchivedFileExtractorEndEventArgs(bool cancel, List<string> archivedFiles)
+        public ArchivedFileFinderEndEventArgs(bool cancel, List<string> archivedFiles)
         {
             this.cancel = cancel;
             this.archivedFiles = archivedFiles;
@@ -23,10 +23,10 @@ namespace MusicFileManager
         public List<string> ArchivedFiles { get { return this.archivedFiles; } }
     }
 
-    public delegate void ArchivedFileExtractorStartEventHandler(object sender);
-    public delegate void ArchivedfileExtractorEndEventHandler(object sender, ArchivedFileExtractorEndEventArgs e);
+    public delegate void ArchivedFileFinderStartEventHandler(object sender);
+    public delegate void ArchivedfileFinderEndEventHandler(object sender, ArchivedFileFinderEndEventArgs e);
 
-    public class ArchivedFileExtractor
+    public class ArchivedFileFinder
     {
         ProgressControl progressControl = null;
         List<string> allFiles = null;
@@ -34,15 +34,15 @@ namespace MusicFileManager
         int current = 0;
         int total = 0;
 
-        public event ArchivedFileExtractorStartEventHandler OnStart;
-        public event ArchivedfileExtractorEndEventHandler OnEnd;
+        public event ArchivedFileFinderStartEventHandler OnStart;
+        public event ArchivedfileFinderEndEventHandler OnEnd;
 
-        public ArchivedFileExtractor()
+        public ArchivedFileFinder()
         {
 
         }
 
-        public ArchivedFileExtractor(ProgressControl progressControl)
+        public ArchivedFileFinder(ProgressControl progressControl)
         {
             this.progressControl = progressControl;
         }
@@ -62,7 +62,7 @@ namespace MusicFileManager
                 }
 
                 if (ZipFile.IsZipFile(allFiles[i]))
-                {
+                {                                       
                     archivedFiles.Add(allFiles[i]);
                 }
                 current = i + 1;
@@ -83,17 +83,23 @@ namespace MusicFileManager
                 this.OnStart(this);
 
             progressControl.InitializeDisplay();
-            progressControl.SetEvents(worker_DoWork, worker_ProgressChanged, worker_RunWorkerCompleted);
+            progressControl.SetEvents(DoWork, ProgressChanged, RunWorkerCompleted);
             progressControl.Run();            
         }
 
-        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        public void Cancel()
         {
-            progressControl.ProgressDisplay(e.ProgressPercentage, 
-                string.Format("Get Archived Files ({0}/{1})...", current, total));
+            if (progressControl != null)
+                progressControl.Cancel();
         }
 
-        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressControl.ProgressDisplay(e.ProgressPercentage, 
+                string.Format("Finding Archived Files ({0}/{1})...", current, total));
+        }
+
+        void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {  
             if (progressControl.Cancelled())
             {
@@ -104,10 +110,10 @@ namespace MusicFileManager
                 progressControl.ProgressDisplay(100, "Completed!");
             }
 
-            this.OnEnd(this, new ArchivedFileExtractorEndEventArgs(e.Cancelled, archivedFiles));            
+            this.OnEnd(this, new ArchivedFileFinderEndEventArgs(progressControl.Cancelled(), archivedFiles));            
         }
 
-        void worker_DoWork(object sender, DoWorkEventArgs e)
+        void DoWork(object sender, DoWorkEventArgs e)
         {            
             Process();            
         }

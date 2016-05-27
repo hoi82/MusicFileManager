@@ -23,3 +23,6 @@ C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\ProgressControl.baml
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\ProgressControl.g.cs
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager_MarkupCompile.lref
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\policy.2.0.taglib-sharp.dll
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\taglib-sharp.dll
+C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\policy.2.0.taglib-sharp.config

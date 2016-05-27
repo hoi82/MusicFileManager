@@ -3,47 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TagLib;
-using Ionic.Zip;
 using System.ComponentModel;
+using TagLib;
 
 namespace MusicFileManager
 {
-    public class AudioFileExtractorEventArgs : EventArgs
+    public class AudioFileFinderEndEventArgs : EventArgs
     {
         bool cancel = false;
-        List<string> audioFileNames = null;
+        List<string> audioFiles = null;
 
-        public AudioFileExtractorEventArgs(bool cancel, List<string> audioFileNames)
+        public AudioFileFinderEndEventArgs(bool cancel, List<string> audioFiles)
         {
             this.cancel = cancel;
-            this.audioFileNames = audioFileNames;
+            this.audioFiles = audioFiles;
         }
 
-        public bool Cancel { get { return this.cancel; } }
-        public List<string> AudioFileNames { get { return this.audioFileNames; } }
+        public bool Cancel { get { return cancel; } }
+        public List<string> AudioFiles { get { return audioFiles; } }
     }
 
-    public delegate void AudioFileExtractorStartEventHandler(object sender);
-    public delegate void AudioFileExtractorEndEventHandler(object sender, AudioFileExtractorEventArgs e);
+    public delegate void AudioFileFinderStartEventHandler(object sender);
+    public delegate void AudioFileFinderEndEventHandler(object sender, AudioFileFinderEndEventArgs e);
 
-    public class AudioFileExtractor
+    public class AudioFileFinder
     {
         ProgressControl progressControl = null;
-        List<string> archivedFiles = null;
+        List<string> allFiles = null;
         List<string> audioFiles = null;
         int current = 0;
         int total = 0;
 
-        public event AudioFileExtractorStartEventHandler OnStart;
-        public event AudioFileExtractorEndEventHandler OnEnd;
+        public event AudioFileFinderStartEventHandler OnStart;
+        public event AudioFileFinderEndEventHandler OnEnd;
 
-        public AudioFileExtractor()
+        public AudioFileFinder()
         {
 
         }
 
-        public AudioFileExtractor(ProgressControl progressControl)
+        public AudioFileFinder(ProgressControl progressControl)
         {
             this.progressControl = progressControl;
         }
@@ -52,7 +51,7 @@ namespace MusicFileManager
         {
             audioFiles = new List<string>();
 
-            for (int i = 0; i < archivedFiles.Count(); i++)
+            for (int i = 0; i < allFiles.Count(); i++)
             {
                 if (progressControl != null)
                 {
@@ -61,11 +60,16 @@ namespace MusicFileManager
                         break;
                     }
                 }
-                
-                //압축전부 풀고 오디오 파일인지 체크하고 파일 삭제하는 부분
-                ///////////////////////////////////
+                try
+                {
+                    TagLib.File f = TagLib.File.Create(allFiles[i]);
+                    audioFiles.Add(allFiles[i]);
+                }
+                catch (TagLib.UnsupportedFormatException e)
+                {                    
+                    //throw;
+                }                              
 
-                ///////////////////////////////////
                 current = i + 1;
 
                 int perc = (int)((float)current / (float)total * 100);
@@ -77,8 +81,8 @@ namespace MusicFileManager
 
         public void Run(List<string> files)
         {
-            archivedFiles = files;
-            total = archivedFiles.Count();
+            allFiles = files;
+            total = allFiles.Count();
 
             if (this.OnStart != null)
                 this.OnStart(this);
@@ -97,7 +101,7 @@ namespace MusicFileManager
         void ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressControl.ProgressDisplay(e.ProgressPercentage,
-                string.Format("Finding Audio Files from Archived Files ({0}/{1})...", current, total));
+                string.Format("Finding Audio Files ({0}/{1})...", current, total));
         }
 
         void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -111,7 +115,7 @@ namespace MusicFileManager
                 progressControl.ProgressDisplay(100, "Completed!");
             }
 
-            this.OnEnd(this, new AudioFileExtractorEventArgs(progressControl.Cancelled(), audioFiles));
+            this.OnEnd(this, new AudioFileFinderEndEventArgs(progressControl.Cancelled(), audioFiles));
         }
 
         void DoWork(object sender, DoWorkEventArgs e)
