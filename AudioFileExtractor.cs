@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TagLib;
 using Ionic.Zip;
 using System.ComponentModel;
+using System.IO;
 
 namespace MusicFileManager
 {
@@ -34,6 +35,7 @@ namespace MusicFileManager
         List<string> audioFiles = null;
         int current = 0;
         int total = 0;
+        const string EXTRACT_DIR = "Extracts";
 
         public event AudioFileExtractorStartEventHandler OnStart;
         public event AudioFileExtractorEndEventHandler OnEnd;
@@ -64,7 +66,24 @@ namespace MusicFileManager
                 
                 //압축전부 풀고 오디오 파일인지 체크하고 파일 삭제하는 부분
                 ///////////////////////////////////
-
+                string extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
+                ZipFile z = ZipFile.Read(archivedFiles[i]);
+                z.FlattenFoldersOnExtract = true;
+                z.ExtractAll(extractDir);                
+                DirectoryInfo di = new DirectoryInfo(extractDir);
+                foreach (FileInfo fi in di.GetFiles())
+                {
+                    try
+                    {
+                        TagLib.File f = TagLib.File.Create(fi.FullName);
+                        audioFiles.Add(fi.FullName);
+                    }
+                    catch (UnsupportedFormatException e)
+                    {
+                                                
+                    }                    
+                }
+                di.Delete(true);
                 ///////////////////////////////////
                 current = i + 1;
 

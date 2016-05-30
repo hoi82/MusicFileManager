@@ -32,19 +32,23 @@ namespace MusicFileManager
 
         List<string> allFiles = null;
 
-        ArchivedFileFinder archiveExtractor = null;
+        ArchivedFileFinder archiveFinder = null;
         List<string> archivedFiles = null;
 
-        AudioFileFinder audioExtractor = null;
+        AudioFileFinder audioFinder = null;
         List<string> audioFiles = null;
+
+        AudioFileExtractor audioFinderInArchives = null;
+        List<string> audioFilesInArchives = null;
 
         public MainWindow()
         {
             InitializeComponent();            
 
             InitializeRegistryKey();
-            InitializeArchiveExtractor();
-            InitializeAudioExtractor();
+            InitializeArchiveFinder();
+            InitializeAudioFinder();
+            InitializeAudioFinderInArchives();
 
             searchLocation = regKey.GetValue(regKeySearch) as string;
         }
@@ -60,18 +64,43 @@ namespace MusicFileManager
             }
         }
 
-        private void InitializeArchiveExtractor()
+        private void InitializeArchiveFinder()
         {
-            archiveExtractor = new ArchivedFileFinder(prgControl);
-            archiveExtractor.OnStart += archiveExtractor_OnStart;
-            archiveExtractor.OnEnd += archiveExtractor_OnEnd;
+            archiveFinder = new ArchivedFileFinder(prgControl);
+            archiveFinder.OnStart += archiveExtractor_OnStart;
+            archiveFinder.OnEnd += archiveExtractor_OnEnd;
         }
 
-        private void InitializeAudioExtractor()
+        private void InitializeAudioFinder()
         {
-            audioExtractor = new AudioFileFinder(prgControl);
-            audioExtractor.OnStart += audioExtractor_OnStart;
-            audioExtractor.OnEnd += audioExtractor_OnEnd;
+            audioFinder = new AudioFileFinder(prgControl);
+            audioFinder.OnStart += audioExtractor_OnStart;
+            audioFinder.OnEnd += audioExtractor_OnEnd;
+        }
+
+        private void InitializeAudioFinderInArchives()
+        {
+            audioFinderInArchives = new AudioFileExtractor(prgControl);
+            audioFinderInArchives.OnStart += audioFinderInArchives_OnStart;
+            audioFinderInArchives.OnEnd += audioFinderInArchives_OnEnd;
+        }
+
+        void audioFinderInArchives_OnEnd(object sender, AudioFileExtractorEventArgs e)
+        {
+            btnClean.IsEnabled = true;
+            btnCancel.IsEnabled = false;
+
+            if (!e.Cancel)
+            {
+                audioFiles = e.AudioFileNames;
+                regKey.SetValue(regKeySearch, searchLocation);
+            } 
+        }
+
+        void audioFinderInArchives_OnStart(object sender)
+        {
+            btnClean.IsEnabled = false;
+            btnCancel.IsEnabled = true;
         }
 
         void audioExtractor_OnEnd(object sender, AudioFileFinderEndEventArgs e)
@@ -81,8 +110,8 @@ namespace MusicFileManager
 
             if (!e.Cancel)
             {
-                audioFiles = e.AudioFiles;
-                regKey.SetValue(regKeySearch, searchLocation);
+                audioFiles = e.AudioFiles;                
+                audioFinderInArchives.Run(archivedFiles);
             } 
         }
 
@@ -102,7 +131,7 @@ namespace MusicFileManager
                 archivedFiles = e.ArchivedFiles;
                 regKey.SetValue(regKeySearch, searchLocation);
 
-                audioExtractor.Run(allFiles);
+                audioFinder.Run(allFiles);
             }                
         }
 
@@ -167,13 +196,14 @@ namespace MusicFileManager
         private void cleanUp()
         {            
             allFiles = getFiles(searchLocation);
-            archiveExtractor.Run(allFiles);            
+            archiveFinder.Run(allFiles);            
         }        
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            archiveExtractor.Cancel();
-            audioExtractor.Cancel();
+            archiveFinder.Cancel();
+            audioFinder.Cancel();
+            audioFinderInArchives.Cancel();
         }
     }
 }

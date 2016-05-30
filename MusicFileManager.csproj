@@ -91,6 +91,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ArchivedFileFinder.cs" />
+    <Compile Include="AudioChecker.cs" />
     <Compile Include="AudioFileExtractor.cs" />
     <Compile Include="AudioFileFinder.cs" />
     <Compile Include="FileRepository.cs" />
