@@ -36,10 +36,10 @@ namespace MusicFileManager
         List<string> archivedFiles = null;
 
         AudioFileFinder audioFinder = null;
-        List<string> audioFiles = null;
+        List<AudioFile> audioFiles = null;
 
         AudioFileExtractor audioFinderInArchives = null;
-        List<string> audioFilesInArchives = null;
+        List<AudioFile> audioFilesInArchives = null;
 
         public MainWindow()
         {
@@ -67,15 +67,15 @@ namespace MusicFileManager
         private void InitializeArchiveFinder()
         {
             archiveFinder = new ArchivedFileFinder(prgControl);
-            archiveFinder.OnStart += archiveExtractor_OnStart;
-            archiveFinder.OnEnd += archiveExtractor_OnEnd;
+            archiveFinder.OnStart += archiveFinder_OnStart;
+            archiveFinder.OnEnd += archiveFinder_OnEnd;
         }
 
         private void InitializeAudioFinder()
         {
             audioFinder = new AudioFileFinder(prgControl);
-            audioFinder.OnStart += audioExtractor_OnStart;
-            audioFinder.OnEnd += audioExtractor_OnEnd;
+            audioFinder.OnStart += audioFinder_OnStart;
+            audioFinder.OnEnd += audioFinder_OnEnd;
         }
 
         private void InitializeAudioFinderInArchives()
@@ -92,7 +92,7 @@ namespace MusicFileManager
 
             if (!e.Cancel)
             {
-                audioFiles = e.AudioFileNames;
+                this.audioFilesInArchives = e.AudioFiles;
                 regKey.SetValue(regKeySearch, searchLocation);
             } 
         }
@@ -103,7 +103,7 @@ namespace MusicFileManager
             btnCancel.IsEnabled = true;
         }
 
-        void audioExtractor_OnEnd(object sender, AudioFileFinderEndEventArgs e)
+        void audioFinder_OnEnd(object sender, AudioFileFinderEndEventArgs e)
         {
             btnClean.IsEnabled = true;
             btnCancel.IsEnabled = false;
@@ -111,17 +111,17 @@ namespace MusicFileManager
             if (!e.Cancel)
             {
                 audioFiles = e.AudioFiles;                
-                audioFinderInArchives.Run(archivedFiles);
+                audioFinderInArchives.RunAsync(archivedFiles);
             } 
         }
 
-        void audioExtractor_OnStart(object sender)
+        void audioFinder_OnStart(object sender)
         {
             btnClean.IsEnabled = false;
             btnCancel.IsEnabled = true;
         }
 
-        void archiveExtractor_OnEnd(object sender, ArchivedFileFinderEndEventArgs e)
+        void archiveFinder_OnEnd(object sender, ArchivedFileFinderEndEventArgs e)
         {
             btnClean.IsEnabled = true ;
             btnCancel.IsEnabled = false;
@@ -131,11 +131,11 @@ namespace MusicFileManager
                 archivedFiles = e.ArchivedFiles;
                 regKey.SetValue(regKeySearch, searchLocation);
 
-                audioFinder.Run(allFiles);
+                audioFinder.RunAsync(allFiles);
             }                
         }
 
-        void archiveExtractor_OnStart(object sender)
+        void archiveFinder_OnStart(object sender)
         {
             btnClean.IsEnabled = false;
             btnCancel.IsEnabled = true;
@@ -196,7 +196,7 @@ namespace MusicFileManager
         private void cleanUp()
         {            
             allFiles = getFiles(searchLocation);
-            archiveFinder.Run(allFiles);            
+            archiveFinder.RunAsync(allFiles);            
         }        
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)

@@ -11,16 +11,16 @@ namespace MusicFileManager
     public class AudioFileFinderEndEventArgs : EventArgs
     {
         bool cancel = false;
-        List<string> audioFiles = null;
+        List<AudioFile> audioFiles = null;
 
-        public AudioFileFinderEndEventArgs(bool cancel, List<string> audioFiles)
+        public AudioFileFinderEndEventArgs(bool cancel, List<AudioFile> audioFiles)
         {
             this.cancel = cancel;
             this.audioFiles = audioFiles;
         }
 
         public bool Cancel { get { return cancel; } }
-        public List<string> AudioFiles { get { return audioFiles; } }
+        public List<AudioFile> AudioFiles { get { return audioFiles; } }
     }
 
     public delegate void AudioFileFinderStartEventHandler(object sender);
@@ -30,7 +30,7 @@ namespace MusicFileManager
     {
         ProgressControl progressControl = null;
         List<string> allFiles = null;
-        List<string> audioFiles = null;
+        List<AudioFile> audioFiles = null;
         int current = 0;
         int total = 0;
 
@@ -49,7 +49,7 @@ namespace MusicFileManager
 
         private void Process()
         {
-            audioFiles = new List<string>();
+            audioFiles = new List<AudioFile>();
 
             for (int i = 0; i < allFiles.Count(); i++)
             {
@@ -62,8 +62,9 @@ namespace MusicFileManager
                 }
                 try
                 {
-                    TagLib.File f = TagLib.File.Create(allFiles[i]);
-                    audioFiles.Add(allFiles[i]);
+                    TagLib.File f = TagLib.File.Create(allFiles[i]);                    
+                    AudioFile af = new AudioFile(System.IO.Path.GetFileName(allFiles[i]), allFiles[i], f.Tag);
+                    audioFiles.Add(af);
                 }
                 catch (TagLib.UnsupportedFormatException e)
                 {                    
@@ -79,7 +80,7 @@ namespace MusicFileManager
             }
         }
 
-        public void Run(List<string> files)
+        public void RunAsync(List<string> files)
         {
             allFiles = files;
             total = allFiles.Count();

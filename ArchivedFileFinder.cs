@@ -74,7 +74,7 @@ namespace MusicFileManager
             }
         }
 
-        public void Run(List<string> files)
+        public void RunAsync(List<string> files)
         {
             allFiles = files;
             total = allFiles.Count();

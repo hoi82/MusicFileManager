@@ -9,20 +9,20 @@ using System.ComponentModel;
 using System.IO;
 
 namespace MusicFileManager
-{
+{    
     public class AudioFileExtractorEventArgs : EventArgs
     {
         bool cancel = false;
-        List<string> audioFileNames = null;
+        List<AudioFile> audioFiles = null;
 
-        public AudioFileExtractorEventArgs(bool cancel, List<string> audioFileNames)
+        public AudioFileExtractorEventArgs(bool cancel, List<AudioFile> audioFiles)
         {
             this.cancel = cancel;
-            this.audioFileNames = audioFileNames;
+            this.audioFiles = audioFiles;
         }
 
         public bool Cancel { get { return this.cancel; } }
-        public List<string> AudioFileNames { get { return this.audioFileNames; } }
+        public List<AudioFile> AudioFiles { get { return this.audioFiles; } }
     }
 
     public delegate void AudioFileExtractorStartEventHandler(object sender);
@@ -32,9 +32,10 @@ namespace MusicFileManager
     {
         ProgressControl progressControl = null;
         List<string> archivedFiles = null;
-        List<string> audioFiles = null;
+        List<AudioFile> audioFiles = null;
         int current = 0;
         int total = 0;
+        string extractDir = null;
         const string EXTRACT_DIR = "Extracts";
 
         public event AudioFileExtractorStartEventHandler OnStart;
@@ -42,17 +43,17 @@ namespace MusicFileManager
 
         public AudioFileExtractor()
         {
-
+            extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
         }
 
-        public AudioFileExtractor(ProgressControl progressControl)
+        public AudioFileExtractor(ProgressControl progressControl) : this()
         {
             this.progressControl = progressControl;
         }
 
         private void Process()
         {
-            audioFiles = new List<string>();
+            audioFiles = new List<AudioFile>();
 
             for (int i = 0; i < archivedFiles.Count(); i++)
             {
@@ -65,25 +66,30 @@ namespace MusicFileManager
                 }
                 
                 //압축전부 풀고 오디오 파일인지 체크하고 파일 삭제하는 부분
-                ///////////////////////////////////
-                string extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
-                ZipFile z = ZipFile.Read(archivedFiles[i]);
-                z.FlattenFoldersOnExtract = true;
-                z.ExtractAll(extractDir);                
+                ///////////////////////////////////                
                 DirectoryInfo di = new DirectoryInfo(extractDir);
-                foreach (FileInfo fi in di.GetFiles())
+                ZipFile z = ZipFile.Read(archivedFiles[i]);
+                foreach (ZipEntry entry in z.Entries)
                 {
-                    try
+                    if (!entry.IsDirectory)
                     {
-                        TagLib.File f = TagLib.File.Create(fi.FullName);
-                        audioFiles.Add(fi.FullName);
+                        entry.Extract(extractDir);
+                        string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
+                        try
+                        {
+                            TagLib.File f = TagLib.File.Create(extractedPath);
+                            byte[] data = System.IO.File.ReadAllBytes(extractedPath);
+                            string fileName = Path.GetFileName(extractedPath);
+                            audioFiles.Add(new AudioFile(fileName, null, data, f.Tag));
+                        }
+                        catch (UnsupportedFormatException e)
+                        {
+                            //System.IO.File.Delete(extractedPath);                            
+                        }
                     }
-                    catch (UnsupportedFormatException e)
-                    {
-                                                
-                    }                    
                 }
-                di.Delete(true);
+                z.Dispose();
+                di.Delete(true);                
                 ///////////////////////////////////
                 current = i + 1;
 
@@ -94,7 +100,7 @@ namespace MusicFileManager
             }
         }
 
-        public void Run(List<string> files)
+        public void RunAsync(List<string> files)
         {
             archivedFiles = files;
             total = archivedFiles.Count();
