@@ -34,14 +34,15 @@ namespace MusicFileManager
         {
             get
             {
-                if (data == null)
-                {
-                    return System.IO.File.ReadAllBytes(filePath);
-                }
-                else
-                {
-                    return data;
-                }
+                //if (data == null)
+                //{
+                //    return System.IO.File.ReadAllBytes(filePath);
+                //}
+                //else
+                //{
+                //    return data;                    
+                //}
+                return data;
             }
         }
         public Tag Tag { get { return this.tag; } }

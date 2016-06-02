@@ -82,6 +82,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SimilarAudioFiles.cs" />
     <Page Include="Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -93,7 +94,7 @@
     <Compile Include="ArchivedFileFinder.cs" />
     <Compile Include="AudioFile.cs" />
     <Compile Include="AudioFileChecker.cs" />
-    <Compile Include="AudioFileExtractor.cs" />
+    <Compile Include="ArchivedAudioFileFinder.cs" />
     <Compile Include="AudioFileFinder.cs" />
     <Compile Include="FileRepository.cs" />
     <Compile Include="Main.xaml.cs">

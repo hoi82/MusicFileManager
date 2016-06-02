@@ -11,30 +11,35 @@ namespace MusicFileManager
     public class AudioFileFinderEndEventArgs : EventArgs
     {
         bool cancel = false;
-        List<AudioFile> audioFiles = null;
+        List<string> audioFiles = null;
 
-        public AudioFileFinderEndEventArgs(bool cancel, List<AudioFile> audioFiles)
+        public AudioFileFinderEndEventArgs(bool cancel, List<string> audioFiles)
         {
             this.cancel = cancel;
             this.audioFiles = audioFiles;
         }
 
         public bool Cancel { get { return cancel; } }
-        public List<AudioFile> AudioFiles { get { return audioFiles; } }
+        public List<string> AudioFiles { get { return audioFiles; } }
     }
 
     public delegate void AudioFileFinderStartEventHandler(object sender);
+    public delegate void AudioFileFinderOnCheckEventHandler(object sender, bool audioFile, string fileName, int currentCount, int totalCount);
     public delegate void AudioFileFinderEndEventHandler(object sender, AudioFileFinderEndEventArgs e);
 
     public class AudioFileFinder
     {
         ProgressControl progressControl = null;
         List<string> allFiles = null;
-        List<AudioFile> audioFiles = null;
+        List<string> audioFiles = null;
+
+        string[] audioExtensions = { "mp3" };
+ 
         int current = 0;
         int total = 0;
 
         public event AudioFileFinderStartEventHandler OnStart;
+        public event AudioFileFinderOnCheckEventHandler OnCheck;
         public event AudioFileFinderEndEventHandler OnEnd;
 
         public AudioFileFinder()
@@ -49,7 +54,7 @@ namespace MusicFileManager
 
         private void Process()
         {
-            audioFiles = new List<AudioFile>();
+            audioFiles = new List<string>();
 
             for (int i = 0; i < allFiles.Count(); i++)
             {
@@ -60,20 +65,27 @@ namespace MusicFileManager
                         break;
                     }
                 }
-                try
-                {
-                    TagLib.File f = TagLib.File.Create(allFiles[i]);                    
-                    AudioFile af = new AudioFile(System.IO.Path.GetFileName(allFiles[i]), allFiles[i], f.Tag);
-                    audioFiles.Add(af);
-                }
-                catch (TagLib.UnsupportedFormatException e)
-                {                    
-                    //throw;
-                }                              
+
+                //try
+                //{
+                //    TagLib.File f = TagLib.File.Create(allFiles[i]);                                        
+                //    audioFiles.Add(allFiles[i]);
+                //}
+                //catch (TagLib.UnsupportedFormatException e)
+                //{                    
+                //    //throw;
+                //} 
+
+                bool isAudioFile = audioExtensions.Contains(System.IO.Path.GetExtension(allFiles[i]));
 
                 current = i + 1;
 
                 int perc = (int)((float)current / (float)total * 100);
+
+                if (this.OnCheck != null)
+                {
+                    this.OnCheck(this, isAudioFile, allFiles[i], current, total);
+                }
 
                 if (progressControl != null)
                     progressControl.FireProgress(perc);

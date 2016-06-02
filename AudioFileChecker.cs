@@ -4,12 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.IO;
+using Ionic.Zip;
 
 namespace MusicFileManager
 {
     public class AudioFileCheckerEndEventArgs
     {
+        bool cancel = false;
+        List<SimilarAudioFiles> similarFiles = null;
 
+        public AudioFileCheckerEndEventArgs(bool cancel, List<SimilarAudioFiles> similarFiles)
+        {
+            this.cancel = cancel;
+            this.similarFiles = similarFiles;
+        }
+
+        public bool Cancel { get { return this.cancel; } }
+        public List<SimilarAudioFiles> SimilarFiles { get { return this.similarFiles; } }
     }
 
     public delegate void AudioFileCheckerStartEventHandler(object sender);
@@ -18,13 +30,15 @@ namespace MusicFileManager
     public class AudioFileChecker
     {
         ProgressControl progressControl = null;
-        AudioFileCheckerStartEventHandler OnStart = null;
-        AudioFilecheckerEndEventHandler OnEnd = null;
+        public event AudioFileCheckerStartEventHandler OnStart = null;
+        public event AudioFilecheckerEndEventHandler OnEnd = null;
 
-        List<AudioFile> audioFilesInArchives = null;
-        List<AudioFile> audioFiles = null;
+        List<string> archivedFileWithAudio = null;
+        List<string> audioFiles = null;        
         int current = 0;
         int total = 0;
+
+        List<SimilarAudioFiles> similarFiles = null;
 
         double nameSimilarity = 0;
         double dataSimilarity = 0;
@@ -42,13 +56,13 @@ namespace MusicFileManager
             this.nameSimilarity = nameSimilarity;
             this.dataSimilarity = dataSimilarity;
             this.progressControl = progressControl;
+            similarFiles = new List<SimilarAudioFiles>();
         }
 
-        public void RunAsync(List<AudioFile> audioFilesInArchives, List<AudioFile> audioFiles)
+        public void RunAsync(List<string> archivedFileWithAudio, List<string> audioFiles)
         {
-            this.audioFilesInArchives = audioFilesInArchives;
-            this.audioFiles = audioFiles;
-            total = audioFilesInArchives.Count() * audioFiles.Count();
+            this.archivedFileWithAudio = archivedFileWithAudio;
+            this.audioFiles = audioFiles;            
 
             if (this.OnStart != null)
                 this.OnStart(this);
@@ -81,25 +95,35 @@ namespace MusicFileManager
                 progressControl.ProgressDisplay(100, "Completed!");
             }
 
-            this.OnEnd(this, new AudioFileCheckerEndEventArgs());
+            this.OnEnd(this, new AudioFileCheckerEndEventArgs(progressControl.Cancelled(), similarFiles));
         }
 
         void DoWork(object sender, DoWorkEventArgs e)
         {
-            Process();
+            CheckSimilarFileInArchive();
         }
 
-        private void Process()
+        private List<string> GetaudioFilesInArchivedFile(string archivedFile)
         {
-            for (int i = 0; i < audioFilesInArchives.Count; i++)
-            {
-                for (int j = 0; i < audioFiles.Count; j++)
+            List<string> audioFile = new List<string>();            
+
+            return audioFiles;
+        }
+
+        private void CheckSimilarFileInArchive()
+        {
+            total = archivedFileWithAudio.Count() * audioFiles.Count();
+
+            for (int i = 0; i < archivedFileWithAudio.Count; i++)
+            {                
+                for (int k = 0; i < audioFiles.Count; k++)
                 {
-                    double sim = GetSimilarityFromEnd(audioFilesInArchives[i].Data, audioFiles[j].Data);
+
+                    double sim = 0;
 
                     if (sim >= dataSimilarity)
                     {
-                        //요기 해야됨.
+                        similarFiles.Add(new SimilarAudioFiles(archivedFileWithAudio[i], audioFiles[k]));
                     }
 
                     current++;
@@ -111,32 +135,41 @@ namespace MusicFileManager
             }
         }
 
-        private double GetSimilarityFromEnd(byte[] s, byte[] t)
+        public double GetFileSimilarityWithByte(string file1, string file2)
         {
-            int dist = 0;
-            byte[] source = null;
-            byte[] target = null;
+            FileStream sf = File.OpenRead(file1);
+            FileStream tf = File.OpenRead(file2);
+            FileStream temp = null;
 
-            if (s.Length > t.Length)
+            if (sf.Length > tf.Length)
             {
-                source = t;
-                target = s;
-            }
-            else
-            {
-                source = s;
-                target = t;
+                temp = tf;
+                tf = sf;
+                sf = temp;
             }
 
-            int len = Math.Min(source.Length, target.Length);
-            int lendiff = target.Length - source.Length;
-            for (int i = len - 1; i > -1; i--)
+            long pos = 0;
+            long len = sf.Length;
+            long dist = 0;
+            while (pos < len)
             {
-                if (target[i + lendiff] != source[i])
+                sf.Seek(-pos, SeekOrigin.End);
+                tf.Seek(-pos, SeekOrigin.End);
+
+                int sb = sf.ReadByte();
+                int tb = tf.ReadByte();
+
+                if (sb != tb)
                     dist++;
+
+                pos++;
             }
 
-            return dist / source.Length;
+
+            sf.Dispose();
+            tf.Dispose();
+
+            return (double)((len - dist) / len);
         }
 
         private int GetDamerauLevDistance(String s, String t, int max)
