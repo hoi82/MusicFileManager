@@ -7,133 +7,62 @@ using System.ComponentModel;
 using TagLib;
 
 namespace MusicFileManager
-{
-    public class AudioFileFinderEndEventArgs : EventArgs
-    {
-        bool cancel = false;
-        List<string> audioFiles = null;
-
-        public AudioFileFinderEndEventArgs(bool cancel, List<string> audioFiles)
-        {
-            this.cancel = cancel;
-            this.audioFiles = audioFiles;
-        }
-
-        public bool Cancel { get { return cancel; } }
-        public List<string> AudioFiles { get { return audioFiles; } }
-    }
-
-    public delegate void AudioFileFinderStartEventHandler(object sender);
-    public delegate void AudioFileFinderOnCheckEventHandler(object sender, bool audioFile, string fileName, int currentCount, int totalCount);
-    public delegate void AudioFileFinderEndEventHandler(object sender, AudioFileFinderEndEventArgs e);
+{    
+    //public delegate void AudioFileFinderStartEventHandler(object sender);
+    //public delegate void AudioFileFinderOnCheckEventHandler(object sender, bool audioFile, string fileName, int currentCount, int totalCount);
+    //public delegate void AudioFileFinderEndEventHandler(object sender);
 
     public class AudioFileFinder
-    {
-        ProgressControl progressControl = null;
-        List<string> allFiles = null;
-        List<string> audioFiles = null;
+    {        
+        //List<string> allFiles = null;        
 
-        string[] audioExtensions = { "mp3" };
+        string[] audioExtensions = { ".mp3", ".wav", ".flac", ".ogg" };
  
-        int current = 0;
-        int total = 0;
+        //int current = 0;
+        //int total = 0;
 
-        public event AudioFileFinderStartEventHandler OnStart;
-        public event AudioFileFinderOnCheckEventHandler OnCheck;
-        public event AudioFileFinderEndEventHandler OnEnd;
+        //public event AudioFileFinderStartEventHandler OnStart;
+        //public event AudioFileFinderOnCheckEventHandler OnCheck;
+        //public event AudioFileFinderEndEventHandler OnEnd;
 
         public AudioFileFinder()
         {
 
         }
 
-        public AudioFileFinder(ProgressControl progressControl)
+        public bool CheckAudioFile(string file)
         {
-            this.progressControl = progressControl;
+            string test = System.IO.Path.GetExtension(file);
+            return audioExtensions.Contains(System.IO.Path.GetExtension(file));
         }
 
-        private void Process()
-        {
-            audioFiles = new List<string>();
+        //public void FindAudioFiles(List<string> files)
+        //{
+        //    if (files == null)
+        //        return;            
+            
+        //    allFiles = files;
+        //    total = files.Count;
 
-            for (int i = 0; i < allFiles.Count(); i++)
-            {
-                if (progressControl != null)
-                {
-                    if (progressControl.Cancelled())
-                    {
-                        break;
-                    }
-                }
+        //    if (this.OnStart != null)
+        //        this.OnStart(this);
 
-                //try
-                //{
-                //    TagLib.File f = TagLib.File.Create(allFiles[i]);                                        
-                //    audioFiles.Add(allFiles[i]);
-                //}
-                //catch (TagLib.UnsupportedFormatException e)
-                //{                    
-                //    //throw;
-                //} 
+        //    for (int i = 0; i < allFiles.Count(); i++)
+        //    {                                
+        //        bool isAudioFile = audioExtensions.Contains(System.IO.Path.GetExtension(allFiles[i]));
 
-                bool isAudioFile = audioExtensions.Contains(System.IO.Path.GetExtension(allFiles[i]));
+        //        current = i + 1;
 
-                current = i + 1;
+        //        int perc = (int)((float)current / (float)total * 100);
 
-                int perc = (int)((float)current / (float)total * 100);
+        //        if (this.OnCheck != null)
+        //        {
+        //            this.OnCheck(this, isAudioFile, allFiles[i], current, total);
+        //        }                
+        //    }
 
-                if (this.OnCheck != null)
-                {
-                    this.OnCheck(this, isAudioFile, allFiles[i], current, total);
-                }
-
-                if (progressControl != null)
-                    progressControl.FireProgress(perc);
-            }
-        }
-
-        public void RunAsync(List<string> files)
-        {
-            allFiles = files;
-            total = allFiles.Count();
-
-            if (this.OnStart != null)
-                this.OnStart(this);
-
-            progressControl.InitializeDisplay();
-            progressControl.SetEvents(DoWork, ProgressChanged, RunWorkerCompleted);
-            progressControl.Run();
-        }
-
-        public void Cancel()
-        {
-            if (progressControl != null)
-                progressControl.Cancel();
-        }
-
-        void ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            progressControl.ProgressDisplay(e.ProgressPercentage,
-                string.Format("Finding Audio Files ({0}/{1})...", current, total));
-        }
-
-        void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (progressControl.Cancelled())
-            {
-                progressControl.ProgressDisplay(0, "Cancelled!");
-            }
-            else
-            {
-                progressControl.ProgressDisplay(100, "Completed!");
-            }
-
-            this.OnEnd(this, new AudioFileFinderEndEventArgs(progressControl.Cancelled(), audioFiles));
-        }
-
-        void DoWork(object sender, DoWorkEventArgs e)
-        {
-            Process();
-        }
+        //    if (this.OnEnd != null)
+        //        this.OnEnd(this);
+        //}                       
     }
 }

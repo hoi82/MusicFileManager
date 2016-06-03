@@ -8,134 +8,77 @@ using System.IO;
 using Ionic.Zip;
 
 namespace MusicFileManager
-{
-    public class AudioFileCheckerEndEventArgs
-    {
-        bool cancel = false;
-        List<SimilarAudioFiles> similarFiles = null;
-
-        public AudioFileCheckerEndEventArgs(bool cancel, List<SimilarAudioFiles> similarFiles)
-        {
-            this.cancel = cancel;
-            this.similarFiles = similarFiles;
-        }
-
-        public bool Cancel { get { return this.cancel; } }
-        public List<SimilarAudioFiles> SimilarFiles { get { return this.similarFiles; } }
-    }
-
-    public delegate void AudioFileCheckerStartEventHandler(object sender);
-    public delegate void AudioFilecheckerEndEventHandler(object sender, AudioFileCheckerEndEventArgs e);
+{    
+    //public delegate void AudioFileCheckerStartEventHandler(object sender);
+    //public delegate void AudioFileCheckerCheckEventHandler(object sender, bool audioFile, string fileName, int currentCount, int totalCount);
+    //public delegate void AudioFilecheckerEndEventHandler(object sender);
 
     public class AudioFileChecker
-    {
-        ProgressControl progressControl = null;
-        public event AudioFileCheckerStartEventHandler OnStart = null;
-        public event AudioFilecheckerEndEventHandler OnEnd = null;
+    {        
+        //public event AudioFileCheckerStartEventHandler OnStart = null;
+        //public event AudioFilecheckerEndEventHandler OnEnd = null;
 
-        List<string> archivedFileWithAudio = null;
-        List<string> audioFiles = null;        
-        int current = 0;
-        int total = 0;
+        //List<string> archivedFileWithAudio = null;
+        //List<string> audioFiles = null;        
+        //int current = 0;
+        //int total = 0;
 
-        List<SimilarAudioFiles> similarFiles = null;
+        //List<SimilarAudioFiles> similarFiles = null;
 
         double nameSimilarity = 0;
         double dataSimilarity = 0;
         const double DEFALUT_NAME_SIMILARITY = 0.9;
-        const double DEFAULT_DATA_SIMILARITY = 0.9;        
+        const double DEFAULT_DATA_SIMILARITY = 0.9;
 
-        public AudioFileChecker(ProgressControl progressControl) : 
-            this(DEFALUT_NAME_SIMILARITY, DEFAULT_DATA_SIMILARITY, progressControl)
-        {
-            
-        }
+        public AudioFileChecker() : this(DEFALUT_NAME_SIMILARITY, DEFAULT_DATA_SIMILARITY) { }
 
-        public AudioFileChecker(double nameSimilarity, double dataSimilarity, ProgressControl progressControl)
+        public AudioFileChecker(double nameSimilarity, double dataSimilarity)
         {
             this.nameSimilarity = nameSimilarity;
-            this.dataSimilarity = dataSimilarity;
-            this.progressControl = progressControl;
-            similarFiles = new List<SimilarAudioFiles>();
+            this.dataSimilarity = dataSimilarity;            
+            //similarFiles = new List<SimilarAudioFiles>();
         }
 
-        public void RunAsync(List<string> archivedFileWithAudio, List<string> audioFiles)
+        //public void RunAsync(List<string> archivedFileWithAudio, List<string> audioFiles)
+        //{
+        //    this.archivedFileWithAudio = archivedFileWithAudio;
+        //    this.audioFiles = audioFiles;            
+
+        //    if (this.OnStart != null)
+        //        this.OnStart(this);
+        //}                
+
+        //private void CheckSimilarFileInArchive()
+        //{
+        //    total = archivedFileWithAudio.Count() * audioFiles.Count();
+
+        //    for (int i = 0; i < archivedFileWithAudio.Count; i++)
+        //    {                
+        //        for (int k = 0; i < audioFiles.Count; k++)
+        //        {
+
+        //            double sim = 0;
+
+        //            if (sim >= dataSimilarity)
+        //            {
+        //                similarFiles.Add(new SimilarAudioFiles(archivedFileWithAudio[i], audioFiles[k]));
+        //            }
+
+        //            current++;
+        //            int perc = (int)((float)current / (float)total * 100);
+
+        //            //if (progressControl != null)
+        //            //    progressControl.FireProgress(perc);
+        //        }
+        //    }
+        //}
+
+        public bool CheckSimilarFilesByByte(string file1, string file2)
         {
-            this.archivedFileWithAudio = archivedFileWithAudio;
-            this.audioFiles = audioFiles;            
-
-            if (this.OnStart != null)
-                this.OnStart(this);
-
-            progressControl.InitializeDisplay();
-            progressControl.SetEvents(DoWork, ProgressChanged, RunWorkerCompleted);
-            progressControl.Run();
+            return GetFileSimilarityWithByte(file1, file2) >= dataSimilarity;
         }
 
-        public void Cancel()
-        {
-            if (progressControl != null)
-                progressControl.Cancel();
-        }
-
-        void ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            progressControl.ProgressDisplay(e.ProgressPercentage,
-                string.Format("Comparing Audio Files in Archives with Actual Audio File ({0}/{1})...", current, total));
-        }
-
-        void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (progressControl.Cancelled())
-            {
-                progressControl.ProgressDisplay(0, "Cancelled!");
-            }
-            else
-            {
-                progressControl.ProgressDisplay(100, "Completed!");
-            }
-
-            this.OnEnd(this, new AudioFileCheckerEndEventArgs(progressControl.Cancelled(), similarFiles));
-        }
-
-        void DoWork(object sender, DoWorkEventArgs e)
-        {
-            CheckSimilarFileInArchive();
-        }
-
-        private List<string> GetaudioFilesInArchivedFile(string archivedFile)
-        {
-            List<string> audioFile = new List<string>();            
-
-            return audioFiles;
-        }
-
-        private void CheckSimilarFileInArchive()
-        {
-            total = archivedFileWithAudio.Count() * audioFiles.Count();
-
-            for (int i = 0; i < archivedFileWithAudio.Count; i++)
-            {                
-                for (int k = 0; i < audioFiles.Count; k++)
-                {
-
-                    double sim = 0;
-
-                    if (sim >= dataSimilarity)
-                    {
-                        similarFiles.Add(new SimilarAudioFiles(archivedFileWithAudio[i], audioFiles[k]));
-                    }
-
-                    current++;
-                    int perc = (int)((float)current / (float)total * 100);
-
-                    if (progressControl != null)
-                        progressControl.FireProgress(perc);
-                }
-            }
-        }
-
-        public double GetFileSimilarityWithByte(string file1, string file2)
+        private double GetFileSimilarityWithByte(string file1, string file2)
         {
             FileStream sf = File.OpenRead(file1);
             FileStream tf = File.OpenRead(file2);

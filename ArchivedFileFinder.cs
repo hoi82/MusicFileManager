@@ -7,115 +7,61 @@ using System.ComponentModel;
 using Ionic.Zip;
 
 namespace MusicFileManager
-{
-    public class ArchivedFileFinderEndEventArgs : EventArgs
-    {
-        bool cancel = false;
-        List<string> archivedFiles = null;        
-
-        public ArchivedFileFinderEndEventArgs(bool cancel, List<string> archivedFiles)
-        {
-            this.cancel = cancel;
-            this.archivedFiles = archivedFiles;
-        }
-
-        public bool Cancel { get { return this.cancel; } }
-        public List<string> ArchivedFiles { get { return this.archivedFiles; } }
-    }
-
-    public delegate void ArchivedFileFinderStartEventHandler(object sender);
-    public delegate void ArchivedfileFinderEndEventHandler(object sender, ArchivedFileFinderEndEventArgs e);
+{    
+    //public delegate void ArchivedFileFinderStartEventHandler(object sender);
+    //public delegate void ArchivedFileFinderCheckEventHandler(object sender, bool audioFile, string fileName, int currentCount, int totalCount);
+    //public delegate void ArchivedfileFinderEndEventHandler(object sender);
 
     public class ArchivedFileFinder
-    {
-        ProgressControl progressControl = null;
-        List<string> allFiles = null;
-        List<string> archivedFiles = null;
-        int current = 0;
-        int total = 0;
+    {        
+        //List<string> allFiles = null;        
+        //int current = 0;
+        //int total = 0;
 
-        public event ArchivedFileFinderStartEventHandler OnStart;
-        public event ArchivedfileFinderEndEventHandler OnEnd;
+        //public event ArchivedFileFinderStartEventHandler OnStart;
+        //public event ArchivedFileFinderCheckEventHandler OnCheck;
+        //public event ArchivedfileFinderEndEventHandler OnEnd;
 
         public ArchivedFileFinder()
         {
 
         }
 
-        public ArchivedFileFinder(ProgressControl progressControl)
+        public bool CheckArchivedFile(string file)
         {
-            this.progressControl = progressControl;
+            if (!System.IO.File.Exists(file))
+                return false;
+            return ZipFile.IsZipFile(file);
         }
 
-        private void Process()
-        {
-            archivedFiles = new List<string>();
+        //public void FindArchivedFiles(List<string> files)
+        //{
+        //    if (files == null)
+        //        return;            
 
-            for (int i = 0; i < allFiles.Count(); i++)
-            {
-                if (progressControl != null)
-                {
-                    if (progressControl.Cancelled())
-                    {                        
-                        break;
-                    }
-                }
+        //    allFiles = files;
+        //    total = files.Count;
 
-                if (ZipFile.IsZipFile(allFiles[i]))
-                {                                       
-                    archivedFiles.Add(allFiles[i]);
-                }
-                current = i + 1;
+        //    if (this.OnStart != null)
+        //        this.OnStart(this);
 
-                int perc = (int)((float)current / (float)total * 100);
+        //    for (int i = 0; i < allFiles.Count(); i++)
+        //    {
+        //        bool IsArchivedFile = ZipFile.IsZipFile(allFiles[i]);
+                
+        //        current = i + 1;
 
-                if (progressControl != null)
-                    progressControl.FireProgress(perc);
-            }
-        }
+        //        int perc = (int)((float)current / (float)total * 100);
 
-        public void RunAsync(List<string> files)
-        {
-            allFiles = files;
-            total = allFiles.Count();
+        //        if (this.OnCheck != null)
+        //        {
+        //            this.OnCheck(this, IsArchivedFile, allFiles[i], current, total);
+        //        }
 
-            if (this.OnStart != null)
-                this.OnStart(this);
+        //    }
 
-            progressControl.InitializeDisplay();
-            progressControl.SetEvents(DoWork, ProgressChanged, RunWorkerCompleted);
-            progressControl.Run();            
-        }
-
-        public void Cancel()
-        {
-            if (progressControl != null)
-                progressControl.Cancel();
-        }
-
-        void ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            progressControl.ProgressDisplay(e.ProgressPercentage, 
-                string.Format("Finding Archived Files ({0}/{1})...", current, total));
-        }
-
-        void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {  
-            if (progressControl.Cancelled())
-            {
-                progressControl.ProgressDisplay(0, "Cancelled!");
-            }
-            else
-            {
-                progressControl.ProgressDisplay(100, "Completed!");
-            }
-
-            this.OnEnd(this, new ArchivedFileFinderEndEventArgs(progressControl.Cancelled(), archivedFiles));            
-        }
-
-        void DoWork(object sender, DoWorkEventArgs e)
-        {            
-            Process();            
-        }
+        //    if (this.OnEnd != null)
+        //        this.OnEnd(this);
+        //}        
     }
 }
