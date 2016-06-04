@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.IO;
 using Ionic.Zip;
+using System.Text.RegularExpressions;
 
 namespace MusicFileManager
 {    
@@ -27,15 +28,21 @@ namespace MusicFileManager
 
         double nameSimilarity = 0;
         double dataSimilarity = 0;
+        long minimumDataBuffer = 0;
+        double maximumDataBufferRatio = 0;
         const double DEFALUT_NAME_SIMILARITY = 0.9;
         const double DEFAULT_DATA_SIMILARITY = 0.9;
+        const long MINIMUM_DATA_BUFFER = 1024;
+        const double MAXIMUM_DATA_BUFFER_RATIO = 0.1;
 
-        public AudioFileChecker() : this(DEFALUT_NAME_SIMILARITY, DEFAULT_DATA_SIMILARITY) { }
+        public AudioFileChecker() : this(DEFALUT_NAME_SIMILARITY, DEFAULT_DATA_SIMILARITY, MINIMUM_DATA_BUFFER, MAXIMUM_DATA_BUFFER_RATIO) { }
 
-        public AudioFileChecker(double nameSimilarity, double dataSimilarity)
+        public AudioFileChecker(double nameSimilarity, double dataSimilarity, long minimumDataBuffer, double maximumDataBufferRatio)
         {
             this.nameSimilarity = nameSimilarity;
-            this.dataSimilarity = dataSimilarity;            
+            this.dataSimilarity = dataSimilarity;
+            this.minimumDataBuffer = minimumDataBuffer;
+            this.maximumDataBufferRatio = maximumDataBufferRatio;
             //similarFiles = new List<SimilarAudioFiles>();
         }
 
@@ -73,6 +80,28 @@ namespace MusicFileManager
         //    }
         //}
 
+        public bool CheckSimilarFilesByName(string file1, string file2)
+        {
+            string filteredFileName1 = RemoveUselessString(file1);
+            string filteredFileName2 = RemoveUselessString(file2);
+            return GetFileSimilarityWithName(filteredFileName1, filteredFileName2) >= nameSimilarity;
+        }
+
+        private double GetFileSimilarityWithName(string file1, string file2)
+        {
+            int len = Math.Max(file1.Length, file2.Length);
+            return (len - GetDamerauLevDistance(file1, file2, len)) / len;
+        }
+
+        private string RemoveUselessString(string input)
+        {
+            string result = input;
+            result = Regex.Replace(result, "^[0-9]+", "", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, "^\\[.*\\]", "", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, "^[^a-z0-9]+", "", RegexOptions.IgnoreCase);
+            return result;
+        }
+
         public bool CheckSimilarFilesByByte(string file1, string file2)
         {
             return GetFileSimilarityWithByte(file1, file2) >= dataSimilarity;
@@ -94,7 +123,10 @@ namespace MusicFileManager
             long pos = 0;
             long len = sf.Length;
             long dist = 0;
-            while (pos < len)
+
+            bool loop = true;
+
+            while (loop)
             {
                 sf.Seek(-pos, SeekOrigin.End);
                 tf.Seek(-pos, SeekOrigin.End);
@@ -106,8 +138,14 @@ namespace MusicFileManager
                     dist++;
 
                 pos++;
-            }
 
+                //최소 범위 이상에서 정확도가 떨어지는 경우 루프를 탈출시킨다
+                loop = pos < (len * maximumDataBufferRatio);
+                
+                double sim = (double)((pos - dist) / pos);
+                if ((pos > minimumDataBuffer) && sim <= dataSimilarity)
+                    loop = false;
+            }        
 
             sf.Dispose();
             tf.Dispose();

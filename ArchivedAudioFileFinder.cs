@@ -41,12 +41,12 @@ namespace MusicFileManager
 
             bool IsAudio = false;
             DirectoryInfo di = new DirectoryInfo(extractDir);
-            ZipFile z = ZipFile.Read(archivedFile);
+            ZipFile z = ZipFile.Read(archivedFile);            
             foreach (ZipEntry entry in z.Entries)
             {
                 if (!entry.IsDirectory)
                 {
-                    entry.Extract(extractDir);
+                    entry.Extract(extractDir, ExtractExistingFileAction.OverwriteSilently);
                     string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
                     try
                     {

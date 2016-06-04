@@ -8,10 +8,18 @@ using System.IO;
 
 namespace MusicFileManager
 {
+    public delegate void MainControllerStartEvent(object sender);
+    public delegate void MainContollerEndEvent(object sender);
+
     public class MainController
     {
+        public event MainControllerStartEvent OnStart = null;
+        public event MainContollerEndEvent OnEnd = null;
+
         BackgroundWorker bw = null;
+
         ProgressControl progressControl = null;
+        string progressMessage = null;
 
         AudioFileFinder audioFinder = null;
         ArchivedFileFinder archiveFinder = null;
@@ -48,12 +56,22 @@ namespace MusicFileManager
 
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+            if (this.OnEnd != null)
+                this.OnEnd(this);
+
+            if (e.Cancelled)
+            {
+                progressControl.ProgressDisplay(0, "Cancelled");
+            }
+            else
+            {
+                progressControl.ProgressDisplay(100, "Complete");
+            }
         }
 
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressControl.ProgressDisplay(e.ProgressPercentage, "test");
+            progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -63,12 +81,14 @@ namespace MusicFileManager
             List<string> audioFiles = GetAudioFiles(allFiles, e);
             List<string> archivedFiles = GetArchivedFiles(allFiles, e);
             List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
+            List<string> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
+
         }
 
         private void ResetCount(int total)
         {
             this.total = total;
-            current = 1;
+            current = 0;
         }
 
         private void IncCount()
@@ -86,7 +106,7 @@ namespace MusicFileManager
         private List<string> GetFiles(string location, DoWorkEventArgs e)
         {
             List<string> allFiles = new List<string>();            
-            string[] allPaths = Directory.GetFiles(location, "*.*", SearchOption.AllDirectories);
+            string[] allPaths = Directory.GetFiles(location, "*.*", SearchOption.AllDirectories);            
             ResetCount(allPaths.Count());
 
             for (int i = 0; i < allPaths.Count(); i++)
@@ -104,6 +124,7 @@ namespace MusicFileManager
                 }
 
                 IncCount();
+                progressMessage = "Getting All Files from Directroy..";
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -128,6 +149,7 @@ namespace MusicFileManager
                     archivedFiles.Add(allFiles[i]);
 
                 IncCount();
+                progressMessage = string.Format("Finding Archive Files.....{0}/{1}", current, total);
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -138,7 +160,7 @@ namespace MusicFileManager
         private List<string> GetAudioFiles(List<string> allFiles, DoWorkEventArgs e)
         {
             List<string> audioFiles = new List<string>();
-            ResetCount(audioFiles.Count());
+            ResetCount(allFiles.Count());
 
             for (int i = 0; i < allFiles.Count(); i++)
             {
@@ -152,6 +174,7 @@ namespace MusicFileManager
                     audioFiles.Add(allFiles[i]);
 
                 IncCount();
+                progressMessage = string.Format("Finding Audio Files.....{0}/{1}", current, total);
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -176,6 +199,7 @@ namespace MusicFileManager
                     archivedAudioFiles.Add(archivedFiles[i]);
 
                 IncCount();
+                progressMessage = string.Format("Finding Archive Files has Audio File.....{0}/{1}", current, total);
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -186,10 +210,13 @@ namespace MusicFileManager
         private List<string> GetDuplicatedArchiveFiles(List<string> archivedAudioFile, List<string> audioFiles, DoWorkEventArgs e)
         {
             List<string> duplicatedArchives = new List<string>();
-            ResetCount(archivedAudioFile.Count());
+            ResetCount(audioFiles.Count());
 
             for (int i = 0; i < archivedAudioFile.Count(); i++)
             {
+                total = archivedAudioFile.Count();
+                current = i + 1;
+
                 if (bw.CancellationPending)
                 {
                     e.Cancel = true;
@@ -201,17 +228,29 @@ namespace MusicFileManager
                 bool isDuplicated = false;
                 for (int j = 0; j < extractedAudioFiles.Count(); j++)
                 {
+                    total = extractedAudioFiles.Count();
+                    current = j + 1;
+
                     for (int k = 0; k < audioFiles.Count(); k++)
                     {
+                        total = audioFiles.Count();
+                        current = k + 1;
+
                         if (checker.CheckSimilarFilesByByte(extractedAudioFiles[j], audioFiles[k]))
                         {
                             isDuplicated = true;
                             break;
                         }
+
+                        //IncCount();
+                        progressMessage = string.Format("Check {0}/{1} Audio File in {2}/{3} Archive File with {4}/{5} AudioFile", j + 1, extractedAudioFiles.Count(), i + 1, archivedAudioFile.Count, current, total);
+                        bw.ReportProgress(CalcPercentage());
                     }
 
                     if (isDuplicated)
                         break;
+
+                    bw.ReportProgress(CalcPercentage());
                 }
 
                 if (isDuplicated)
@@ -219,15 +258,16 @@ namespace MusicFileManager
 
                 archiveController.CleanExtractedFiles();
 
-                IncCount();
-
                 bw.ReportProgress(CalcPercentage());
             }
             return duplicatedArchives;
         }       
 
         public void Run(string directory)
-        {            
+        {
+            if (this.OnStart != null)
+                this.OnStart(this);
+
             bw.RunWorkerAsync(directory);
         }
 

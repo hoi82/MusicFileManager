@@ -40,6 +40,20 @@ namespace MusicFileManager
             searchLocation = regKey.GetValue(regKeySearch) as string;
 
             controller = new MainController(prgControl);
+            controller.OnStart += controller_OnStart;
+            controller.OnEnd += controller_OnEnd;
+        }
+
+        void controller_OnEnd(object sender)
+        {
+            btnClean.IsEnabled = true;
+            btnCancel.IsEnabled = false;
+        }
+
+        void controller_OnStart(object sender)
+        {
+            btnClean.IsEnabled = false;
+            btnCancel.IsEnabled = true;
         }
 
         private void InitializeRegistryKey()
@@ -87,12 +101,12 @@ namespace MusicFileManager
 
         private void btnClean_Click(object sender, RoutedEventArgs e)
         {
-            controller.Run(searchLocation);                     
+            controller.Run(searchLocation);            
         }
                      
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            controller.Cancel();
+            controller.Cancel();            
         }
     }
 }
