@@ -79,10 +79,10 @@ namespace MusicFileManager
             BackgroundWorker b = sender as BackgroundWorker;
             List<string> allFiles = GetFiles(e.Argument.ToString(), e);
             List<string> audioFiles = GetAudioFiles(allFiles, e);
-            List<string> archivedFiles = GetArchivedFiles(allFiles, e);
-            List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
-            List<string> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
-
+            //List<string> archivedFiles = GetArchivedFiles(allFiles, e);
+            //List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
+            //List<string> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
+            List<Tuple<string, string>> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);        
         }
 
         private void ResetCount(int total)
@@ -228,11 +228,23 @@ namespace MusicFileManager
                 bool isDuplicated = false;
                 for (int j = 0; j < extractedAudioFiles.Count(); j++)
                 {
+                    if (bw.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
+
                     total = extractedAudioFiles.Count();
                     current = j + 1;
 
                     for (int k = 0; k < audioFiles.Count(); k++)
                     {
+                        if (bw.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+
                         total = audioFiles.Count();
                         current = k + 1;
 
@@ -261,7 +273,50 @@ namespace MusicFileManager
                 bw.ReportProgress(CalcPercentage());
             }
             return duplicatedArchives;
-        }       
+        }
+
+        private List<Tuple<string, string>> GetDuplicatedAudioFiles(List<string> audioFiles, DoWorkEventArgs e)
+        {
+            List<Tuple<string, string>> duplicatedAudioFiles = new List<Tuple<string, string>>();
+            ResetCount(audioFiles.Count());
+
+            for (int i = 0; i < audioFiles.Count(); i++)
+            {
+                if (bw.CancellationPending)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+
+                for (int j = 0; j < audioFiles.Count(); j++)
+                {
+                    if (bw.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
+
+                    if (i == j) continue;
+
+                    if (checker.CheckSimilarFilesByNameAndTag(audioFiles[i], audioFiles[j]))
+                        duplicatedAudioFiles.Add(new Tuple<string, string>(audioFiles[i], audioFiles[j]));
+
+                    current = j + 1;
+
+                    progressMessage = string.Format("Checking {0}/{1} Audio File with Other Audio Files.....{2}/{3}", i+1, total, current, total);
+
+                    bw.ReportProgress(CalcPercentage());
+                }
+
+                current = i + 1;
+
+                progressMessage = string.Format("Finding Archive Files has Audio File.....{0}/{1}", current, total);
+
+                bw.ReportProgress(CalcPercentage());
+            }
+
+            return duplicatedAudioFiles;
+        }
 
         public void Run(string directory)
         {
