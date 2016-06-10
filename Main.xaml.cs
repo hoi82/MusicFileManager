@@ -46,13 +46,13 @@ namespace MusicFileManager
 
         void controller_OnEnd(object sender)
         {
-            btnClean.IsEnabled = true;
+            btnFind.IsEnabled = true;
             btnCancel.IsEnabled = false;
         }
 
         void controller_OnStart(object sender)
         {
-            btnClean.IsEnabled = false;
+            btnFind.IsEnabled = false;
             btnCancel.IsEnabled = true;
         }
 
@@ -107,6 +107,11 @@ namespace MusicFileManager
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             controller.Cancel();            
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            controller.FindMultiAudioFileInArchive = (bool)(sender as CheckBox).IsChecked;
         }
     }
 }

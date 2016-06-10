@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="1" Margin="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <Grid ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Button x:Name="btnClean" Content="Clean Up" HorizontalAlignment="Left" Margin="434,270,0,0" VerticalAlignment="Top" Width="75" Click="btnClean_Click"/>
+                <Button x:Name="btnFind" Content="Find" HorizontalAlignment="Left" Margin="434,270,0,0" VerticalAlignment="Top" Width="75" Click="btnClean_Click"/>
                 <GroupBox Header="검색 위치" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top" Height="60" Width="412" BorderBrush="#FFC8C8C8" Foreground="#FFC8C8C8">
                     <Grid Margin="0">
                         <TextBlock x:Name="txbLocation" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="300" TextTrimming="CharacterEllipsis" Text="aaaaaaaaa" Foreground="#FFC8C8C8"/>
@@ -27,7 +27,9 @@
                 </GroupBox>
                 <GroupBox Header="필터링" HorizontalAlignment="Left" Margin="49,75,0,0" VerticalAlignment="Top" Height="190" Width="540" Foreground="#FFC8C8C8">
                     <Grid Margin="0">
-                        <CheckBox Content="압축 파일이 여러 개의 파일을 포함하는 경우 1개 이상의 오디오 파일과 일치하는 경우 삭제" HorizontalAlignment="Left" Margin="10,10,-135,0" VerticalAlignment="Top" Foreground="#FFC8C8C8"/>
+                        <CheckBox HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="#FFC8C8C8" Width="508" Height="21" Checked="CheckBox_Checked">
+                            <TextBlock TextWrapping="Wrap" Text="여러 개의 음악 파일이 포함된 압축 파일 포함" ToolTip="2개 이상의 음악 파일을 가지고 있는 압축 파일과 1개 이상의 음악 파일이 유사할 경우 압축 파일을 삭제합니다."/>
+                        </CheckBox>
                         <Label Content="비트 전송률" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Foreground="#FFC8C8C8"/>
                         <Slider x:Name="sldBitRate" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top" Width="333" TickPlacement="Both" Minimum="64" Maximum="320" LargeChange="64" SmallChange="16" TickFrequency="16" IsSnapToTickEnabled="True"/>
                         <Label Content="재생 시간" HorizontalAlignment="Left" Margin="10,97,0,0" VerticalAlignment="Top" Foreground="#FFC8C8C8"/>

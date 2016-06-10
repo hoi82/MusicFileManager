@@ -256,25 +256,25 @@ namespace MusicFileManager
                 //    tPoint++;
                 //}
 
-                if ((t1.Track != 0) && (t2.Track != 0))
-                {
-                    if (t1.Track == t2.Track)
-                    {
-                        sPoint++;
-                    }
+                //if ((t1.Track != 0) && (t2.Track != 0))
+                //{
+                //    if (t1.Track == t2.Track)
+                //    {
+                //        sPoint++;
+                //    }
 
-                    tPoint++;
-                }
+                //    tPoint++;
+                //}
 
-                if ((!string.IsNullOrEmpty(t1.FirstGenre)) && (!string.IsNullOrEmpty(t2.FirstGenre)))
-                {
-                    if (t1.FirstGenre == t2.FirstGenre)
-                    {
-                        sPoint++;
-                    }
+                //if ((!string.IsNullOrEmpty(t1.FirstGenre)) && (!string.IsNullOrEmpty(t2.FirstGenre)))
+                //{
+                //    if (t1.FirstGenre == t2.FirstGenre)
+                //    {
+                //        sPoint++;
+                //    }
 
-                    tPoint++;
-                }
+                //    tPoint++;
+                //}
 
                 if (tPoint == 0)
                     return 0;

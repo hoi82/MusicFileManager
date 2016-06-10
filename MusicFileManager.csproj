@@ -87,7 +87,7 @@
     </ApplicationDefinition>
     <Compile Include="ArchivedFileManager.cs" />
     <Compile Include="MainController.cs" />
-    <Compile Include="SimilarAudioFiles.cs" />
+    <Compile Include="DuplicatedAudioFiles.cs" />
     <Page Include="Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
