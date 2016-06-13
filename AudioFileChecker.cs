@@ -212,7 +212,7 @@ namespace MusicFileManager
             {
                 TagLib.Tag t1 = TagLib.File.Create(file1).Tag;
                 TagLib.Tag t2 = TagLib.File.Create(file2).Tag;
-
+                
                 int sPoint = 0;
                 int tPoint = 0;
 

@@ -36,12 +36,15 @@ namespace MusicFileManager
         {
             InitializeComponent();
 
-            InitializeRegistryKey();
+            InitializeRegistryKey();            
+
             searchLocation = regKey.GetValue(regKeySearch) as string;
 
             controller = new MainController(prgControl);
             controller.OnStart += controller_OnStart;
             controller.OnEnd += controller_OnEnd;
+
+            InitializeBinding();
         }
 
         void controller_OnEnd(object sender)
@@ -54,6 +57,14 @@ namespace MusicFileManager
         {
             btnFind.IsEnabled = false;
             btnCancel.IsEnabled = true;
+        }
+
+        void InitializeBinding()
+        {
+            Binding checkboxBinding = new Binding("DeleteMultiAudioFileInArchive");
+            checkboxBinding.Source = controller;
+            checkboxBinding.Mode = BindingMode.TwoWay;
+            //cbMultiAudio.SetBinding(CheckBox.IsCheckedProperty, checkboxBinding);
         }
 
         private void InitializeRegistryKey()
@@ -107,11 +118,6 @@ namespace MusicFileManager
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             controller.Cancel();            
-        }
-
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            controller.FindMultiAudioFileInArchive = (bool)(sender as CheckBox).IsChecked;
         }
     }
 }

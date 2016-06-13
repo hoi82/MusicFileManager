@@ -26,3 +26,7 @@ C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager_MarkupCom
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\policy.2.0.taglib-sharp.dll
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\taglib-sharp.dll
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\policy.2.0.taglib-sharp.config
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\ModalDialogControl.baml
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\ModalDialogControl.g.cs
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MFMOption.baml
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MFMOption.g.cs

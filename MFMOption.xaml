@@ -1,0 +1,41 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicFileManager" x:Class="MusicFileManager.MFMOption" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Width="500" Height="400">
+    <Grid>
+        <GroupBox Header="옵션" Margin="0" Foreground="#FFC8C8C8">
+            <Grid Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <GroupBox Header="압축파일" Margin="10" Height="60">
+                    <Grid Margin="0">
+                        <CheckBox x:Name="cbMultiAudioInArchive" Margin="10,10,10,0" VerticalAlignment="Top" Foreground="#FFC8C8C8" Height="21">
+                            <TextBlock TextWrapping="Wrap" Text="여러 개의 음악 파일이 있는 압축 파일 삭제" ToolTip="2개 이상의 음악 파일을 가지고 있는 압축 파일과 1개 이상의 음악 파일이 유사할 경우 압축 파일을 삭제합니다."/>
+                        </CheckBox>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="음악파일" Margin="10" Grid.Row="1" Height="190">
+                    <Grid Margin="0">
+                        <Label Content="비트 전송률" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Foreground="#FFC8C8C8"/>
+                        <Slider x:Name="sldBitRate" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top" Width="333" TickPlacement="Both" Minimum="64" Maximum="320" LargeChange="64" SmallChange="16" TickFrequency="16" IsSnapToTickEnabled="True" Value="{Binding AudioBitRate, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MFMOption}}}"/>
+                        <Label Content="재생 시간" HorizontalAlignment="Left" Margin="10,97,0,0" VerticalAlignment="Top" Foreground="#FFC8C8C8"/>
+                        <Slider x:Name="sldDuration" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Width="333" TickPlacement="Both" IsSnapToTickEnabled="True" Maximum="600" Minimum="60" TickFrequency="10" LargeChange="60" SmallChange="10" Value="{Binding AudioDuration.TotalSeconds, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MFMOption}}}"/>
+                        <Label x:Name="lblBitRate" Content="{Binding Value, ElementName=sldBitRate}" HorizontalAlignment="Left" Margin="343,62,0,0" VerticalAlignment="Top" Width="67" Foreground="#FFC8C8C8" ContentStringFormat="{}{0} kbps"/>
+                        <Label x:Name="lblDuration" Content="{Binding Value, ElementName=sldDuration}" HorizontalAlignment="Left" Margin="343,128,0,0" VerticalAlignment="Top" Width="67" Foreground="#FFC8C8C8" ContentStringFormat="{}{0} sec"/>
+                        <CheckBox x:Name="cbDeleteWithOutFreq" Margin="10,10,10,0" VerticalAlignment="Top" Foreground="#FFC8C8C8" Height="21">
+                            <TextBlock TextWrapping="Wrap" Text="이름과 태그가 유사한 파일이 있을 경우 무조건 삭제" ToolTip="2개 이상의 음악 파일을 가지고 있는 압축 파일과 1개 이상의 음악 파일이 유사할 경우 압축 파일을 삭제합니다."/>
+                        </CheckBox>
+                    </Grid>
+                </GroupBox>
+                <Grid HorizontalAlignment="Left" Height="100" Margin="10,203,0,-100" Grid.Row="1" VerticalAlignment="Top" Width="100"/>
+            </Grid>
+        </GroupBox>
+
+    </Grid>
+</UserControl>

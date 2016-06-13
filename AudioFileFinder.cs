@@ -23,12 +23,16 @@ namespace MusicFileManager
         //flac - fLaC가 넘어온다. (4바이트)
         //wav - RIFF가 넘어온다. (4바이트) WAVE가 넘어온다(8바이트째부터 4바이트)
         //ogg - OggS가 넘어온다. (4바이트)
+        //m4a - 중간에 ftypM4A가 들어있다.
+        //wma - 앞쪽 16바이트가 항상 일정하다.
         const int HEADER_BUFFER = 16;
 
         const string MP3_HEADER = "ID3";
         const string FLAC_HEADER = "fLaC";
         const string WAV_HEADER = "WAVE";        
-        const string OGG_HEADER = "OggS";        
+        const string OGG_HEADER = "OggS";
+        const string M4A_HEADER = "ftypM4A";
+        readonly byte[] WMA_HEADER = { 48, 38, 178, 117, 142, 102, 207, 17, 166, 217, 0, 170, 0, 98, 206, 108 };          
  
         //int current = 0;
         //int total = 0;
@@ -62,7 +66,8 @@ namespace MusicFileManager
             byte[] header = new byte[HEADER_BUFFER];
             fs.Read(header, 0, header.Length);
             fs.Close();
-            return IsMP3Header(header) || IsFLACHeader(header) || IsWAVEHeader(header) || IsOGGHeader(header);             
+            return IsMP3Header(header) || IsFLACHeader(header) || IsWAVEHeader(header) || IsOGGHeader(header) || 
+                IsWMAHeader(header) || IsM4AHeader(header);
         }
 
         private bool IsMP3Header(byte[] header)
@@ -88,6 +93,19 @@ namespace MusicFileManager
         {
             string hstr = Encoding.ASCII.GetString(header);
             return hstr.StartsWith(OGG_HEADER);
+        }
+
+        private bool IsM4AHeader(byte[] header)
+        {
+            string hstr = Encoding.ASCII.GetString(header);
+            return hstr.Contains(M4A_HEADER);
+        }
+
+        private bool IsWMAHeader(byte[] header)
+        {
+            byte[] frontheader = new byte[16];
+            Array.Copy(header, frontheader, 16);
+            return frontheader.SequenceEqual(WMA_HEADER);
         }
 
         //public void FindAudioFiles(List<string> files)

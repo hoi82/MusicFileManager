@@ -29,19 +29,10 @@ namespace MusicFileManager
 
         int total;
         int current;
-        bool findMultiAudioFileInArchive = true;
-        public bool FindMultiAudioFileInArchive 
-        { 
-            get 
-            { 
-                return this.findMultiAudioFileInArchive; 
-            } 
-            set 
-            { 
-                this.findMultiAudioFileInArchive = value; 
-            } 
-        }
-
+        bool deleteMultiAudioFileInArchive = false;
+        bool deleteAudioWithoutFrequencyFiltering = false;
+        public bool DeleteMultiAudioFileInArchive { get; set; }
+        public bool DeleteAudioWithoutFrequencyFiltering { get; set; }
         public MainController()
         {
             bw = new BackgroundWorker();
@@ -240,7 +231,7 @@ namespace MusicFileManager
                 bool isDuplicated = false;
                 string audioFileName = null;
 
-                if ((extractedAudioFiles.Count > 1) && !this.findMultiAudioFileInArchive)
+                if ((extractedAudioFiles.Count > 1) && !this.deleteMultiAudioFileInArchive)
                     continue;
 
                 for (int j = 0; j < extractedAudioFiles.Count(); j++)
