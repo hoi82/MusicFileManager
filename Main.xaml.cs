@@ -40,11 +40,9 @@ namespace MusicFileManager
 
             searchLocation = regKey.GetValue(regKeySearch) as string;
 
-            controller = new MainController(prgControl);
+            controller = new MainController(prgControl, ctrlOption);
             controller.OnStart += controller_OnStart;
-            controller.OnEnd += controller_OnEnd;
-
-            InitializeBinding();
+            controller.OnEnd += controller_OnEnd;            
         }
 
         void controller_OnEnd(object sender)
@@ -61,10 +59,25 @@ namespace MusicFileManager
 
         void InitializeBinding()
         {
-            Binding checkboxBinding = new Binding("DeleteMultiAudioFileInArchive");
-            checkboxBinding.Source = controller;
-            checkboxBinding.Mode = BindingMode.TwoWay;
-            //cbMultiAudio.SetBinding(CheckBox.IsCheckedProperty, checkboxBinding);
+            Binding deleteArchiveBinding = new Binding("DeleteMultiAudioFileInArchive");
+            deleteArchiveBinding.Source = controller;
+            deleteArchiveBinding.Mode = BindingMode.TwoWay;
+            ctrlOption.SetBinding(MFMOption.DeleteArchiveWithMulipleAudioProperty, deleteArchiveBinding);
+
+            Binding deleteWithOutFreqAndBitRateBinding = new Binding("DeleteAudioWithoutFrequencyFiltering");
+            deleteWithOutFreqAndBitRateBinding.Source = controller;
+            deleteWithOutFreqAndBitRateBinding.Mode = BindingMode.OneWayToSource;
+            ctrlOption.SetBinding(MFMOption.DeleteAudioWithOutFreqAndBitRateProperty, deleteWithOutFreqAndBitRateBinding);
+
+            Binding bitrateBinding = new Binding("BitRate");
+            bitrateBinding.Source = controller;
+            bitrateBinding.Mode = BindingMode.OneWayToSource;
+            ctrlOption.SetBinding(MFMOption.AudioBitRateProperty, bitrateBinding);
+
+            Binding durationBinding = new Binding("Duration");
+            durationBinding.Source = controller;
+            durationBinding.Mode = BindingMode.OneWayToSource;
+            ctrlOption.SetBinding(MFMOption.AudioDurationProperty, durationBinding);
         }
 
         private void InitializeRegistryKey()
@@ -111,7 +124,7 @@ namespace MusicFileManager
         }
 
         private void btnClean_Click(object sender, RoutedEventArgs e)
-        {
+        {            
             controller.Run(searchLocation);            
         }
                      

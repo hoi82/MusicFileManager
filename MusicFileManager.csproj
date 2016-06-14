@@ -87,8 +87,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ArchivedFileManager.cs" />
+    <Compile Include="AudioFile.cs" />
+    <Compile Include="TimeSpanToDoubleConverter.cs" />
     <Compile Include="MainController.cs" />
-    <Compile Include="DuplicatedAudioFiles.cs" />
+    <Compile Include="DuplicatedFiles.cs" />
     <Page Include="Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -29,10 +29,9 @@ namespace MusicFileManager
 
         int total;
         int current;
-        bool deleteMultiAudioFileInArchive = false;
-        bool deleteAudioWithoutFrequencyFiltering = false;
-        public bool DeleteMultiAudioFileInArchive { get; set; }
-        public bool DeleteAudioWithoutFrequencyFiltering { get; set; }
+
+        MFMOption option = null;
+        
         public MainController()
         {
             bw = new BackgroundWorker();
@@ -42,19 +41,24 @@ namespace MusicFileManager
             bw.ProgressChanged += bw_ProgressChanged;
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
+            total = 0;
+            current = 0;
+
             audioFinder = new AudioFileFinder();
             archiveFinder = new ArchivedFileFinder();
             archivedAudioFinder = new ArchivedAudioFileFinder(audioFinder);
             checker = new AudioFileChecker();
             archiveController = new ArchivedFileManager(audioFinder);
-
-            total = 0;
-            current = 0;
-        }
+        }        
 
         public MainController(ProgressControl progressControl) : this()
         {
             this.progressControl = progressControl;
+        }
+
+        public MainController(ProgressControl progressControl, MFMOption option) : this(progressControl)            
+        {
+            this.option = option;
         }
 
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -81,11 +85,11 @@ namespace MusicFileManager
         {
             BackgroundWorker b = sender as BackgroundWorker;
             List<string> allFiles = GetFiles(e.Argument.ToString(), e);
-            List<string> audioFiles = GetAudioFiles(allFiles, e);
+            List<AudioFile> audioFiles = GetAudioFiles(allFiles, e);
             List<string> archivedFiles = GetArchivedFiles(allFiles, e);
             List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
-            List<DuplicatedAudioFiles> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
-            List<DuplicatedAudioFiles> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);        
+            List<DuplicatedFiles> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
+            List<DuplicatedFiles> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);        
         }
 
         private void ResetCount(int total)
@@ -160,21 +164,26 @@ namespace MusicFileManager
             return archivedFiles;
         }
 
-        private List<string> GetAudioFiles(List<string> allFiles, DoWorkEventArgs e)
+        private List<AudioFile> GetAudioFiles(List<string> allFiles, DoWorkEventArgs e)
         {
-            List<string> audioFiles = new List<string>();
+            List<AudioFile> audioFiles = new List<AudioFile>();
             ResetCount(allFiles.Count());
 
             for (int i = 0; i < allFiles.Count(); i++)
             {
+                string sFile = allFiles[i];
+
                 if (bw.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
-                }         
+                }                        
 
-                if (audioFinder.CheckAudioFile(allFiles[i]))
-                    audioFiles.Add(allFiles[i]);
+                if (audioFinder.CheckAudioFile(ref sFile, true))
+                {
+                    TagLib.File f = TagLib.File.Create(sFile);
+                    audioFiles.Add(new AudioFile(sFile, f.Properties.AudioBitrate, f.Properties.Duration));
+                }                    
 
                 IncCount();
                 progressMessage = string.Format("Finding Audio Files.....{0}/{1}", current, total);
@@ -210,9 +219,9 @@ namespace MusicFileManager
             return archivedAudioFiles;
         }
 
-        private List<DuplicatedAudioFiles> GetDuplicatedArchiveFiles(List<string> archivedAudioFile, List<string> audioFiles, DoWorkEventArgs e)
+        private List<DuplicatedFiles> GetDuplicatedArchiveFiles(List<string> archivedAudioFile, List<AudioFile> audioFiles, DoWorkEventArgs e)
         {
-            List<DuplicatedAudioFiles> duplicatedArchives = new List<DuplicatedAudioFiles>();
+            List<DuplicatedFiles> duplicatedArchives = new List<DuplicatedFiles>();
             ResetCount(audioFiles.Count());
 
             for (int i = 0; i < archivedAudioFile.Count(); i++)
@@ -228,11 +237,15 @@ namespace MusicFileManager
 
                 List<string> extractedAudioFiles = archiveController.ExtractAudioFilesArchivedFile(archivedAudioFile[i]);
 
+                //여러개의 음악파일이 존재하고 옵션에서 처리 안하게 되어있으면 건너뛴다.
+                if ((extractedAudioFiles.Count > 1) && !option.DeleteArchiveWithMulipleAudio)
+                {
+                    archiveController.CleanExtractedFiles();
+                    continue;
+                }
+
                 bool isDuplicated = false;
                 string audioFileName = null;
-
-                if ((extractedAudioFiles.Count > 1) && !this.deleteMultiAudioFileInArchive)
-                    continue;
 
                 for (int j = 0; j < extractedAudioFiles.Count(); j++)
                 {
@@ -256,10 +269,10 @@ namespace MusicFileManager
                         total = audioFiles.Count();
                         current = k + 1;
 
-                        if (checker.CheckSimilarFilesByByte(extractedAudioFiles[j], audioFiles[k]))
+                        if (checker.CheckSimilarFilesByByte(extractedAudioFiles[j], audioFiles[k].FileName))
                         {
                             isDuplicated = true;
-                            audioFileName = audioFiles[k];
+                            audioFileName = audioFiles[k].FileName;
                             break;
                         }
 
@@ -276,7 +289,7 @@ namespace MusicFileManager
 
                 if (isDuplicated)
                 {
-                    DuplicatedAudioFiles d = new DuplicatedAudioFiles(audioFileName, archivedAudioFile[i], DuplicateType.AlreadyExtractedArchive);
+                    DuplicatedFiles d = new DuplicatedFiles(audioFileName, archivedAudioFile[i], DuplicateType.AlreadyExtractedArchive);
 
                     if (!duplicatedArchives.Contains(d))
                         duplicatedArchives.Add(d);  
@@ -289,9 +302,9 @@ namespace MusicFileManager
             return duplicatedArchives;
         }
 
-        private List<DuplicatedAudioFiles> GetDuplicatedAudioFiles(List<string> audioFiles, DoWorkEventArgs e)
+        private List<DuplicatedFiles> GetDuplicatedAudioFiles(List<AudioFile> audioFiles, DoWorkEventArgs e)
         {
-            List<DuplicatedAudioFiles> duplicatedAudioFiles = new List<DuplicatedAudioFiles>();
+            List<DuplicatedFiles> duplicatedAudioFiles = new List<DuplicatedFiles>();
             ResetCount(audioFiles.Count());
 
             for (int i = 0; i < audioFiles.Count(); i++)
@@ -308,13 +321,14 @@ namespace MusicFileManager
                     {
                         e.Cancel = true;
                         break;
-                    }
+                    }                    
 
-                    if (i == j) continue;
+                    //옵션에서 처리 안하게 되어있거나 같은 파일일 경우 건너뛴다.
+                    if ((i == j) | ((!option.DeleteAudioWithOutFreqAndBitRate) && ((audioFiles[j].BitRate < option.AudioBitRate) | (audioFiles[j].Duration < audioFiles[j].Duration)))) continue;
 
-                    if (checker.CheckSimilarFilesByNameAndTag(audioFiles[i], audioFiles[j]))
-                    {
-                        DuplicatedAudioFiles d = new DuplicatedAudioFiles(audioFiles[i], audioFiles[j], DuplicateType.DuplicateAudioTag);
+                    if (checker.CheckSimilarFilesByNameAndTag(audioFiles[i].FileName, audioFiles[j].FileName))
+                    {                        
+                        DuplicatedFiles d = new DuplicatedFiles(audioFiles[i].FileName, audioFiles[j].FileName, DuplicateType.DuplicateAudioTag);
 
                         if (!duplicatedAudioFiles.Contains(d))
                             duplicatedAudioFiles.Add(d);

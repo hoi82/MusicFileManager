@@ -38,22 +38,17 @@ namespace MusicFileManager
             AudioDurationProperty = DependencyProperty.Register("AudioDuration", typeof(TimeSpan), typeof(MFMOption), new PropertyMetadata(new TimeSpan(0,0,0)));
         }
 
-        void InitializeBinding()
-        {
-            Binding deleteAudioMultiArchive = new Binding("DeleteArchiveWithMulipleAudio");
-            deleteAudioMultiArchive.Source = DeleteArchiveWithMulipleAudioProperty;
-            deleteAudioMultiArchive.Mode = BindingMode.TwoWay;
-        }
-
+        //get 부분 - return Dispatcher.Invoke((()=>));
+        //set 부분 - Dispatcher.BeginInvoke((Action)(()=>));
         public bool DeleteArchiveWithMulipleAudio
         {
             get
             {
-                return (bool)this.GetValue(DeleteArchiveWithMulipleAudioProperty);
+                return Dispatcher.Invoke((()=> (bool)this.GetValue(DeleteArchiveWithMulipleAudioProperty)));                
             }
             set
             {
-                this.SetValue(DeleteArchiveWithMulipleAudioProperty, value);
+                Dispatcher.BeginInvoke((Action)(() => this.SetValue(DeleteArchiveWithMulipleAudioProperty, value)));                
             }
         }
 
@@ -61,11 +56,11 @@ namespace MusicFileManager
         {
             get
             {
-                return (bool)this.GetValue(DeleteAudioWithOutFreqAndBitRateProperty);
+                return Dispatcher.Invoke((() => (bool)this.GetValue(DeleteAudioWithOutFreqAndBitRateProperty)));                
             }
             set
             {
-                this.SetValue(DeleteAudioWithOutFreqAndBitRateProperty, value);
+                Dispatcher.BeginInvoke((Action)(() => this.SetValue(DeleteAudioWithOutFreqAndBitRateProperty, value)));                
             }
         }
 
@@ -73,11 +68,11 @@ namespace MusicFileManager
         {
             get
             {
-                return (int)this.GetValue(AudioBitRateProperty);
+                return Dispatcher.Invoke((() => (int)this.GetValue(AudioBitRateProperty)));                
             }
             set
             {
-                this.SetValue(AudioBitRateProperty, value);
+                Dispatcher.BeginInvoke((Action)(() => this.SetValue(AudioBitRateProperty, value)));                
             }
         }
 
@@ -85,11 +80,11 @@ namespace MusicFileManager
         {
             get
             {
-                return (TimeSpan)this.GetValue(AudioDurationProperty);
+                return Dispatcher.Invoke((() => (TimeSpan)this.GetValue(AudioDurationProperty)));                
             }
             set
             {
-                this.SetValue(AudioDurationProperty, value);
+                Dispatcher.BeginInvoke((Action)(() => this.SetValue(AudioDurationProperty, value)));                
             }
         }
     }

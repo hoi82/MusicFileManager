@@ -50,13 +50,13 @@ namespace MusicFileManager
                     string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
                     try
                     {
-                        if (audioFinder.CheckAudioFile(extractedPath))
+                        if (audioFinder.CheckAudioFile(ref extractedPath))
                         {
                             IsAudio = true;
                             break;
                         }
                     }
-                    catch (UnsupportedFormatException e)
+                    catch (UnsupportedFormatException)
                     {
                         //System.IO.File.Delete(extractedPath);                            
                     }

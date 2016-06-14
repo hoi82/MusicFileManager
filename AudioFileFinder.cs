@@ -46,9 +46,47 @@ namespace MusicFileManager
 
         }
 
-        public bool CheckAudioFile(string file)
+        public bool CheckAudioFile(ref string file, bool fixExtensionIfInvalid = false)
         {
-            return CheckByFileHeader(file);
+            return CheckByFileHeader(ref file, fixExtensionIfInvalid);
+        }
+
+        private string ChangeFileNameAndExtension(string originalFilePath, string extension)
+        {
+            if (!System.IO.File.Exists(originalFilePath))
+            {
+                throw new FileNotFoundException();
+            }
+
+            string origianlext = Path.GetExtension(originalFilePath);
+
+            if (origianlext.Equals(extension, StringComparison.InvariantCultureIgnoreCase))
+                return originalFilePath;
+
+            string newFilePath = Path.ChangeExtension(originalFilePath, extension);
+            int count = 2;
+
+            while (System.IO.File.Exists(newFilePath))
+            {
+                string oldFileName = Path.GetFileNameWithoutExtension(newFilePath);
+                string directory = Path.GetDirectoryName(newFilePath);
+                string ext = Path.GetExtension(newFilePath);
+                string newFileName = oldFileName + string.Format(" ({0})", count);
+                
+                newFilePath = directory + "\\" + newFileName + ext;
+                count++;
+            }
+
+            try
+            {
+                System.IO.File.Move(originalFilePath, newFilePath);
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            } 
+            return newFilePath;
         }
 
         private bool CheckByExtension(string file)
@@ -57,7 +95,7 @@ namespace MusicFileManager
             return audioExtensions.Contains(ext);
         }
 
-        private bool CheckByFileHeader(string file)
+        private bool CheckByFileHeader(ref string file, bool fixExtensionIfInvalid = false)
         {
             if (!System.IO.File.Exists(file))
                 return false;
@@ -65,9 +103,52 @@ namespace MusicFileManager
             FileStream fs = new FileStream(file, FileMode.Open);
             byte[] header = new byte[HEADER_BUFFER];
             fs.Read(header, 0, header.Length);
-            fs.Close();
-            return IsMP3Header(header) || IsFLACHeader(header) || IsWAVEHeader(header) || IsOGGHeader(header) || 
-                IsWMAHeader(header) || IsM4AHeader(header);
+            fs.Close();            
+
+            if (IsMP3Header(header))
+            {
+                if (fixExtensionIfInvalid)                
+                    file = ChangeFileNameAndExtension(file, ".mp3");
+                return true;
+
+            }
+
+            if (IsFLACHeader(header))
+            {
+                if (fixExtensionIfInvalid)
+                    file = ChangeFileNameAndExtension(file, ".flac");
+                return true;
+            }
+
+            if (IsWAVEHeader(header))
+            {
+                if (fixExtensionIfInvalid)
+                    file = ChangeFileNameAndExtension(file, ".wav");
+                return true;
+            }
+
+            if (IsOGGHeader(header))
+            {
+                if (fixExtensionIfInvalid)
+                    file = ChangeFileNameAndExtension(file, ".ogg");
+                return true;
+            }
+
+            if (IsWAVEHeader(header))
+            {
+                if (fixExtensionIfInvalid)
+                    file = ChangeFileNameAndExtension(file, ".wav");
+                return true;
+            }
+
+            if (IsM4AHeader(header))
+            {
+                if (fixExtensionIfInvalid)
+                    file = ChangeFileNameAndExtension(file, ".m4a");
+                return true;
+            }
+            
+            return false;
         }
 
         private bool IsMP3Header(byte[] header)

@@ -36,7 +36,7 @@ namespace MusicFileManager
                     entry.Extract(extractDir);
                     string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
 
-                    if (audioFinder.CheckAudioFile(extractedPath))
+                    if (audioFinder.CheckAudioFile(ref extractedPath))
                     {
                         extractedAudioFiles.Add(extractedPath);
                         extractedFiles.Add(extractedPath);
