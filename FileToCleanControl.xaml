@@ -1,0 +1,47 @@
+﻿<UserControl x:Name="ctrlMain" x:Class="MusicFileManager.FileToCleanControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Width="500" Height="500" MinWidth="500" MinHeight="500">
+    <Grid x:Name="grdBack" Background="#B2000000">
+        <Button x:Name="btnClear" Content="Clear" HorizontalAlignment="Right" Margin="0,0,100,10" Width="75" Height="22" VerticalAlignment="Bottom"/>
+        <DataGrid x:Name="dgFileList" Margin="0" Width="420" Height="400" AutoGenerateColumns="False" ColumnHeaderHeight="20" RowHeaderWidth="0" HorizontalGridLinesBrush="{Binding Background, ElementName=grdBack, Mode=TwoWay}" AlternationCount="1" RowHeight="25" SnapsToDevicePixels="True" FontFamily="DotumChe" CanUserReorderColumns="False" Background="{x:Null}" BorderBrush="{x:Null}" GridLinesVisibility="Horizontal">
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"></SolidColorBrush>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="#FF6DFFD1"></Setter>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+                </Style>  
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="Transparent"></Setter>
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                        </Trigger>
+                    </Style.Triggers>                    
+                </Style>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn CanUserResize="False" MaxWidth="150" MinWidth="50" Width="100" IsReadOnly="True" CanUserReorder="False" Binding="{Binding Path=OriginalFile}" Header="원본파일"/>
+                <DataGridTextColumn CanUserResize="False" IsReadOnly="True" MaxWidth="150" MinWidth="50" Width="100" CanUserReorder="False" Binding="{Binding Path=FileToClean}" Header="정리파일"/>
+                <DataGridTextColumn CanUserReorder="False" MaxWidth="300" MinWidth="100" Width="190" Header="중복유형"/>
+                <DataGridCheckBoxColumn CanUserResize="False" Width="28" Header="삭제"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button x:Name="btnCancel" Content="Cancel" Margin="0,0,10,10" HorizontalAlignment="Right" Width="75" Height="22" VerticalAlignment="Bottom" Click="btnCancel_Click"/>
+
+    </Grid>
+</UserControl>

@@ -11,7 +11,7 @@
                             ResizeBorderThickness="5" 
                             />
     </shell:WindowChrome.WindowChrome>
-    <Grid Margin="0">
+    <Grid x:Name="grdBackground" Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition/>
@@ -29,7 +29,8 @@
                 <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="435,430,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="btnCancel_Click"/>
                 <local:MFMOption x:Name="ctrlOption" HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top" Height="340"/>
             </Grid>
-        </ScrollViewer>
+        </ScrollViewer>        
         <Button x:Name="btnExit" Content="Button" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Width="20" Click="btnExit_Click" Height="20"/>
+        <Grid x:Name="grdFileList" Grid.RowSpan="2"></Grid>
     </Grid>
 </Window>

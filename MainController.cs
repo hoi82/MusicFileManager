@@ -9,7 +9,7 @@ using System.IO;
 namespace MusicFileManager
 {
     public delegate void MainControllerStartEvent(object sender);
-    public delegate void MainContollerEndEvent(object sender);
+    public delegate void MainContollerEndEvent(object sender, List<DuplicatedFiles> fileToClean);
 
     public class MainController
     {
@@ -31,6 +31,8 @@ namespace MusicFileManager
         int current;
 
         MFMOption option = null;
+
+        List<DuplicatedFiles> filetoClean = null;
         
         public MainController()
         {
@@ -64,7 +66,7 @@ namespace MusicFileManager
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (this.OnEnd != null)
-                this.OnEnd(this);
+                this.OnEnd(this, filetoClean);
 
             if (e.Cancelled)
             {
@@ -86,10 +88,11 @@ namespace MusicFileManager
             BackgroundWorker b = sender as BackgroundWorker;
             List<string> allFiles = GetFiles(e.Argument.ToString(), e);
             List<AudioFile> audioFiles = GetAudioFiles(allFiles, e);
-            List<string> archivedFiles = GetArchivedFiles(allFiles, e);
-            List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
-            List<DuplicatedFiles> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
-            List<DuplicatedFiles> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);        
+            //List<string> archivedFiles = GetArchivedFiles(allFiles, e);
+            //List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
+            //List<DuplicatedFiles> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
+            //List<DuplicatedFiles> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);
+            //filetoClean = duplicatedAudioFiles;
         }
 
         private void ResetCount(int total)
@@ -327,8 +330,22 @@ namespace MusicFileManager
                     if ((i == j) | ((!option.DeleteAudioWithOutFreqAndBitRate) && ((audioFiles[j].BitRate < option.AudioBitRate) | (audioFiles[j].Duration < audioFiles[j].Duration)))) continue;
 
                     if (checker.CheckSimilarFilesByNameAndTag(audioFiles[i].FileName, audioFiles[j].FileName))
-                    {                        
-                        DuplicatedFiles d = new DuplicatedFiles(audioFiles[i].FileName, audioFiles[j].FileName, DuplicateType.DuplicateAudioTag);
+                    {
+                        string origin = null;
+                        string duplicated = null;
+
+                        if (IsParentOrLowTreedFolder(audioFiles[i].FileName, audioFiles[j].FileName))
+                        {
+                            origin = audioFiles[i].FileName;
+                            duplicated = audioFiles[j].FileName;
+                        }
+                        else
+                        {
+                            origin = audioFiles[j].FileName;
+                            duplicated = audioFiles[i].FileName;
+                        }
+
+                        DuplicatedFiles d = new DuplicatedFiles(origin, duplicated, DuplicateType.DuplicateAudioTag);
 
                         if (!duplicatedAudioFiles.Contains(d))
                             duplicatedAudioFiles.Add(d);
@@ -349,7 +366,27 @@ namespace MusicFileManager
             }
 
             return duplicatedAudioFiles;
-        }        
+        }
+
+        private bool IsParentOrLowTreedFolder(string source, string target)
+        {
+            string sourceDir = Path.GetDirectoryName(source);
+            string targetDir = Path.GetDirectoryName(target);
+
+            if (target.StartsWith(source))
+                return true;
+
+            if (sourceDir[0] == targetDir[0])
+            {
+                string[] sourceArr = sourceDir.Split(Path.DirectorySeparatorChar);
+                string[] targetArr = targetDir.Split(Path.DirectorySeparatorChar);
+
+                if (sourceArr.Length < targetArr.Length)
+                    return true;
+            }
+
+            return false;
+        }
 
         public void Run(string directory)
         {

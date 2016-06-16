@@ -30,3 +30,5 @@ C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\ModalDialogControl.baml
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\ModalDialogControl.g.cs
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MFMOption.baml
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MFMOption.g.cs
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\FileToCleanControl.baml
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\FileToCleanControl.g.cs

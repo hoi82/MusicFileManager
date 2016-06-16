@@ -88,9 +88,16 @@
     </ApplicationDefinition>
     <Compile Include="ArchivedFileManager.cs" />
     <Compile Include="AudioFile.cs" />
+    <Compile Include="FileToCleanControl.xaml.cs">
+      <DependentUpon>FileToCleanControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TimeSpanToDoubleConverter.cs" />
     <Compile Include="MainController.cs" />
     <Compile Include="DuplicatedFiles.cs" />
+    <Page Include="FileToCleanControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

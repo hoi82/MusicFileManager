@@ -45,10 +45,14 @@ namespace MusicFileManager
             controller.OnEnd += controller_OnEnd;            
         }
 
-        void controller_OnEnd(object sender)
+        void controller_OnEnd(object sender, List<DuplicatedFiles> fileToClean)
         {
             btnFind.IsEnabled = true;
             btnCancel.IsEnabled = false;
+            FileToCleanControl f = new FileToCleanControl(grdFileList);
+            fileToClean = new List<DuplicatedFiles>();
+            fileToClean.Add(new DuplicatedFiles("a", "b", DuplicateType.AlreadyExtractedArchive));
+            f.Display(fileToClean);
         }
 
         void controller_OnStart(object sender)
