@@ -88,9 +88,11 @@
     </ApplicationDefinition>
     <Compile Include="ArchivedFileManager.cs" />
     <Compile Include="AudioFile.cs" />
+    <Compile Include="DuplicateTypeConverter.cs" />
     <Compile Include="FileToCleanControl.xaml.cs">
       <DependentUpon>FileToCleanControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MFMMessage.cs" />
     <Compile Include="TimeSpanToDoubleConverter.cs" />
     <Compile Include="MainController.cs" />
     <Compile Include="DuplicatedFiles.cs" />

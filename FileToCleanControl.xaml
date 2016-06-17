@@ -1,21 +1,25 @@
-﻿<UserControl x:Name="ctrlMain" x:Class="MusicFileManager.FileToCleanControl"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicFileManager" x:Name="ctrlMain" x:Class="MusicFileManager.FileToCleanControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Width="500" Height="500" MinWidth="500" MinHeight="500">
+    <UserControl.Resources>
+        <local:DuplicateTypeConverter x:Key="DuplicateTypeConverter"/>
+    </UserControl.Resources>
     <Grid x:Name="grdBack" Background="#B2000000">
-        <Button x:Name="btnClear" Content="Clear" HorizontalAlignment="Right" Margin="0,0,100,10" Width="75" Height="22" VerticalAlignment="Bottom"/>
-        <DataGrid x:Name="dgFileList" Margin="0" Width="420" Height="400" AutoGenerateColumns="False" ColumnHeaderHeight="20" RowHeaderWidth="0" HorizontalGridLinesBrush="{Binding Background, ElementName=grdBack, Mode=TwoWay}" AlternationCount="1" RowHeight="25" SnapsToDevicePixels="True" FontFamily="DotumChe" CanUserReorderColumns="False" Background="{x:Null}" BorderBrush="{x:Null}" GridLinesVisibility="Horizontal">
+        <Button x:Name="btnClear" Content="Clear" HorizontalAlignment="Right" Margin="0,0,100,10" Width="75" Height="22" VerticalAlignment="Bottom" Click="btnClear_Click"/>
+        <DataGrid x:Name="dgFileList" Margin="0" Width="440" Height="400" AutoGenerateColumns="False" ColumnHeaderHeight="20" RowHeaderWidth="0" HorizontalGridLinesBrush="{Binding Background, ElementName=grdBack, Mode=TwoWay}" AlternationCount="1" RowHeight="25" SnapsToDevicePixels="True" FontFamily="DotumChe" CanUserReorderColumns="False" Background="{x:Null}" BorderBrush="{x:Null}" GridLinesVisibility="Horizontal" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="dgFileList_SelectionChanged">
             <DataGrid.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"></SolidColorBrush>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Background" Value="#FF6DFFD1"></Setter>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
-                </Style>  
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="Transparent"></Setter>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="#FF6DFFD1"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="BorderThickness" Value="0" />
                     <Style.Triggers>
@@ -23,9 +27,9 @@
                             <Setter Property="BorderBrush" Value="Transparent" />
                             <Setter Property="BorderThickness" Value="0" />
                         </Trigger>
-                    </Style.Triggers>                    
+                    </Style.Triggers>
                 </Style>
-                <Style TargetType="DataGridCell">
+                <Style TargetType="{x:Type DataGridCell}">
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="BorderBrush" Value="Transparent" />
@@ -35,10 +39,10 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn CanUserResize="False" MaxWidth="150" MinWidth="50" Width="100" IsReadOnly="True" CanUserReorder="False" Binding="{Binding Path=OriginalFile}" Header="원본파일"/>
-                <DataGridTextColumn CanUserResize="False" IsReadOnly="True" MaxWidth="150" MinWidth="50" Width="100" CanUserReorder="False" Binding="{Binding Path=FileToClean}" Header="정리파일"/>
-                <DataGridTextColumn CanUserReorder="False" MaxWidth="300" MinWidth="100" Width="190" Header="중복유형"/>
-                <DataGridCheckBoxColumn CanUserResize="False" Width="28" Header="삭제"/>
+                <DataGridTextColumn x:Name="colOriginFile" CanUserResize="False" MaxWidth="150" MinWidth="50" Width="100" IsReadOnly="True" CanUserReorder="False" Header="원본파일" Binding="{Binding OriginalFile}"/>
+                <DataGridTextColumn x:Name="colFiletoClean" CanUserResize="False" IsReadOnly="True" MaxWidth="150" MinWidth="50" Width="100" CanUserReorder="False" Header="정리파일" Binding="{Binding FileToClean}"/>
+                <DataGridTextColumn x:Name="colDuplicateType" CanUserReorder="False" MaxWidth="300" MinWidth="100" Width="190" Header="중복유형" Binding="{Binding DuplicateType, Converter={StaticResource DuplicateTypeConverter}}"/>
+                <DataGridCheckBoxColumn x:Name="colHaveToClean" CanUserResize="False" Width="28" Header="삭제" Binding="{Binding HaveToClean, Mode=TwoWay}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button x:Name="btnCancel" Content="Cancel" Margin="0,0,10,10" HorizontalAlignment="Right" Width="75" Height="22" VerticalAlignment="Bottom" Click="btnCancel_Click"/>

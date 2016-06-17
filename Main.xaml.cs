@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
 using System.ComponentModel;
-using Ionic.Zip;
 
 namespace MusicFileManager
 {
@@ -27,32 +26,48 @@ namespace MusicFileManager
         string searchLocation = null;
         string regKeyLocation = @"SOFTWARE\\Yong";
         const string regKeySearch = "SearchLocation";
+        const string regKeyMultiFileInArchive = "DeleteArchiveHasMultiAudio";
+        const string regKeyDupAudioWithoutBitAndDur = "DeleteAudioWithoutBitRateAndDuration";
+        const string regKeyBitRate = "BitRate";
+        const string regKeyDuration = "Duration";
 
         RegistryKey regKey = null;
 
         MainController controller = null;
 
+        FileToCleanControl ctrlClean = null;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            InitializeRegistryKey();            
-
-            searchLocation = regKey.GetValue(regKeySearch) as string;
+            InitializeRegistryKey();                        
 
             controller = new MainController(prgControl, ctrlOption);
             controller.OnStart += controller_OnStart;
-            controller.OnEnd += controller_OnEnd;            
+            controller.OnEnd += controller_OnEnd;
+
+            ctrlClean = new FileToCleanControl(grdFileList);
+            ctrlClean.OnOK += ctrlClean_OnOK;
+            ctrlClean.OnCancel += ctrlClean_OnCancel;
+        }
+
+        void ctrlClean_OnCancel(object sender)
+        {
+            MessageBox.Show("Cancel");
+        }
+
+        void ctrlClean_OnOK(object sender, List<string> files)
+        {
+            MessageBox.Show("End");
         }
 
         void controller_OnEnd(object sender, List<DuplicatedFiles> fileToClean)
         {
             btnFind.IsEnabled = true;
             btnCancel.IsEnabled = false;
-            FileToCleanControl f = new FileToCleanControl(grdFileList);
-            fileToClean = new List<DuplicatedFiles>();
-            fileToClean.Add(new DuplicatedFiles("a", "b", DuplicateType.AlreadyExtractedArchive));
-            f.Display(fileToClean);
+                        
+            ctrlClean.Display(fileToClean);
         }
 
         void controller_OnStart(object sender)
@@ -68,10 +83,10 @@ namespace MusicFileManager
             deleteArchiveBinding.Mode = BindingMode.TwoWay;
             ctrlOption.SetBinding(MFMOption.DeleteArchiveWithMulipleAudioProperty, deleteArchiveBinding);
 
-            Binding deleteWithOutFreqAndBitRateBinding = new Binding("DeleteAudioWithoutFrequencyFiltering");
-            deleteWithOutFreqAndBitRateBinding.Source = controller;
-            deleteWithOutFreqAndBitRateBinding.Mode = BindingMode.OneWayToSource;
-            ctrlOption.SetBinding(MFMOption.DeleteAudioWithOutFreqAndBitRateProperty, deleteWithOutFreqAndBitRateBinding);
+            Binding deleteWithOutBitRateBinding = new Binding("DeleteAudioWithoutFiltering");
+            deleteWithOutBitRateBinding.Source = controller;
+            deleteWithOutBitRateBinding.Mode = BindingMode.OneWayToSource;
+            ctrlOption.SetBinding(MFMOption.DeleteAudioWithOutBitRateProperty, deleteWithOutBitRateBinding);
 
             Binding bitrateBinding = new Binding("BitRate");
             bitrateBinding.Source = controller;
@@ -85,15 +100,68 @@ namespace MusicFileManager
         }
 
         private void InitializeRegistryKey()
-        {
-            regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true);
-
-            if (regKey == null)
+        {                       
+            using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
             {
-                regKey = Registry.CurrentUser.CreateSubKey(regKeyLocation, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                if (regKey == null)
+                {
+                    regKey = Registry.CurrentUser.CreateSubKey(regKeyLocation, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                    InitRegistryKeyValue(regKey);
+                }
+                OpenRegistryKeyValue(regKey);            
+            }            
+        }
+
+        void InitRegistryKeyValue(RegistryKey key) 
+        {
+            try
+            {
                 regKey.SetValue(regKeySearch, AppDomain.CurrentDomain.BaseDirectory);
+                regKey.SetValue(regKeyMultiFileInArchive, false);
+                regKey.SetValue(regKeyDupAudioWithoutBitAndDur, false);
+                regKey.SetValue(regKeyBitRate, 0);
+                regKey.SetValue(regKeyDuration, 0);
             }
-        }                
+            catch (Exception)
+            {
+                
+                throw;
+            }            
+        }
+
+        void OpenRegistryKeyValue(RegistryKey key)
+        {
+            try
+            {
+                searchLocation = regKey.GetValue(regKeySearch) as string;                
+                ctrlOption.DeleteArchiveWithMulipleAudio = Convert.ToBoolean(regKey.GetValue(regKeyMultiFileInArchive));
+                ctrlOption.DeleteAudioWithOutBitRate = Convert.ToBoolean(regKey.GetValue(regKeyDupAudioWithoutBitAndDur));
+                ctrlOption.AudioBitRate = Convert.ToInt32(regKey.GetValue(regKeyBitRate));
+                ctrlOption.AudioDuration = TimeSpan.FromSeconds(Convert.ToDouble(regKey.GetValue(regKeyDuration)));
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+        }
+
+        void SaveRegistryKeyValue(RegistryKey key)
+        {
+            try
+            {
+                regKey.SetValue(regKeySearch, searchLocation);
+                regKey.SetValue(regKeyMultiFileInArchive, ctrlOption.DeleteArchiveWithMulipleAudio);
+                regKey.SetValue(regKeyDupAudioWithoutBitAndDur, ctrlOption.DeleteAudioWithOutBitRate);
+                regKey.SetValue(regKeyBitRate, ctrlOption.AudioBitRate);
+                regKey.SetValue(regKeyDuration, ctrlOption.AudioDuration.TotalSeconds);
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }            
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -129,7 +197,12 @@ namespace MusicFileManager
 
         private void btnClean_Click(object sender, RoutedEventArgs e)
         {            
-            controller.Run(searchLocation);            
+            controller.Run(searchLocation);
+
+            using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
+            {
+                SaveRegistryKeyValue(regKey);
+            }                        
         }
                      
         private void btnCancel_Click(object sender, RoutedEventArgs e)

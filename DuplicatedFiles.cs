@@ -18,7 +18,7 @@ namespace MusicFileManager
         {
             this.originalFile = originalFile;
             this.duplicatedFile = duplicatedFile;
-            this.similarType = similarType;
+            this.similarType = similarType;            
         }
 
         public override bool Equals(object obj)
@@ -32,6 +32,17 @@ namespace MusicFileManager
             }
             return false;
         }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }        
+
         public string OriginalFile { get { return this.originalFile; } }
         public string DuplicatedFile { get { return this.duplicatedFile; } }
         public DuplicateType SimilarType { get { return this.similarType; } }        

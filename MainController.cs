@@ -51,6 +51,8 @@ namespace MusicFileManager
             archivedAudioFinder = new ArchivedAudioFileFinder(audioFinder);
             checker = new AudioFileChecker();
             archiveController = new ArchivedFileManager(audioFinder);
+
+            filetoClean = new List<DuplicatedFiles>();
         }        
 
         public MainController(ProgressControl progressControl) : this()
@@ -92,7 +94,8 @@ namespace MusicFileManager
             //List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
             //List<DuplicatedFiles> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
             //List<DuplicatedFiles> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);
-            //filetoClean = duplicatedAudioFiles;
+            //filetoClean.AddRange(extractedArchiveAudioFiles);
+            //filetoClean.AddRange(duplicatedAudioFiles);
         }
 
         private void ResetCount(int total)
@@ -134,7 +137,7 @@ namespace MusicFileManager
                 }
 
                 IncCount();
-                progressMessage = "Getting All Files from Directroy..";
+                progressMessage = MFMMessage.Message4;
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -159,7 +162,7 @@ namespace MusicFileManager
                     archivedFiles.Add(allFiles[i]);
 
                 IncCount();
-                progressMessage = string.Format("Finding Archive Files.....{0}/{1}", current, total);
+                progressMessage = string.Format(MFMMessage.Message5, current, total);
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -189,7 +192,7 @@ namespace MusicFileManager
                 }                    
 
                 IncCount();
-                progressMessage = string.Format("Finding Audio Files.....{0}/{1}", current, total);
+                progressMessage = string.Format(MFMMessage.Message6, current, total);
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -214,7 +217,7 @@ namespace MusicFileManager
                     archivedAudioFiles.Add(archivedFiles[i]);
 
                 IncCount();
-                progressMessage = string.Format("Finding Archive Files has Audio File.....{0}/{1}", current, total);
+                progressMessage = string.Format(MFMMessage.Message7, current, total);
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -280,7 +283,7 @@ namespace MusicFileManager
                         }
 
                         //IncCount();
-                        progressMessage = string.Format("Check {0}/{1} Audio File in {2}/{3} Archive File with {4}/{5} AudioFile", j + 1, extractedAudioFiles.Count(), i + 1, archivedAudioFile.Count, current, total);
+                        progressMessage = string.Format(MFMMessage.Message8, j + 1, extractedAudioFiles.Count(), i + 1, archivedAudioFile.Count, current, total);
                         bw.ReportProgress(CalcPercentage());
                     }
 
@@ -327,7 +330,7 @@ namespace MusicFileManager
                     }                    
 
                     //옵션에서 처리 안하게 되어있거나 같은 파일일 경우 건너뛴다.
-                    if ((i == j) | ((!option.DeleteAudioWithOutFreqAndBitRate) && ((audioFiles[j].BitRate < option.AudioBitRate) | (audioFiles[j].Duration < audioFiles[j].Duration)))) continue;
+                    if ((i == j) | ((!option.DeleteAudioWithOutBitRate) && ((audioFiles[j].BitRate < option.AudioBitRate) | (audioFiles[j].Duration < audioFiles[j].Duration)))) continue;
 
                     if (checker.CheckSimilarFilesByNameAndTag(audioFiles[i].FileName, audioFiles[j].FileName))
                     {
@@ -353,14 +356,14 @@ namespace MusicFileManager
 
                     current = j + 1;
 
-                    progressMessage = string.Format("Checking {0}/{1} Audio File with Other Audio Files.....{2}/{3}", i+1, total, current, total);
+                    progressMessage = string.Format(MFMMessage.Message9, i+1, total, current, total);
 
                     bw.ReportProgress(CalcPercentage());
                 }
 
                 current = i + 1;
 
-                progressMessage = string.Format("Finding Archive Files has Audio File.....{0}/{1}", current, total);
+                progressMessage = string.Format(MFMMessage.Message10, current, total);
 
                 bw.ReportProgress(CalcPercentage());
             }
