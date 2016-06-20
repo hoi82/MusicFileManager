@@ -27,12 +27,14 @@ namespace MusicFileManager
         public List<string> ExtractAudioFilesArchivedFile(string fileName)
         {
             List<string> extractedAudioFiles = new List<string>();
-
-            ZipFile z = ZipFile.Read(fileName);
-            foreach (ZipEntry entry in z.Entries)
+            try
             {
-                if (!entry.IsDirectory)
+                ZipFile z = ZipFile.Read(fileName);
+                foreach (ZipEntry entry in z.Entries)
                 {
+                    if (entry.IsDirectory) 
+                        continue;
+
                     entry.Extract(extractDir);
                     string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
 
@@ -44,11 +46,15 @@ namespace MusicFileManager
                     else
                     {
                         DeleteFile(extractedPath);
-                    }
+                    }                    
                 }
-            }
 
-            z.Dispose();
+                z.Dispose();
+            }
+            catch (Exception)
+            {
+                                
+            }            
             return extractedAudioFiles;
         }
 

@@ -41,29 +41,30 @@ namespace MusicFileManager
 
             bool IsAudio = false;
             DirectoryInfo di = new DirectoryInfo(extractDir);
-            ZipFile z = ZipFile.Read(archivedFile);            
-            foreach (ZipEntry entry in z.Entries)
+            try
             {
-                if (!entry.IsDirectory)
+                ZipFile z = ZipFile.Read(archivedFile);
+                foreach (ZipEntry entry in z.Entries)
                 {
+                    if (entry.IsDirectory)
+                        continue;
+
                     entry.Extract(extractDir, ExtractExistingFileAction.OverwriteSilently);
-                    string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
-                    try
+                    string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");                        
+                    if (audioFinder.CheckAudioFile(ref extractedPath))
                     {
-                        if (audioFinder.CheckAudioFile(ref extractedPath))
-                        {
-                            IsAudio = true;
-                            break;
-                        }
-                    }
-                    catch (UnsupportedFormatException)
-                    {
-                        //System.IO.File.Delete(extractedPath);                            
-                    }
+                        IsAudio = true;
+                        break;
+                    }                    
                 }
+                z.Dispose();
+                di.Delete(true);
             }
-            z.Dispose();
-            di.Delete(true);
+            catch (Exception)
+            {
+                
+                throw;
+            }            
             return IsAudio;
         }
 

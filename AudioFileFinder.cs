@@ -100,55 +100,62 @@ namespace MusicFileManager
             if (!System.IO.File.Exists(file))
                 return false;
 
-            FileStream fs = new FileStream(file, FileMode.Open);
-            byte[] header = new byte[HEADER_BUFFER];
-            fs.Read(header, 0, header.Length);
-            fs.Close();            
-
-            if (IsMP3Header(header))
+            try
             {
-                if (fixExtensionIfInvalid)                
-                    file = ChangeFileNameAndExtension(file, ".mp3");
-                return true;
+                FileStream fs = new FileStream(file, FileMode.Open);
+                byte[] header = new byte[HEADER_BUFFER];
+                fs.Read(header, 0, header.Length);
+                fs.Close();
 
+                if (IsMP3Header(header))
+                {
+                    if (fixExtensionIfInvalid)
+                        file = ChangeFileNameAndExtension(file, ".mp3");
+                    return true;
+
+                }
+
+                if (IsFLACHeader(header))
+                {
+                    if (fixExtensionIfInvalid)
+                        file = ChangeFileNameAndExtension(file, ".flac");
+                    return true;
+                }
+
+                if (IsWAVEHeader(header))
+                {
+                    if (fixExtensionIfInvalid)
+                        file = ChangeFileNameAndExtension(file, ".wav");
+                    return true;
+                }
+
+                if (IsOGGHeader(header))
+                {
+                    if (fixExtensionIfInvalid)
+                        file = ChangeFileNameAndExtension(file, ".ogg");
+                    return true;
+                }
+
+                if (IsWAVEHeader(header))
+                {
+                    if (fixExtensionIfInvalid)
+                        file = ChangeFileNameAndExtension(file, ".wav");
+                    return true;
+                }
+
+                if (IsM4AHeader(header))
+                {
+                    if (fixExtensionIfInvalid)
+                        file = ChangeFileNameAndExtension(file, ".m4a");
+                    return true;
+                }                
             }
-
-            if (IsFLACHeader(header))
+            catch (Exception)
             {
-                if (fixExtensionIfInvalid)
-                    file = ChangeFileNameAndExtension(file, ".flac");
-                return true;
+                
             }
-
-            if (IsWAVEHeader(header))
-            {
-                if (fixExtensionIfInvalid)
-                    file = ChangeFileNameAndExtension(file, ".wav");
-                return true;
-            }
-
-            if (IsOGGHeader(header))
-            {
-                if (fixExtensionIfInvalid)
-                    file = ChangeFileNameAndExtension(file, ".ogg");
-                return true;
-            }
-
-            if (IsWAVEHeader(header))
-            {
-                if (fixExtensionIfInvalid)
-                    file = ChangeFileNameAndExtension(file, ".wav");
-                return true;
-            }
-
-            if (IsM4AHeader(header))
-            {
-                if (fixExtensionIfInvalid)
-                    file = ChangeFileNameAndExtension(file, ".m4a");
-                return true;
-            }
-            
             return false;
+            
         }
 
         private bool IsMP3Header(byte[] header)
