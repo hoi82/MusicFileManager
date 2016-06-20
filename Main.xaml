@@ -24,13 +24,13 @@
                         <TextBlock x:Name="txbLocation" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="300" TextTrimming="CharacterEllipsis" Text="aaaaaaaaa" Foreground="#FFC8C8C8"/>
                         <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="315,7,0,0" VerticalAlignment="Top" Width="75" Click="btnBrowse_Click"/>
                     </Grid>
-                </GroupBox>
+                </GroupBox>                
                 <local:ProgressControl x:Name="prgControl" HorizontalAlignment="Left" Margin="10,420,0,0" VerticalAlignment="Top"/>
                 <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="435,430,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="btnCancel_Click"/>
                 <local:MFMOption x:Name="ctrlOption" HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top" Height="340"/>
             </Grid>
         </ScrollViewer>        
         <Button x:Name="btnExit" Content="Button" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Width="20" Click="btnExit_Click" Height="20"/>
-        <Grid x:Name="grdFileList" Grid.RowSpan="2"></Grid>
+        <Grid x:Name="grdPopUp" Grid.RowSpan="2"></Grid>
     </Grid>
 </Window>

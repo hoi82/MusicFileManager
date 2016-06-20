@@ -47,7 +47,7 @@ namespace MusicFileManager
             controller.OnStart += controller_OnStart;
             controller.OnEnd += controller_OnEnd;
 
-            ctrlClean = new FileToCleanControl(grdFileList);
+            ctrlClean = new FileToCleanControl(grdPopUp);
             ctrlClean.OnOK += ctrlClean_OnOK;
             ctrlClean.OnCancel += ctrlClean_OnCancel;
         }
@@ -65,9 +65,10 @@ namespace MusicFileManager
         void controller_OnEnd(object sender, List<DuplicatedFiles> fileToClean)
         {
             btnFind.IsEnabled = true;
-            btnCancel.IsEnabled = false;
-                        
-            ctrlClean.Display(fileToClean);
+            btnCancel.IsEnabled = false;                        
+            //ctrlClean.Display(fileToClean);
+            ModalDialogControl m = new ModalDialogControl(grdPopUp, DialogButton.OKCancel, "testcaption", "testmessage");
+            DialogResult r =  m.ShowDialog();
         }
 
         void controller_OnStart(object sender)

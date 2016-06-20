@@ -11,7 +11,7 @@ namespace MusicFileManager
     public delegate void MainControllerStartEvent(object sender);
     public delegate void MainContollerEndEvent(object sender, List<DuplicatedFiles> fileToClean);
 
-    public class MainController
+    public class MainController : IDisposable
     {
         public event MainControllerStartEvent OnStart = null;
         public event MainContollerEndEvent OnEnd = null;
@@ -86,8 +86,7 @@ namespace MusicFileManager
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker b = sender as BackgroundWorker;
+        {            
             List<string> allFiles = GetFiles(e.Argument.ToString(), e);
             List<AudioFile> audioFiles = GetAudioFiles(allFiles, e);
             //List<string> archivedFiles = GetArchivedFiles(allFiles, e);
@@ -402,6 +401,15 @@ namespace MusicFileManager
         public void Cancel()
         {
             bw.CancelAsync();
+        }
+
+        public void Dispose()
+        {
+            if (bw != null)
+            {
+                bw.CancelAsync();
+                bw.Dispose();
+            }
         }
     }
 }

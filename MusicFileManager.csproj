@@ -89,6 +89,7 @@
     <Compile Include="ArchivedFileManager.cs" />
     <Compile Include="AudioFile.cs" />
     <Compile Include="DuplicateTypeConverter.cs" />
+    <Compile Include="FileCleaner.cs" />
     <Compile Include="FileToCleanControl.xaml.cs">
       <DependentUpon>FileToCleanControl.xaml</DependentUpon>
     </Compile>
