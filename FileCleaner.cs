@@ -30,22 +30,22 @@ namespace MusicFileManager
 
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (this.OnEnd != null)
-                this.OnEnd(this, filetoClean);
+            //if (this.OnEnd != null)
+            //    this.OnEnd(this, filetoClean);
 
-            if (e.Cancelled)
-            {
-                progressControl.ProgressDisplay(0, "Cancelled");
-            }
-            else
-            {
-                progressControl.ProgressDisplay(100, "Complete");
-            }
+            //if (e.Cancelled)
+            //{
+            //    progressControl.ProgressDisplay(0, "Cancelled");
+            //}
+            //else
+            //{
+            //    progressControl.ProgressDisplay(100, "Complete");
+            //}
         }
 
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
+            //progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
