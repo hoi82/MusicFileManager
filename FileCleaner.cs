@@ -48,22 +48,58 @@ namespace MusicFileManager
 
             if (e.Cancelled)
             {
-                progressControl.ProgressDisplay(0, "Cancelled");
+                if (progressControl != null)
+                    progressControl.ProgressDisplay(0, "Cancelled");
             }
             else
             {
-                progressControl.ProgressDisplay(100, "Complete");
+                if (progressControl != null)
+                    progressControl.ProgressDisplay(100, "Complete");
             }
         }
 
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressControl.ProgressDisplay(e.ProgressPercentage, "Deleting Files...{0}/{1}");
+            if (progressControl != null)
+                progressControl.ProgressDisplay(e.ProgressPercentage, "Deleting Files...{0}/{1}");
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             CleanFiles(e);
+        }
+
+        bool IsFileLocked(FileInfo fi)
+        {
+            FileStream stream = null;
+
+            try
+            {
+                //Don't change FileAccess to ReadWrite, 
+                //because if a file is in readOnly, it fails.
+                stream = fi.Open
+                (
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.None
+                );
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
+            return false;
         }
 
         public void CancelCleanAsync()
@@ -92,11 +128,15 @@ namespace MusicFileManager
                 try
                 {
                     FileInfo fi = new FileInfo(files[i]);
-                    fi.Delete();
-                    if (File.Exists(files[i]))
+                    if (IsFileLocked(fi))
+                    {
+                        fi.Delete();
+                        deletedFiles.Add(files[i]);
+                    }
+                    else
                     {
                         undeletedFiles.Add(files[i]);
-                    }
+                    }                        
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -105,7 +145,9 @@ namespace MusicFileManager
                 catch (IOException)
                 {
                     
-                }                
+                } 
+
+
             }
         }
 

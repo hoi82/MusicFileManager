@@ -70,14 +70,14 @@ namespace MusicFileManager
             SetDisplayPosition();
             panel.Children.Add(this);
 
-            //if (files == null)
-            //    return;
+            if (files == null)
+                return;
 
-            //foreach (DuplicatedFiles file in files)
-            //{
-            //    items.Add(new FileItem(file));
-            //}
-            TestItemGenerate();
+            foreach (DuplicatedFiles file in files)
+            {
+                items.Add(new FileItem(file));
+            }
+            //TestItemGenerate();
             dgFileList.ItemsSource = items;
         }
 

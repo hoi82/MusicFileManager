@@ -32,8 +32,8 @@ namespace MusicFileManager
         double maximumDataBufferRatio = 0;
         const double DEFALUT_NAME_SIMILARITY = 0.9;
         const double DEFAULT_DATA_SIMILARITY = 0.9;
-        const long MINIMUM_DATA_BUFFER = 1024;
-        const double MAXIMUM_DATA_BUFFER_RATIO = 0.1;
+        const long MINIMUM_DATA_BUFFER = 4096;
+        const double MAXIMUM_DATA_BUFFER_RATIO = 0.5;
 
         public AudioFileChecker() : this(DEFALUT_NAME_SIMILARITY, DEFAULT_DATA_SIMILARITY, MINIMUM_DATA_BUFFER, MAXIMUM_DATA_BUFFER_RATIO) { }
 
@@ -158,7 +158,13 @@ namespace MusicFileManager
 
         public bool CheckSimilarFilesByByte(string file1, string file2)
         {
-            return GetFileSimilarityWithByte(file1, file2) >= dataSimilarity;
+            double sim = GetFileSimilarityWithByte(file1, file2);
+
+            if (sim >= dataSimilarity)
+                return true;
+            else
+                return false;
+            //return GetFileSimilarityWithByte(file1, file2) >= dataSimilarity;
         }
 
         private double GetFileSimilarityWithByte(string file1, string file2)
@@ -194,17 +200,17 @@ namespace MusicFileManager
                 pos++;
 
                 //최소 범위 이상에서 정확도가 떨어지는 경우 루프를 탈출시킨다
-                loop = pos < (len * maximumDataBufferRatio);
+                loop = (pos < (len * maximumDataBufferRatio));
                 
                 double sim = (double)(pos - dist) / (double)pos;
-                if ((pos > minimumDataBuffer) && sim <= dataSimilarity)
+                if ((pos > minimumDataBuffer) && (sim <= dataSimilarity))
                     loop = false;
             }        
 
             sf.Dispose();
             tf.Dispose();
 
-            return (double)(len - dist) / len;
+            return (double)(pos - dist) / pos;
         }
 
         private double GetFileSimilarityWithTag(string file1, string file2)
