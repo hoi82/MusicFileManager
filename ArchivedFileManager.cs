@@ -5,24 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Ionic.Zip;
+using System.Text.RegularExpressions;
 
 namespace MusicFileManager
 {
     public class ArchivedFileManager
     {
         const string EXTRACT_DIR = "Extracts";
-        string extractDir = null;
-        List<string> extractedFiles = null;
-        AudioFileFinder audioFinder = null;
-
-        public List<string> ExtractedFiles { get { return this.extractedFiles; } }
+        string extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
+        List<string> extractedFiles = new List<string>();
+        List<string> extractedDir = new List<string>();
+        AudioFileFinder audioFinder = null;        
 
         public ArchivedFileManager(AudioFileFinder audioFinder)
-        {
-            extractedFiles = new List<string>();
-            extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
+        {                        
             this.audioFinder = audioFinder;
         }
+
+        
 
         public List<string> ExtractAudioFilesArchivedFile(string fileName)
         {
@@ -32,11 +32,15 @@ namespace MusicFileManager
                 ZipFile z = ZipFile.Read(fileName);
                 foreach (ZipEntry entry in z.Entries)
                 {
-                    if (entry.IsDirectory) 
-                        continue;
-
-                    entry.Extract(extractDir);
                     string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
+
+                    if (entry.IsDirectory)
+                    {
+                        extractedDir.Add(extractedPath);
+                        continue;
+                    }                        
+
+                    entry.Extract(extractDir);                    
 
                     if (audioFinder.CheckAudioFile(ref extractedPath))
                     {
@@ -64,12 +68,40 @@ namespace MusicFileManager
             {
                 DeleteFile(s);
             }
+
+            extractedDir.Sort(delegate(string x, string y) 
+            {
+                Regex regex = new Regex(@"[\\/]+");
+                string[] xArr = regex.Split(x);
+                string[] yArr = regex.Split(y);
+
+                if (xArr.Length == yArr.Length) return 0;
+                else if (xArr.Length < yArr.Length) return -1;
+                else return 1;
+            });
+
+            for (int i = extractedDir.Count() - 1; i >= 0; i--)
+            {
+                DeleteDirectroy(extractedDir[i]);
+            }
         }
 
         private void DeleteFile(string fileName)
         {
             if (System.IO.File.Exists(fileName))
-                System.IO.File.Delete(fileName);
+            {
+                FileInfo fi = new FileInfo(fileName);
+                fi.Delete();
+            }              
+        }
+
+        private void DeleteDirectroy(string dirPath)
+        {
+            if (Directory.Exists(dirPath))
+            {
+                DirectoryInfo di = new DirectoryInfo(dirPath);
+                di.Delete();
+            }
         }
     }
 }

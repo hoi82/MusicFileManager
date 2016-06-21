@@ -82,7 +82,8 @@ namespace MusicFileManager
 
         public bool CheckSimilarFilesByNameAndTag(string file1, string file2)
         {
-            if ((!File.Exists(file1)) || (!File.Exists(file2)))
+            //하나만 틀려도 바로 넘어가게 연산자 | 로 설정
+            if ((!File.Exists(file1)) | (!File.Exists(file2)))
                 return false;
 
             string filteredFileName1 = RemoveUselessString(Path.GetFileNameWithoutExtension(file1));

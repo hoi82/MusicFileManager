@@ -100,12 +100,13 @@ namespace MusicFileManager
             if (!System.IO.File.Exists(file))
                 return false;
 
+            FileStream fs = null;
+
             try
             {
-                FileStream fs = new FileStream(file, FileMode.Open);
+                fs = new FileStream(file, FileMode.Open);
                 byte[] header = new byte[HEADER_BUFFER];
-                fs.Read(header, 0, header.Length);
-                fs.Close();
+                fs.Read(header, 0, header.Length);                
 
                 if (IsMP3Header(header))
                 {
@@ -154,6 +155,12 @@ namespace MusicFileManager
             {
                 
             }
+            finally
+            {
+                if (fs != null)
+                    fs.Close();
+            }
+
             return false;
             
         }

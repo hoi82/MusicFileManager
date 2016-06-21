@@ -66,9 +66,7 @@ namespace MusicFileManager
         {
             btnFind.IsEnabled = true;
             btnCancel.IsEnabled = false;                        
-            //ctrlClean.Display(fileToClean);
-            ModalDialogControl m = new ModalDialogControl(grdPopUp, DialogButton.OKCancel, "testcaption", "testmessage");
-            DialogResult r =  m.ShowDialog();
+            ctrlClean.Display(fileToClean);            
         }
 
         void controller_OnStart(object sender)
@@ -198,7 +196,7 @@ namespace MusicFileManager
 
         private void btnClean_Click(object sender, RoutedEventArgs e)
         {            
-            controller.Run(searchLocation);
+            controller.Run(true, searchLocation);
 
             using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
             {

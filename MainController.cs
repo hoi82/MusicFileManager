@@ -72,29 +72,25 @@ namespace MusicFileManager
 
             if (e.Cancelled)
             {
-                progressControl.ProgressDisplay(0, "Cancelled");
+                if (progressControl != null)
+                    progressControl.ProgressDisplay(0, "Cancelled");
             }
             else
             {
-                progressControl.ProgressDisplay(100, "Complete");
+                if (progressControl != null)
+                    progressControl.ProgressDisplay(100, "Complete");
             }
         }
 
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
+            if (progressControl != null)
+                progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
-        {            
-            List<string> allFiles = GetFiles(e.Argument.ToString(), e);
-            List<AudioFile> audioFiles = GetAudioFiles(allFiles, e);
-            //List<string> archivedFiles = GetArchivedFiles(allFiles, e);
-            //List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
-            //List<DuplicatedFiles> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
-            //List<DuplicatedFiles> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);
-            //filetoClean.AddRange(extractedArchiveAudioFiles);
-            //filetoClean.AddRange(duplicatedAudioFiles);
+        {
+            Process(e);
         }
 
         private void ResetCount(int total)
@@ -123,7 +119,7 @@ namespace MusicFileManager
 
             for (int i = 0; i < allPaths.Count(); i++)
             {
-                if (bw.CancellationPending)
+                if ((e != null) && bw.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
@@ -151,7 +147,7 @@ namespace MusicFileManager
 
             for (int i = 0; i < allFiles.Count(); i++)
             {
-                if (bw.CancellationPending)
+                if ((e != null) && bw.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
@@ -178,7 +174,7 @@ namespace MusicFileManager
             {
                 string sFile = allFiles[i];
 
-                if (bw.CancellationPending)
+                if ((e != null) && bw.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
@@ -206,7 +202,7 @@ namespace MusicFileManager
 
             for (int i = 0; i < archivedFiles.Count(); i++)
             {
-                if (bw.CancellationPending)
+                if ((e != null) && bw.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
@@ -234,7 +230,7 @@ namespace MusicFileManager
                 total = archivedAudioFile.Count();
                 current = i + 1;
 
-                if (bw.CancellationPending)
+                if ((e != null) && bw.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
@@ -243,18 +239,21 @@ namespace MusicFileManager
                 List<string> extractedAudioFiles = archiveController.ExtractAudioFilesArchivedFile(archivedAudioFile[i]);
 
                 //여러개의 음악파일이 존재하고 옵션에서 처리 안하게 되어있으면 건너뛴다.
-                if ((extractedAudioFiles.Count > 1) && !option.DeleteArchiveWithMulipleAudio)
+                if (option != null)
                 {
-                    archiveController.CleanExtractedFiles();
-                    continue;
-                }
+                    if ((extractedAudioFiles.Count > 1) && !option.DeleteArchiveWithMulipleAudio)
+                    {
+                        archiveController.CleanExtractedFiles();
+                        continue;
+                    }
+                }                
 
                 bool isDuplicated = false;
                 string audioFileName = null;
 
                 for (int j = 0; j < extractedAudioFiles.Count(); j++)
                 {
-                    if (bw.CancellationPending)
+                    if ((e != null) && bw.CancellationPending)
                     {
                         e.Cancel = true;
                         break;
@@ -265,7 +264,7 @@ namespace MusicFileManager
 
                     for (int k = 0; k < audioFiles.Count(); k++)
                     {
-                        if (bw.CancellationPending)
+                        if ((e != null) && bw.CancellationPending)
                         {
                             e.Cancel = true;
                             break;
@@ -314,7 +313,7 @@ namespace MusicFileManager
 
             for (int i = 0; i < audioFiles.Count(); i++)
             {
-                if (bw.CancellationPending)
+                if ((e != null) && bw.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
@@ -322,14 +321,17 @@ namespace MusicFileManager
 
                 for (int j = 0; j < audioFiles.Count(); j++)
                 {
-                    if (bw.CancellationPending)
+                    if ((e!= null) && bw.CancellationPending)
                     {
                         e.Cancel = true;
                         break;
                     }                    
 
                     //옵션에서 처리 안하게 되어있거나 같은 파일일 경우 건너뛴다.
-                    if ((i == j) | ((!option.DeleteAudioWithOutBitRate) && ((audioFiles[j].BitRate < option.AudioBitRate) | (audioFiles[j].Duration < audioFiles[j].Duration)))) continue;
+                    if (option != null)
+                    {
+                        if ((i == j) | ((!option.DeleteAudioWithOutBitRate) && ((audioFiles[j].BitRate < option.AudioBitRate) | (audioFiles[j].Duration < audioFiles[j].Duration)))) continue;
+                    }                    
 
                     if (checker.CheckSimilarFilesByNameAndTag(audioFiles[i].FileName, audioFiles[j].FileName))
                     {
@@ -372,6 +374,9 @@ namespace MusicFileManager
 
         private bool IsParentOrLowTreedFolder(string source, string target)
         {
+            if (string.IsNullOrEmpty(source) | string.IsNullOrEmpty(target))
+                return false;
+
             string sourceDir = Path.GetDirectoryName(source);
             string targetDir = Path.GetDirectoryName(target);
 
@@ -390,12 +395,32 @@ namespace MusicFileManager
             return false;
         }
 
-        public void Run(string directory)
-        {
+        public void Run(bool aSync, string directory)
+        {            
             if (this.OnStart != null)
-                this.OnStart(this);
+                this.OnStart(this);            
 
-            bw.RunWorkerAsync(directory);
+            if (aSync)
+                bw.RunWorkerAsync(directory);
+            else
+            {
+                Process();
+
+                if (this.OnEnd != null)
+                    this.OnEnd(this, filetoClean);
+            }
+        }
+
+        private void Process(DoWorkEventArgs e = null)
+        {
+            List<string> allFiles = GetFiles(e.Argument.ToString(), e);
+            List<AudioFile> audioFiles = GetAudioFiles(allFiles, e);
+            List<string> archivedFiles = GetArchivedFiles(allFiles, e);
+            List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
+            List<DuplicatedFiles> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
+            //List<DuplicatedFiles> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);
+            filetoClean.AddRange(extractedArchiveAudioFiles);
+            //filetoClean.AddRange(duplicatedAudioFiles);
         }
 
         public void Cancel()

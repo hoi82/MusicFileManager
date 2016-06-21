@@ -8,17 +8,19 @@ using System.IO;
 
 namespace MusicFileManager
 {
+    public delegate void FileCleanerEndEventHandler(object sender, List<string> deletedFiles, List<string> unDeletedFiles);
     public class FileCleaner
     {
         List<string> files = null;        
         List<string> deletedFiles = new List<string>();
         List<string> undeletedFiles = new List<string>();
         BackgroundWorker bw = null;
+        ProgressControl progressControl = null;
 
-        public FileCleaner(List<string> files)
+        public event FileCleanerEndEventHandler OnEnd = null;
+
+        public FileCleaner()
         {
-            this.files = files;
-
             bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.WorkerReportsProgress = true;
@@ -28,24 +30,35 @@ namespace MusicFileManager
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
         }
 
+        public FileCleaner(List<string> files) : this()
+        {
+            this.files = files;            
+        }
+
+        public FileCleaner(List<string> files, ProgressControl progressControl)
+            : this(files)
+        {
+            this.progressControl = progressControl;
+        }
+
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //if (this.OnEnd != null)
-            //    this.OnEnd(this, filetoClean);
+            if (this.OnEnd != null)
+                this.OnEnd(this, deletedFiles, undeletedFiles);
 
-            //if (e.Cancelled)
-            //{
-            //    progressControl.ProgressDisplay(0, "Cancelled");
-            //}
-            //else
-            //{
-            //    progressControl.ProgressDisplay(100, "Complete");
-            //}
+            if (e.Cancelled)
+            {
+                progressControl.ProgressDisplay(0, "Cancelled");
+            }
+            else
+            {
+                progressControl.ProgressDisplay(100, "Complete");
+            }
         }
 
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            //progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
+            progressControl.ProgressDisplay(e.ProgressPercentage, "Deleting Files...{0}/{1}");
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -53,23 +66,12 @@ namespace MusicFileManager
             CleanFiles(e);
         }
 
-        public void CleanFilesAsync()
-        {
-            bw.RunWorkerAsync();
-        }
-
-        public void CleanFilesAsync(List<string> files)
-        {
-            this.files = files;
-            CancelCleanAsync();
-        }
-
         public void CancelCleanAsync()
         {
             bw.CancelAsync();
         }
 
-        public void CleanFiles(DoWorkEventArgs e = null)
+        private void CleanFiles(DoWorkEventArgs e = null)
         {
             if (files == null) return;
 
@@ -103,14 +105,28 @@ namespace MusicFileManager
                 catch (IOException)
                 {
                     
-                }
+                }                
             }
         }
 
-        public void CleanFiles(List<string> files)
+        public void CleanFiles(bool aSync, List<string> files = null)
         {
-            this.files = files;
-            CleanFiles();
+            if (files != null)
+                this.files = files;
+
+            if (aSync)
+            {
+                bw.RunWorkerAsync();
+            }
+            else
+            {
+                CleanFiles();
+
+                if (this.OnEnd != null)
+                {
+                    this.OnEnd(this, deletedFiles, undeletedFiles);
+                }
+            }                
         }
     }
 }

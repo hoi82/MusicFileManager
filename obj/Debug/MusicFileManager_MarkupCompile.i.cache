@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-E:\Mytest\MS\MusicFileManager\obj\Debug\
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\
 MusicFileManager
 none
 false
 DEBUG;TRACE
-E:\Mytest\MS\MusicFileManager\App.xaml
+C:\Mytest\MusicFileManager\MusicFileManager\App.xaml
 5-1226195797
 
 25-551220145
-2116180213
+21-1463979902
 FileToCleanControl.xaml;Main.xaml;MFMOption.xaml;ModalDialogControl.xaml;ProgressControl.xaml;
 
 False
