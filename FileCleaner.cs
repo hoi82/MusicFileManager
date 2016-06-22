@@ -8,7 +8,22 @@ using System.IO;
 
 namespace MusicFileManager
 {
-    public delegate void FileCleanerEndEventHandler(object sender, List<string> deletedFiles, List<string> unDeletedFiles);
+    public class FileCleanerEndEventArgs : EventArgs
+    {
+        List<string> deletedFiles = null;
+        List<string> unDeletedFiles = null;
+
+        public FileCleanerEndEventArgs(List<string> deletedFiles, List<string> unDeletedFiles)
+        {
+            this.deletedFiles = deletedFiles;
+            this.unDeletedFiles = unDeletedFiles;
+        }
+
+        public List<string> DeletedFiles { get { return this.deletedFiles; } }
+        public List<string> UnDeletedFiles { get { return this.unDeletedFiles; } }
+    }
+
+    public delegate void FileCleanerEndEventHandler(object sender, FileCleanerEndEventArgs e);
     public class FileCleaner
     {
         List<string> files = null;        
@@ -18,6 +33,10 @@ namespace MusicFileManager
         ProgressControl progressControl = null;
 
         public event FileCleanerEndEventHandler OnEnd = null;
+
+        int current = 0;
+        int total = 0;
+        string progressMessage = null;
 
         public FileCleaner()
         {
@@ -44,7 +63,7 @@ namespace MusicFileManager
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (this.OnEnd != null)
-                this.OnEnd(this, deletedFiles, undeletedFiles);
+                this.OnEnd(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
 
             if (e.Cancelled)
             {
@@ -61,7 +80,7 @@ namespace MusicFileManager
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (progressControl != null)
-                progressControl.ProgressDisplay(e.ProgressPercentage, "Deleting Files...{0}/{1}");
+                progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -107,7 +126,25 @@ namespace MusicFileManager
             bw.CancelAsync();
         }
 
-        private void CleanFiles(DoWorkEventArgs e = null)
+        private void ResetCount(int total)
+        {
+            this.total = total;
+            current = 0;
+        }
+
+        private void IncCount()
+        {
+            current++;
+        }
+
+        private int CalcPercentage()
+        {
+            int perc = (int)((float)current / (float)total * 100);
+
+            return perc;
+        }
+
+        void CleanFiles(DoWorkEventArgs e = null)
         {
             if (files == null) return;
 
@@ -145,9 +182,12 @@ namespace MusicFileManager
                 catch (IOException)
                 {
                     
-                } 
+                }
 
+                IncCount();
+                progressMessage = string.Format("Deleting Files...{0}/{1}", current, total);
 
+                bw.ReportProgress(CalcPercentage());
             }
         }
 
@@ -166,7 +206,7 @@ namespace MusicFileManager
 
                 if (this.OnEnd != null)
                 {
-                    this.OnEnd(this, deletedFiles, undeletedFiles);
+                    this.OnEnd(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
                 }
             }                
         }

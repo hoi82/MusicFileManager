@@ -15,9 +15,9 @@ namespace MusicFileManager
         string extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
         List<string> extractedFiles = new List<string>();
         List<string> extractedDir = new List<string>();
-        AudioFileFinder audioFinder = null;        
+        AudioFileChecker audioFinder = null;        
 
-        public ArchivedFileManager(AudioFileFinder audioFinder)
+        public ArchivedFileManager(AudioFileChecker audioFinder)
         {                        
             this.audioFinder = audioFinder;
         }
@@ -42,7 +42,7 @@ namespace MusicFileManager
 
                     entry.Extract(extractDir);                    
 
-                    if (audioFinder.CheckAudioFile(ref extractedPath))
+                    if (audioFinder.IsVaildFile(ref extractedPath))
                     {
                         extractedAudioFiles.Add(extractedPath);
                         extractedFiles.Add(extractedPath);

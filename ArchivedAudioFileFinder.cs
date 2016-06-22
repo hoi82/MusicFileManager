@@ -29,9 +29,9 @@ namespace MusicFileManager
         //public event ArchivedAudioFileFinderCheckEventHandler OnCheck;
         //public event ArchivedAudioFileFinderEndEventHandler OnEnd;
 
-        AudioFileFinder audioFinder = null;        
+        AudioFileChecker audioFinder = null;        
 
-        public ArchivedAudioFileFinder(AudioFileFinder audioFinder)
+        public ArchivedAudioFileFinder(AudioFileChecker audioFinder)
         {
             extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
             this.audioFinder = audioFinder;            
@@ -62,7 +62,7 @@ namespace MusicFileManager
 
                     entry.Extract(extractDir, ExtractExistingFileAction.OverwriteSilently);
                     
-                    if (audioFinder.CheckAudioFile(ref extractedPath))
+                    if (audioFinder.IsVaildFile(ref extractedPath))
                     {
                         IsAudio = true;
                         break;
@@ -120,7 +120,7 @@ namespace MusicFileManager
             if (Directory.Exists(dirPath))
             {
                 DirectoryInfo di = new DirectoryInfo(dirPath);
-                di.Delete();
+                di.Delete(true);
             }
         }
 

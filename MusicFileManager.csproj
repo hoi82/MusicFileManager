@@ -86,13 +86,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AbstractFileChecker.cs" />
+    <Compile Include="AbstractFileFinder.cs" />
     <Compile Include="ArchivedFileManager.cs" />
+    <Compile Include="ArchiveFileFinder.cs" />
     <Compile Include="AudioFile.cs" />
+    <Compile Include="AudioFileFinder.cs" />
     <Compile Include="DuplicateTypeConverter.cs" />
     <Compile Include="FileCleaner.cs" />
+    <Compile Include="FileSignature.cs" />
+    <Compile Include="FileSignatureType.cs" />
     <Compile Include="FileToCleanControl.xaml.cs">
       <DependentUpon>FileToCleanControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IFileChecker.cs" />
+    <Compile Include="IFileFinder.cs" />
     <Compile Include="MFMMessage.cs" />
     <Compile Include="TimeSpanToDoubleConverter.cs" />
     <Compile Include="MainController.cs" />
@@ -109,10 +117,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArchivedFileFinder.cs" />
-    <Compile Include="AudioFileChecker.cs" />
+    <Compile Include="ArchiveFileChecker.cs" />
+    <Compile Include="AudioFileComparer.cs" />
     <Compile Include="ArchivedAudioFileFinder.cs" />
-    <Compile Include="AudioFileFinder.cs" />
+    <Compile Include="AudioFileChecker.cs" />
     <Compile Include="Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
       <SubType>Code</SubType>
