@@ -11,23 +11,15 @@ using System.Text.RegularExpressions;
 
 namespace MusicFileManager
 {       
-    //public delegate void ArchivedAudioFileFinderStartEventHandler(object sender);
-    //public delegate void ArchivedAudioFileFinderCheckEventHandler(object sender, bool archivedAudioFile, string fileName, int currentCount, int totalCount);
-    //public delegate void ArchivedAudioFileFinderEndEventHandler(object sender);
-
+    /// <summary>
+    /// 
+    /// </summary>
     public class ArchivedAudioFileFinder
     {        
-        //List<string> archivedFiles = null;        
-        //int current = 0;
-        //int total = 0;
         string extractDir = null;
         const string EXTRACT_DIR = "Extracts";
         List<string> extractedFiles = new List<string>();
         List<string> extractedDir = new List<string>();
-
-        //public event ArchivedAudioFileFinderStartEventHandler OnStart;
-        //public event ArchivedAudioFileFinderCheckEventHandler OnCheck;
-        //public event ArchivedAudioFileFinderEndEventHandler OnEnd;
 
         AudioFileChecker audioFinder = null;        
 
@@ -122,54 +114,6 @@ namespace MusicFileManager
                 DirectoryInfo di = new DirectoryInfo(dirPath);
                 di.Delete(true);
             }
-        }
-
-        //private void GetArchivedFilesHasAudioFile(List<string> files)
-        //{
-        //    if (files == null)
-        //        return;
-
-        //    this.archivedFiles = files;
-        //    total = this.archivedFiles.Count;
-
-        //    if (this.OnStart != null)
-        //        this.OnStart(this);
-
-        //    for (int i = 0; i < archivedFiles.Count(); i++)
-        //    {
-        //        //압축전부 풀고 오디오 파일인지 체크하고 파일 삭제하는 부분
-        //        ///////////////////////////////////                
-        //        DirectoryInfo di = new DirectoryInfo(extractDir);
-        //        ZipFile z = ZipFile.Read(archivedFiles[i]);
-        //        foreach (ZipEntry entry in z.Entries)
-        //        {
-        //            if (!entry.IsDirectory)
-        //            {
-        //                entry.Extract(extractDir);
-        //                string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
-        //                try
-        //                {
-        //                    TagLib.File f = TagLib.File.Create(extractedPath);
-        //                    byte[] data = System.IO.File.ReadAllBytes(extractedPath);
-        //                    string fileName = Path.GetFileName(extractedPath);
-        //                    audioFiles.Add(new AudioFile(fileName, null, data, f.Tag));
-        //                }
-        //                catch (UnsupportedFormatException e)
-        //                {
-        //                    //System.IO.File.Delete(extractedPath);                            
-        //                }
-        //            }
-        //        }
-        //        z.Dispose();
-        //        di.Delete(true);
-        //        ///////////////////////////////////
-        //        current = i + 1;
-
-        //        int perc = (int)((float)current / (float)total * 100);
-
-        //        if (progressControl != null)
-        //            progressControl.FireProgress(perc);
-        //    }            
-        //}                
+        }             
     }
 }
