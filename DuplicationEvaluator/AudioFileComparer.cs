@@ -9,23 +9,12 @@ using Ionic.Zip;
 using System.Text.RegularExpressions;
 
 namespace MusicFileManager
-{    
-    //public delegate void AudioFileCheckerStartEventHandler(object sender);
-    //public delegate void AudioFileCheckerCheckEventHandler(object sender, bool audioFile, string fileName, int currentCount, int totalCount);
-    //public delegate void AudioFilecheckerEndEventHandler(object sender);
-
+{
+    /// <summary>
+    /// 
+    /// </summary>
     public class AudioFileComparer
     {        
-        //public event AudioFileCheckerStartEventHandler OnStart = null;
-        //public event AudioFilecheckerEndEventHandler OnEnd = null;
-
-        //List<string> archivedFileWithAudio = null;
-        //List<string> audioFiles = null;        
-        //int current = 0;
-        //int total = 0;
-
-        //List<SimilarAudioFiles> similarFiles = null;
-
         double nameSimilarity = 0;
         double dataSimilarity = 0;
         long minimumDataBuffer = 0;
@@ -42,43 +31,8 @@ namespace MusicFileManager
             this.nameSimilarity = nameSimilarity;
             this.dataSimilarity = dataSimilarity;
             this.minimumDataBuffer = minimumDataBuffer;
-            this.maximumDataBufferRatio = maximumDataBufferRatio;
-            //similarFiles = new List<SimilarAudioFiles>();
-        }
-
-        //public void RunAsync(List<string> archivedFileWithAudio, List<string> audioFiles)
-        //{
-        //    this.archivedFileWithAudio = archivedFileWithAudio;
-        //    this.audioFiles = audioFiles;            
-
-        //    if (this.OnStart != null)
-        //        this.OnStart(this);
-        //}                
-
-        //private void CheckSimilarFileInArchive()
-        //{
-        //    total = archivedFileWithAudio.Count() * audioFiles.Count();
-
-        //    for (int i = 0; i < archivedFileWithAudio.Count; i++)
-        //    {                
-        //        for (int k = 0; i < audioFiles.Count; k++)
-        //        {
-
-        //            double sim = 0;
-
-        //            if (sim >= dataSimilarity)
-        //            {
-        //                similarFiles.Add(new SimilarAudioFiles(archivedFileWithAudio[i], audioFiles[k]));
-        //            }
-
-        //            current++;
-        //            int perc = (int)((float)current / (float)total * 100);
-
-        //            //if (progressControl != null)
-        //            //    progressControl.FireProgress(perc);
-        //        }
-        //    }
-        //}
+            this.maximumDataBufferRatio = maximumDataBufferRatio;            
+        }        
 
         public bool CheckSimilarFilesByNameAndTag(string file1, string file2)
         {
@@ -251,37 +205,7 @@ namespace MusicFileManager
                     }
 
                     tPoint++;
-                }
-
-                //if ((t1.Year != 0) && (t2.Year != 0))
-                //{
-                //    if (t1.Year == t2.Year)
-                //    {
-                //        sPoint++;
-                //    }
-
-                //    tPoint++;
-                //}
-
-                //if ((t1.Track != 0) && (t2.Track != 0))
-                //{
-                //    if (t1.Track == t2.Track)
-                //    {
-                //        sPoint++;
-                //    }
-
-                //    tPoint++;
-                //}
-
-                //if ((!string.IsNullOrEmpty(t1.FirstGenre)) && (!string.IsNullOrEmpty(t2.FirstGenre)))
-                //{
-                //    if (t1.FirstGenre == t2.FirstGenre)
-                //    {
-                //        sPoint++;
-                //    }
-
-                //    tPoint++;
-                //}
+                }                
 
                 if (tPoint == 0)
                     return 0;

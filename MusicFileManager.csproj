@@ -86,26 +86,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AbstractFileChecker.cs" />
-    <Compile Include="AbstractFileFinder.cs" />
-    <Compile Include="ArchivedFileManager.cs" />
-    <Compile Include="ArchiveFileFinder.cs" />
-    <Compile Include="AudioFile.cs" />
-    <Compile Include="AudioFileFinder.cs" />
-    <Compile Include="DuplicateTypeConverter.cs" />
-    <Compile Include="FileCleaner.cs" />
-    <Compile Include="FileSignature.cs" />
-    <Compile Include="FileSignatureType.cs" />
-    <Compile Include="FileToCleanControl.xaml.cs">
+    <Compile Include="Checker\AbstractFileChecker.cs" />
+    <Compile Include="Checker\DefaultFileChecker.cs" />
+    <Compile Include="DisplayableWorker\DisplayableWorker.cs" />
+    <Compile Include="DuplicationEvaluator\AudioDuplicationEvaluator.cs" />
+    <Compile Include="DuplicationEvaluator\IDuplicationEvaluator.cs" />
+    <Compile Include="DuplicationEvaluator\IDuplicationFilter.cs" />
+    <Compile Include="Extractor\IFileExtractor.cs" />
+    <Compile Include="Finder\AbstractFileFinder.cs" />
+    <Compile Include="Extractor\FileExtractor.cs" />
+    <Compile Include="Data\AudioFile.cs" />
+    <Compile Include="Finder\FileFinder.cs" />
+    <Compile Include="BindingConverter\DuplicateTypeConverter.cs" />
+    <Compile Include="Cleaner\FileCleaner.cs" />
+    <Compile Include="Data\FileSignature.cs" />
+    <Compile Include="Data\FileSignatureType.cs" />
+    <Compile Include="CustomControls\FileToCleanControl.xaml.cs">
       <DependentUpon>FileToCleanControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IFileChecker.cs" />
-    <Compile Include="IFileFinder.cs" />
-    <Compile Include="MFMMessage.cs" />
-    <Compile Include="TimeSpanToDoubleConverter.cs" />
+    <Compile Include="Checker\IFileChecker.cs" />
+    <Compile Include="Finder\IFileFinder.cs" />
+    <Compile Include="Data\MFMMessage.cs" />
+    <Compile Include="BindingConverter\TimeSpanToDoubleConverter.cs" />
     <Compile Include="MainController.cs" />
-    <Compile Include="DuplicatedFiles.cs" />
-    <Page Include="FileToCleanControl.xaml">
+    <Compile Include="Data\DuplicatedFiles.cs" />
+    <Page Include="CustomControls\FileToCleanControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -117,35 +122,35 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArchiveFileChecker.cs" />
-    <Compile Include="AudioFileComparer.cs" />
-    <Compile Include="ArchivedAudioFileFinder.cs" />
-    <Compile Include="AudioFileChecker.cs" />
+    <Compile Include="Checker\ArchiveFileChecker.cs" />
+    <Compile Include="DuplicationEvaluator\AudioFileComparer.cs" />
+    <Compile Include="Finder\ArchivedAudioFileFinder.cs" />
+    <Compile Include="Checker\AudioFileChecker.cs" />
     <Compile Include="Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MFMOption.xaml">
+    <Page Include="CustomControls\MFMOption.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ModalDialogControl.xaml">
+    <Page Include="CustomControls\ModalDialogControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ProgressControl.xaml">
+    <Page Include="CustomControls\ProgressControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MFMOption.xaml.cs">
+    <Compile Include="CustomControls\MFMOption.xaml.cs">
       <DependentUpon>MFMOption.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ModalDialogControl.xaml.cs">
+    <Compile Include="CustomControls\ModalDialogControl.xaml.cs">
       <DependentUpon>ModalDialogControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProgressControl.xaml.cs">
+    <Compile Include="CustomControls\ProgressControl.xaml.cs">
       <DependentUpon>ProgressControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -198,6 +203,7 @@
   <ItemGroup>
     <Resource Include="windows_media_player.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

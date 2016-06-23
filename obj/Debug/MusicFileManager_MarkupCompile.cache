@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Mytest\MusicFileManager\MusicFileManager\App.xaml
-5-1226195797
+51081863688
 
-29-1294726858
+34-1886771808
 21-1463979902
-FileToCleanControl.xaml;Main.xaml;MFMOption.xaml;ModalDialogControl.xaml;ProgressControl.xaml;
+CustomControls\FileToCleanControl.xaml;Main.xaml;CustomControls\MFMOption.xaml;CustomControls\ModalDialogControl.xaml;CustomControls\ProgressControl.xaml;
 
 False
 

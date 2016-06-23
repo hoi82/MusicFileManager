@@ -54,12 +54,14 @@ namespace MusicFileManager
 
         void ctrlClean_OnCancel(object sender)
         {
-            MessageBox.Show("Cancel");
+            ModalDialogControl m = new ModalDialogControl(grdPopUp);
+            m.ShowDialog("Cancelled");
         }
 
         void ctrlClean_OnOK(object sender, List<string> files)
         {
-            MessageBox.Show("End");
+            ModalDialogControl m = new ModalDialogControl(grdPopUp);
+            m.ShowDialog("Ok");
         }
 
         void controller_OnEnd(object sender, List<DuplicatedFiles> fileToClean)

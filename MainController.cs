@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.IO;
+using MusicFileManager.Extractor;
 
 namespace MusicFileManager
 {
     public delegate void MainControllerStartEvent(object sender);
     public delegate void MainContollerEndEvent(object sender, List<DuplicatedFiles> fileToClean);
 
-    public class MainController : IDisposable
+    public class MainController
     {
         public event MainControllerStartEvent OnStart = null;
         public event MainContollerEndEvent OnEnd = null;
@@ -21,11 +22,11 @@ namespace MusicFileManager
         ProgressControl progressControl = null;
         string progressMessage = null;
 
-        AudioFileChecker audioFinderToDelete = null;
-        ArchiveFileChecker archiveFinderToDelete = null;
-        ArchivedAudioFileFinder archivedAudioFinder = null;
+        //AudioFileChecker audioFinderToDelete = null;
+        //ArchiveFileChecker archiveFinderToDelete = null;
+        ArchivedAudioFileFinder archivedAudioFinderToDelete = null;
         AudioFileComparer checker = null;
-        ArchivedFileManager archiveController = null;
+        
 
         int total;
         int current;
@@ -37,8 +38,11 @@ namespace MusicFileManager
 
         //.........................................................//
 
-        IFileFinder<string, AudioFile> audioFinder = null;
-        IFileFinder<string, string> archiveFinder = null;
+        IFileFinder fileFinder = null;
+        IFileFinder audioFinder = null;
+        IFileFinder archiveFinder = null;
+        IFileFinder archivedAudioFinder = null;
+        IFileExtractor audioExtractor = null;
         
         public MainController()
         {
@@ -52,21 +56,50 @@ namespace MusicFileManager
             total = 0;
             current = 0;
 
-            audioFinderToDelete = new AudioFileChecker();
-            archiveFinderToDelete = new ArchiveFileChecker();
-            archivedAudioFinder = new ArchivedAudioFileFinder(audioFinderToDelete);
-            checker = new AudioFileComparer();
-            archiveController = new ArchivedFileManager(audioFinderToDelete);
+            checker = new AudioFileComparer();            
 
-            filetoClean = new List<DuplicatedFiles>();            
-            
+            filetoClean = new List<DuplicatedFiles>();
+            audioExtractor = new FileExtractor();
         }        
 
         public MainController(ProgressControl progressControl) : this()
         {
             this.progressControl = progressControl;
-            audioFinder = new AudioFileFinder(new AudioFileChecker(), null);
-            archiveFinder = new ArchiveFileFinder(new ArchiveFileChecker(), null);
+            fileFinder = new FileFinder(new Checker.DefaultFileChecker(), progressControl);
+            audioFinder = new FileFinder(new AudioFileChecker(), progressControl);
+            archiveFinder = new FileFinder(new ArchiveFileChecker(), progressControl);
+            archivedAudioFinder = new ArchivedAudioFileFinder(new AudioFileChecker(), progressControl);
+            //fileFinder.AddSerializedFinder(audioFinder);
+            //fileFinder.AddSerializedFinder(archiveFinder);
+            //archiveFinder.AddSerializedFinder(archivedAudioFinder);
+
+            fileFinder.OnEndAsync += fileFinder_OnEndAsync;
+            audioFinder.OnEndAsync += audioFinder_OnEndAsync;
+            archiveFinder.OnEndAsync += archiveFinder_OnEndAsync;
+            archivedAudioFinder.OnEndAsync += archivedAudioFinder_OnEndAsync;
+        }
+
+        void archivedAudioFinder_OnEndAsync(object sender, FileFinderEndEventArgs e)
+        {
+            int num = e.MatchedFiles.Count;
+        }
+
+        void archiveFinder_OnEndAsync(object sender, FileFinderEndEventArgs e)
+        {
+            int num = e.MatchedFiles.Count;
+        }
+
+        void audioFinder_OnEndAsync(object sender, FileFinderEndEventArgs e)
+        {
+            int num = e.MatchedFiles.Count;
+        }
+
+        void fileFinder_OnEndAsync(object sender, FileFinderEndEventArgs e)
+        {
+            int num = e.MatchedFiles.Count;
+
+            if (this.OnEnd != null)
+                this.OnEnd(this, filetoClean);
         }
 
         public MainController(ProgressControl progressControl, MFMOption option) : this(progressControl)            
@@ -118,61 +151,7 @@ namespace MusicFileManager
             int perc = (int)((float)current / (float)total * 100);
 
             return perc;
-        }
-
-        private List<string> GetFiles(string location, DoWorkEventArgs e)
-        {
-            List<string> allFiles = new List<string>();            
-            string[] allPaths = Directory.GetFiles(location, "*.*", SearchOption.AllDirectories);            
-            ResetCount(allPaths.Count());
-
-            for (int i = 0; i < allPaths.Count(); i++)
-            {
-                if ((e != null) && bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    break;
-                }
-
-                FileAttributes attr = File.GetAttributes(allPaths[i]);
-                if (!attr.HasFlag(FileAttributes.Directory))
-                {
-                    allFiles.Add(allPaths[i]);
-                }
-
-                IncCount();
-                progressMessage = MFMMessage.Message4;
-
-                bw.ReportProgress(CalcPercentage());
-            }
-
-            return allFiles;
-        }               
-
-        private List<string> GetArchivedFileHasAudio(List<string> archivedFiles, DoWorkEventArgs e)
-        {
-            List<string> archivedAudioFiles = new List<string>();
-            ResetCount(archivedFiles.Count());
-
-            for (int i = 0; i < archivedFiles.Count(); i++)
-            {
-                if ((e != null) && bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    break;
-                } 
-
-                if (archivedAudioFinder.CheckArchivedAudioFile(archivedFiles[i]))
-                    archivedAudioFiles.Add(archivedFiles[i]);
-
-                IncCount();
-                progressMessage = string.Format(MFMMessage.Message7, current, total);
-
-                bw.ReportProgress(CalcPercentage());
-            }
-
-            return archivedAudioFiles;
-        }
+        }                          
 
         private List<DuplicatedFiles> GetDuplicatedArchiveFiles(List<string> archivedAudioFile, List<AudioFile> audioFiles, DoWorkEventArgs e)
         {
@@ -190,14 +169,14 @@ namespace MusicFileManager
                     break;
                 }
 
-                List<string> extractedAudioFiles = archiveController.ExtractAudioFilesArchivedFile(archivedAudioFile[i]);
+                List<string> extractedAudioFiles = audioExtractor.ExtractMathcedFiles(archivedAudioFile[i], new AudioFileChecker());
 
                 //여러개의 음악파일이 존재하고 옵션에서 처리 안하게 되어있으면 건너뛴다.
                 if (option != null)
                 {
                     if ((extractedAudioFiles.Count > 1) && !option.DeleteArchiveWithMulipleAudio)
                     {
-                        archiveController.CleanExtractedFiles();
+                        audioExtractor.CleanExtractedFiles();
                         continue;
                     }
                 }                
@@ -253,7 +232,7 @@ namespace MusicFileManager
                         duplicatedArchives.Add(d);  
                 }                    
 
-                archiveController.CleanExtractedFiles();
+                audioExtractor.CleanExtractedFiles();
 
                 bw.ReportProgress(CalcPercentage());
             }
@@ -350,28 +329,32 @@ namespace MusicFileManager
         }
 
         public void Run(bool aSync, string directory)
-        {            
-            if (this.OnStart != null)
-                this.OnStart(this);            
+        {
+            fileFinder.GetMatchedFilesAsync(directory);
 
-            if (aSync)
-                bw.RunWorkerAsync(directory);
-            else
-            {
-                Process();
+            //if (this.OnStart != null)
+            //    this.OnStart(this);            
 
-                if (this.OnEnd != null)
-                    this.OnEnd(this, filetoClean);
-            }
+            //if (aSync)
+            //    bw.RunWorkerAsync(directory);
+            //else
+            //{
+            //    Process();
+
+            //    if (this.OnEnd != null)
+            //        this.OnEnd(this, filetoClean);
+            //}
         }
 
         private void Process(DoWorkEventArgs e = null)
-        {
-            List<string> allFiles = GetFiles(e.Argument.ToString(), e);            
-            //List<AudioFile> audioFiles = audioFinder.GetMatchedFiles(allFiles);
-            //List<string> archivedFiles = GetArchivedFiles(allFiles, e);
-            List<string> archivedFiles = archiveFinder.GetMatchedFiles(allFiles);
-            List<string> archivedAudioFiles = GetArchivedFileHasAudio(archivedFiles, e);
+        {           
+            //List<string> allFiles = fileFinder.GetMatchedFiles(e.Argument.ToString());
+            //List<string> audioFiles = audioFinder.GetMatchedFiles(allFiles);
+            //List<string> archivedFiles = archiveFinder.GetMatchedFiles(allFiles);
+            //List<string> archivedAudioFiles = archivedAudioFinder.GetMatchedFiles(archivedFiles);                     
+
+
+
             //List<DuplicatedFiles> extractedArchiveAudioFiles = GetDuplicatedArchiveFiles(archivedFiles, audioFiles, e);
             //List<DuplicatedFiles> duplicatedAudioFiles = GetDuplicatedAudioFiles(audioFiles, e);
             //filetoClean.AddRange(extractedArchiveAudioFiles);
@@ -381,15 +364,6 @@ namespace MusicFileManager
         public void Cancel()
         {
             bw.CancelAsync();
-        }
-
-        public void Dispose()
-        {
-            if (bw != null)
-            {
-                bw.CancelAsync();
-                bw.Dispose();
-            }
         }
     }
 }

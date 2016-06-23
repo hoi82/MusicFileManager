@@ -14,20 +14,23 @@ namespace MusicFileManager
     /// <summary>
     /// 
     /// </summary>
-    public class ArchivedAudioFileFinder
-    {        
+    public sealed class ArchivedAudioFileFinder : AbstractFileFinder
+    {     
+        public ArchivedAudioFileFinder(IFileChecker fileChecker) : base(fileChecker) 
+        {
+            extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
+        }
+
+        public ArchivedAudioFileFinder(IFileChecker fileChecker, ProgressControl progressControl)
+            : this(fileChecker) 
+        {
+            this.progressControl = progressControl;
+        }
+
         string extractDir = null;
         const string EXTRACT_DIR = "Extracts";
         List<string> extractedFiles = new List<string>();
-        List<string> extractedDir = new List<string>();
-
-        AudioFileChecker audioFinder = null;        
-
-        public ArchivedAudioFileFinder(AudioFileChecker audioFinder)
-        {
-            extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
-            this.audioFinder = audioFinder;            
-        }
+        List<string> extractedDir = new List<string>();          
 
         public bool CheckArchivedAudioFile(string archivedFile)
         {
@@ -54,7 +57,7 @@ namespace MusicFileManager
 
                     entry.Extract(extractDir, ExtractExistingFileAction.OverwriteSilently);
                     
-                    if (audioFinder.IsVaildFile(ref extractedPath))
+                    if (fileChecker.IsVaildFile(ref extractedPath))
                     {
                         IsAudio = true;
                         break;
@@ -98,7 +101,7 @@ namespace MusicFileManager
             }
         }
 
-        private void DeleteFile(string fileName)
+        void DeleteFile(string fileName)
         {
             if (System.IO.File.Exists(fileName))
             {
@@ -107,13 +110,38 @@ namespace MusicFileManager
             }
         }
 
-        private void DeleteDirectroy(string dirPath)
+        void DeleteDirectroy(string dirPath)
         {
             if (Directory.Exists(dirPath))
             {
                 DirectoryInfo di = new DirectoryInfo(dirPath);
                 di.Delete(true);
             }
-        }             
+        }
+
+        protected override void Process(DoWorkEventArgs e = null)
+        {
+            if (allFiles == null)
+                return;
+
+            ResetCount(allFiles.Count());
+
+            for (int i = 0; i < allFiles.Count(); i++)
+            {
+                if ((e != null) && bw.CancellationPending)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+
+                if (CheckArchivedAudioFile(allFiles[i]))
+                    mathcedFiles.Add(allFiles[i]);
+
+                IncCount();
+                progressMessage = string.Format(MFMMessage.Message7, current, total);
+
+                bw.ReportProgress(CalcPercentage());
+            }            
+        }
     }
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using Ionic.Zip;
 
 namespace MusicFileManager
 {    
@@ -22,13 +20,6 @@ namespace MusicFileManager
             signtures.Add(new FileSignature(FileSignatureType.Header, new byte[] { 80, 75, 83, 112, 88 }, ".zip")); //PKSFX
             signtures.Add(new FileSignature(FileSignatureType.Header, new byte[] {87, 105, 110, 90, 105, 112}, ".zip")); //Winzip
 
-        }
-
-        //public bool CheckArchivedFile(string file)
-        //{
-        //    if (!System.IO.File.Exists(file))
-        //        return false;
-        //    return ZipFile.IsZipFile(file);
-        //}              
+        }            
     }
 }

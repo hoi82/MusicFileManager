@@ -59,7 +59,7 @@ namespace MusicFileManager
             } 
         }
 
-        public ModalDialogControl()
+        ModalDialogControl()
         {
             InitializeComponent();            
         }        
@@ -87,6 +87,19 @@ namespace MusicFileManager
             frame = new DispatcherFrame(true);            
             Dispatcher.PushFrame(frame);
             return result;
+        }
+
+        public DialogResult ShowDialog(string message)
+        {
+            this.Message = message;
+            return ShowDialog();
+        }
+
+        public DialogResult ShowDialog(string caption, string message)
+        {
+            this.Caption = caption;
+            this.Message = message;
+            return ShowDialog();
         }
 
         private void CloseDisplay()

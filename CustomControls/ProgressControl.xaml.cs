@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace MusicFileManager
 {
@@ -80,6 +81,8 @@ namespace MusicFileManager
         {
             prgProgress.Value = percentage;
             txbProgress.Text = text;
+            //Dispatcher.Invoke(() => prgProgress.Value = percentage, DispatcherPriority.Send);
+            //Dispatcher.Invoke(() => txbProgress.Text = text, DispatcherPriority.Send);
         }
 
         public void InitializeDisplay()
