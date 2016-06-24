@@ -15,12 +15,16 @@ namespace MusicFileManager
         public FileFinder(IFileChecker fileChecker, ProgressControl progressControl)
             : base(fileChecker, progressControl) { }
 
+        public FileFinder(IFileChecker fileChecker, ProgressControl progressControl, string progressMessageOnStep)
+            : base(fileChecker, progressControl, progressMessageOnStep) { }
+
         protected override void Process(System.ComponentModel.DoWorkEventArgs e = null)
         {
             if (allFiles == null)
                 return;
 
             ResetCount(allFiles.Count());
+            mathcedFiles = new List<string>();
 
             for (int i = 0; i < allFiles.Count(); i++)
             {
@@ -38,7 +42,7 @@ namespace MusicFileManager
                 }
 
                 IncCount();
-                progressMessage = string.Format(MFMMessage.Message6, current, total);
+                progressMessage = string.Format(progressMessageOnStep, current, total);
 
                 bw.ReportProgress(CalcPercentage());                
             }

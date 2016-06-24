@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.IO;
 
 namespace MusicFileManager
-{
+{    
     public class FileFinderEndEventArgs : EventArgs
     {
         List<string> matchedFiles = null;
@@ -32,15 +32,15 @@ namespace MusicFileManager
 
         //Properties
         protected IFileChecker fileChecker = null;
-        protected List<string> mathcedFiles = new List<string>();
+        protected List<string> mathcedFiles = null;
         protected List<string> allFiles = null;
 
         //Serialization
-        protected List<IFileFinder> serializedFinder = null;        
+        protected IFileFinder serializedFinder = null;  
 
         protected AbstractFileFinder() : base()
         {
-            serializedFinder = new List<IFileFinder>();
+            
         }
 
         protected AbstractFileFinder(IFileChecker fileChecker) : this()
@@ -52,7 +52,13 @@ namespace MusicFileManager
             : this(fileChecker)
         {
             this.progressControl = progressControl;
-        }             
+        }
+
+        public AbstractFileFinder(IFileChecker fileChecker, ProgressControl progressControl, string progressMessageOnStep)
+            : this(fileChecker, progressControl)
+        {
+            this.progressMessageOnStep = progressMessageOnStep;
+        }
 
         public List<string> GetMatchedFiles(string directory)
         {
@@ -88,14 +94,10 @@ namespace MusicFileManager
 
         protected override void OnEndProcedure()
         {
+            working = false;
+
             if (this.OnEndAsync != null)
                 this.OnEndAsync(this, new FileFinderEndEventArgs(mathcedFiles));
-
-            for (int i = 0; i < serializedFinder.Count(); i++)
-            {
-                serializedFinder[i].GetMatchedFilesAsync(mathcedFiles);
-                serializedFinder[i].WaitAsync();
-            }
         }
 
         protected override void OnStartProcedure()
@@ -105,15 +107,18 @@ namespace MusicFileManager
         }
 
 
-        public void AddSerializedFinder(IFileFinder finder)
+        public void SetSerializedFinder(IFileFinder finder, bool usePreMathcedFiles = false)
         {
-            this.serializedFinder.Add(finder);
+            serializedFinder = finder;
+            this.OnEndAsync += new FileFinderEndEventHandler(
+                delegate 
+                {
+                    if (usePreMathcedFiles)
+                        finder.GetMatchedFilesAsync(allFiles);
+                    else
+                        finder.GetMatchedFilesAsync(mathcedFiles);
+                }
+                );
         }
-
-
-        public void WaitAsync()
-        {
-            this.WaitDone();
-        }        
     }
 }

@@ -14,13 +14,12 @@ namespace MusicFileManager.DisplayableWorker
 
         protected ProgressControl progressControl = null;
         protected string progressMessage = null;
+        protected string progressMessageOnStep = null;
 
         protected int total = 0;
         protected int current = 0;
 
-        protected bool working = false;
-
-        protected AutoResetEvent resetEvent = new AutoResetEvent(false);
+        protected bool working = false;        
 
         protected DisplayableWorker()
         {
@@ -41,9 +40,7 @@ namespace MusicFileManager.DisplayableWorker
         }        
 
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            this.OnEndProcedure();
-
+        {                   
             if (e.Cancelled)
             {
                 if ((progressControl != null) && working)
@@ -53,7 +50,9 @@ namespace MusicFileManager.DisplayableWorker
             {
                 if ((progressControl != null) && working)
                     progressControl.ProgressDisplay(100, "Complete");
-            }
+            }            
+
+            OnEndProcedure();
         }
 
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -64,8 +63,7 @@ namespace MusicFileManager.DisplayableWorker
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            Process(e);
-            resetEvent.Set();
+            Process(e);            
         }
 
         protected void ResetCount(int total)
@@ -89,11 +87,6 @@ namespace MusicFileManager.DisplayableWorker
         public void CancelAsync()
         {
             bw.CancelAsync();
-        }
-
-        public void WaitDone()
-        {
-            resetEvent.WaitOne();
         }
 
         public void Dispose()

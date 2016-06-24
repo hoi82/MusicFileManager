@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace MusicFileManager.DuplicationEvaluator
 {
-    public interface IDuplicationFilter<DataType>
+    public interface IDuplicationEvaluatorOption
     {
-        bool SufficientData(DataType data);
+        bool SatifyOption(object data);
     }
 }

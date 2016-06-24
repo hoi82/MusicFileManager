@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MusicFileManager.DuplicationEvaluator
 {
-    public interface IDuplicationEvaluator<Type1, Type2>
+    public interface IDuplicationEvaluator
     {
-        List<DuplicatedFiles> GetDuplications(List<Type1> list1, List<Type2> list2);
+        List<DuplicatedFiles> GetDuplications(List<string> list);
+        List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2);
     }
 }

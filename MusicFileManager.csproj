@@ -87,11 +87,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Checker\AbstractFileChecker.cs" />
+    <Compile Include="Checker\ArchivedAudioFileChecker.cs" />
     <Compile Include="Checker\DefaultFileChecker.cs" />
     <Compile Include="DisplayableWorker\DisplayableWorker.cs" />
+    <Compile Include="DuplicationEvaluator\ArchiveDuplicationChecker.cs" />
+    <Compile Include="DuplicationEvaluator\ArchiveDuplicationEvaluator.cs" />
+    <Compile Include="DuplicationEvaluator\AudioDuplicationChecker.cs" />
     <Compile Include="DuplicationEvaluator\AudioDuplicationEvaluator.cs" />
     <Compile Include="DuplicationEvaluator\IDuplicationEvaluator.cs" />
-    <Compile Include="DuplicationEvaluator\IDuplicationFilter.cs" />
+    <Compile Include="DuplicationEvaluator\IDuplicationEvaluatorOption.cs" />
+    <Compile Include="DuplicationEvaluator\IDuplicationChecker.cs" />
     <Compile Include="Extractor\IFileExtractor.cs" />
     <Compile Include="Finder\AbstractFileFinder.cs" />
     <Compile Include="Extractor\FileExtractor.cs" />
@@ -110,6 +115,7 @@
     <Compile Include="BindingConverter\TimeSpanToDoubleConverter.cs" />
     <Compile Include="MainController.cs" />
     <Compile Include="Data\DuplicatedFiles.cs" />
+    <Compile Include="SerializedAsync\ISerializedAsync.cs" />
     <Page Include="CustomControls\FileToCleanControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -124,7 +130,6 @@
     </Compile>
     <Compile Include="Checker\ArchiveFileChecker.cs" />
     <Compile Include="DuplicationEvaluator\AudioFileComparer.cs" />
-    <Compile Include="Finder\ArchivedAudioFileFinder.cs" />
     <Compile Include="Checker\AudioFileChecker.cs" />
     <Compile Include="Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>

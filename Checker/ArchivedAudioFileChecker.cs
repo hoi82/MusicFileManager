@@ -3,44 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TagLib;
 using Ionic.Zip;
-using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace MusicFileManager
-{       
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class ArchivedAudioFileFinder : AbstractFileFinder
-    {     
-        public ArchivedAudioFileFinder(IFileChecker fileChecker) : base(fileChecker) 
-        {
-            extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
-        }
-
-        public ArchivedAudioFileFinder(IFileChecker fileChecker, ProgressControl progressControl)
-            : this(fileChecker) 
-        {
-            this.progressControl = progressControl;
-        }
-
+namespace MusicFileManager.Checker
+{
+    public class ArchivedAudioFileChecker : IFileChecker
+    {
         string extractDir = null;
         const string EXTRACT_DIR = "Extracts";
         List<string> extractedFiles = new List<string>();
-        List<string> extractedDir = new List<string>();          
+        List<string> extractedDir = new List<string>();
 
-        public bool CheckArchivedAudioFile(string archivedFile)
+        IFileChecker audioCheker = null;
+        
+        public ArchivedAudioFileChecker(IFileChecker audioChecker)
         {
-            if (!System.IO.File.Exists(archivedFile))
+            extractDir = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
+            this.audioCheker = audioChecker;
+        }
+
+        public bool IsVaildFile(ref string fileName, bool fixExtensionIfVaild = false)
+        {
+            if (!System.IO.File.Exists(fileName))
                 return false;
 
-            bool IsAudio = false;            
+            bool IsAudio = false;
             try
             {
-                ZipFile z = ZipFile.Read(archivedFile);
+                ZipFile z = ZipFile.Read(fileName);
                 foreach (ZipEntry entry in z.Entries)
                 {
                     string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
@@ -56,17 +48,17 @@ namespace MusicFileManager
                     }
 
                     entry.Extract(extractDir, ExtractExistingFileAction.OverwriteSilently);
-                    
-                    if (fileChecker.IsVaildFile(ref extractedPath))
+
+                    if (audioCheker.IsVaildFile(ref extractedPath))
                     {
                         IsAudio = true;
                         break;
-                    }                    
+                    }
                 }
-                z.Dispose();                
+                z.Dispose();
             }
             catch (Exception)
-            {                                
+            {
                 throw;
             }
             finally
@@ -117,31 +109,6 @@ namespace MusicFileManager
                 DirectoryInfo di = new DirectoryInfo(dirPath);
                 di.Delete(true);
             }
-        }
-
-        protected override void Process(DoWorkEventArgs e = null)
-        {
-            if (allFiles == null)
-                return;
-
-            ResetCount(allFiles.Count());
-
-            for (int i = 0; i < allFiles.Count(); i++)
-            {
-                if ((e != null) && bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    break;
-                }
-
-                if (CheckArchivedAudioFile(allFiles[i]))
-                    mathcedFiles.Add(allFiles[i]);
-
-                IncCount();
-                progressMessage = string.Format(MFMMessage.Message7, current, total);
-
-                bw.ReportProgress(CalcPercentage());
-            }            
         }
     }
 }
