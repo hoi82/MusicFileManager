@@ -89,14 +89,18 @@
     <Compile Include="Checker\AbstractFileChecker.cs" />
     <Compile Include="Checker\ArchivedAudioFileChecker.cs" />
     <Compile Include="Checker\DefaultFileChecker.cs" />
-    <Compile Include="DisplayableWorker\DisplayableWorker.cs" />
-    <Compile Include="DuplicationEvaluator\ArchiveDuplicationChecker.cs" />
-    <Compile Include="DuplicationEvaluator\ArchiveDuplicationEvaluator.cs" />
-    <Compile Include="DuplicationEvaluator\AudioDuplicationChecker.cs" />
-    <Compile Include="DuplicationEvaluator\AudioDuplicationEvaluator.cs" />
-    <Compile Include="DuplicationEvaluator\IDuplicationEvaluator.cs" />
-    <Compile Include="DuplicationEvaluator\IDuplicationEvaluatorOption.cs" />
-    <Compile Include="DuplicationEvaluator\IDuplicationChecker.cs" />
+    <Compile Include="Cleaner\IFileCleaner.cs" />
+    <Compile Include="Worker\DisplayableWorker.cs" />
+    <Compile Include="Duplication\AbstractDuplicationEvaluator.cs" />
+    <Compile Include="Duplication\ArchiveDuplicationChecker.cs" />
+    <Compile Include="Duplication\ArchiveDuplicationEvaluator.cs" />
+    <Compile Include="Duplication\ArchiveDuplicationEvaluatorOption.cs" />
+    <Compile Include="Duplication\AudioDuplicationChecker.cs" />
+    <Compile Include="Duplication\AudioDuplicationEvaluator.cs" />
+    <Compile Include="Duplication\AudioDuplicationEvaluatorOption.cs" />
+    <Compile Include="Duplication\IDuplicationEvaluator.cs" />
+    <Compile Include="Duplication\IDuplicationEvaluatorOption.cs" />
+    <Compile Include="Duplication\IDuplicationChecker.cs" />
     <Compile Include="Extractor\IFileExtractor.cs" />
     <Compile Include="Finder\AbstractFileFinder.cs" />
     <Compile Include="Extractor\FileExtractor.cs" />
@@ -129,7 +133,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Checker\ArchiveFileChecker.cs" />
-    <Compile Include="DuplicationEvaluator\AudioFileComparer.cs" />
     <Compile Include="Checker\AudioFileChecker.cs" />
     <Compile Include="Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>

@@ -44,7 +44,7 @@ namespace MusicFileManager
         }        
 
         public string OriginalFile { get { return this.originalFile; } }
-        public string DuplicatedFile { get { return this.duplicatedFile; } }
+        public string DuplicatedFile { get { return this.duplicatedFile; } set { this.duplicatedFile = value; } }
         public DuplicateType SimilarType { get { return this.similarType; } }        
     }
 }

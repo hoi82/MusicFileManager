@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace MusicFileManager.DuplicationEvaluator
+namespace MusicFileManager.Duplication
 {
-    public class AudioDuplicationChecker : IDuplicationChcker<string>
+    public class AudioDuplicationChecker : IDuplicationChcker
     {
         double nameSimilarity = 0.9;
         public DuplicatedFiles CheckDuplication(string source, string target)

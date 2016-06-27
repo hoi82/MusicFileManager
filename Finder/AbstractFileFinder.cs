@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.IO;
+using MusicFileManager.Worker;
 
 namespace MusicFileManager
 {    
@@ -21,14 +22,13 @@ namespace MusicFileManager
     }
 
     public delegate void FileFinderStartEventHandler(object sender, EventArgs e);
-    public delegate void FileFinderEndEventHandler(object sender, FileFinderEndEventArgs e);
-    public abstract class AbstractFileFinder
-        : DisplayableWorker.DisplayableWorker, IFileFinder
+    public delegate void FileFinderEndEventHandler(object sender, FileFinderEndEventArgs e);    
+    public abstract class AbstractFileFinder : DisplayableWorker, IFileFinder
     {
         //Event
         public event FileFinderStartEventHandler OnStartAsync = null;
 
-        public event FileFinderEndEventHandler OnEndAsync = null;        
+        public event FileFinderEndEventHandler OnEndAsync = null;               
 
         //Properties
         protected IFileChecker fileChecker = null;
@@ -119,6 +119,6 @@ namespace MusicFileManager
                         finder.GetMatchedFilesAsync(mathcedFiles);
                 }
                 );
-        }
+        }        
     }
 }

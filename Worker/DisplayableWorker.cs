@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Threading;
 
-namespace MusicFileManager.DisplayableWorker
+namespace MusicFileManager.Worker
 {
     public abstract class DisplayableWorker : IDisposable
     {
@@ -31,10 +31,10 @@ namespace MusicFileManager.DisplayableWorker
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
             total = 0;
-            current = 0;
+            current = 0;            
         }
 
-        public DisplayableWorker(ProgressControl progressControl)
+        public DisplayableWorker(ProgressControl progressControl) : this()
         {
             this.progressControl = progressControl;
         }        
@@ -63,7 +63,7 @@ namespace MusicFileManager.DisplayableWorker
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            Process(e);            
+            Process(e);
         }
 
         protected void ResetCount(int total)
@@ -95,7 +95,7 @@ namespace MusicFileManager.DisplayableWorker
             {
                 bw.CancelAsync();
                 bw.Dispose();
-            }
+            }                        
         }
 
         protected abstract void Process(DoWorkEventArgs e = null);

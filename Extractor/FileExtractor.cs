@@ -14,7 +14,18 @@ namespace MusicFileManager.Extractor
         const string EXTRACT_DIR = "Extracts";
         string extractPath = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
         List<string> extractedFiles = new List<string>();
-        List<string> extractedDir = new List<string>();                                   
+        List<string> extractedDir = new List<string>();
+        IFileChecker fileChecker = null;
+
+        public FileExtractor()
+        {
+
+        }
+
+        public FileExtractor(IFileChecker fileChecker)
+        {
+            this.fileChecker = fileChecker;
+        }
 
         public void CleanExtractedFiles()
         {
@@ -58,7 +69,7 @@ namespace MusicFileManager.Extractor
             }
         }
 
-        public List<string> ExtractMathcedFiles(string archiveFile, IFileChecker checker)
+        public List<string> ExtractMathcedFiles(string archiveFile, IFileChecker checker = null)
         {
             List<string> matchedFiles = new List<string>();
             ZipFile z = null;
@@ -77,7 +88,10 @@ namespace MusicFileManager.Extractor
 
                     entry.Extract(extractPath);
 
-                    if (checker.IsVaildFile(ref extractedPath))
+                    if (checker != null)
+                        fileChecker = checker;
+                    
+                    if (fileChecker.IsVaildFile(ref extractedPath))
                     {
                         matchedFiles.Add(extractedPath);
                         extractedFiles.Add(extractedPath);
@@ -104,6 +118,12 @@ namespace MusicFileManager.Extractor
         public void SetRootDirectory(string directory)
         {
             this.extractPath = directory;
+        }
+
+
+        public void SetFileChecker(IFileChecker checker)
+        {
+            this.fileChecker = checker;
         }
     }
 }

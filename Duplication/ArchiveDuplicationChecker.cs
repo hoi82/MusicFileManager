@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace MusicFileManager.DuplicationEvaluator
+namespace MusicFileManager.Duplication
 {
-    public class ArchiveDuplicationChecker : IDuplicationChcker<string>
+    public class ArchiveDuplicationChecker : IDuplicationChcker
     {
-        double dataSimilarity = 0.95;
+        double dataSimilarity = 0.99;
         double maximumDataBufferRatio = 0.1;
         long minimumDataBuffer = 1024;
 

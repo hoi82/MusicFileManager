@@ -33,9 +33,7 @@ namespace MusicFileManager
 
         RegistryKey regKey = null;
 
-        MainController controller = null;
-
-        FileToCleanControl ctrlClean = null;
+        MainController controller = null;        
 
         public MainWindow()
         {
@@ -43,13 +41,9 @@ namespace MusicFileManager
 
             InitializeRegistryKey();                        
 
-            controller = new MainController(prgControl, ctrlOption);
+            controller = new MainController(this);
             controller.OnStart += controller_OnStart;
-            controller.OnEnd += controller_OnEnd;
-
-            ctrlClean = new FileToCleanControl(grdPopUp);
-            ctrlClean.OnOK += ctrlClean_OnOK;
-            ctrlClean.OnCancel += ctrlClean_OnCancel;
+            controller.OnEnd += controller_OnEnd;            
         }
 
         void ctrlClean_OnCancel(object sender)
@@ -64,11 +58,10 @@ namespace MusicFileManager
             m.ShowDialog("Ok");
         }
 
-        void controller_OnEnd(object sender, List<DuplicatedFiles> fileToClean)
+        void controller_OnEnd(object sender)
         {
             btnFind.IsEnabled = true;
-            btnCancel.IsEnabled = false;                        
-            ctrlClean.Display(fileToClean);            
+            btnCancel.IsEnabled = false;                                               
         }
 
         void controller_OnStart(object sender)

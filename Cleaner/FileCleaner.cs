@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.IO;
+using MusicFileManager.Worker;
 
-namespace MusicFileManager
+namespace MusicFileManager.Cleaner
 {
     public class FileCleanerEndEventArgs : EventArgs
     {
@@ -23,70 +24,28 @@ namespace MusicFileManager
         public List<string> UnDeletedFiles { get { return this.unDeletedFiles; } }
     }
 
+    public delegate void FileCleanerStartEventHandler(object sender);
     public delegate void FileCleanerEndEventHandler(object sender, FileCleanerEndEventArgs e);
-    public class FileCleaner
+    public class FileCleaner : DisplayableWorker, IFileCleaner
     {
         List<string> files = null;        
         List<string> deletedFiles = new List<string>();
         List<string> undeletedFiles = new List<string>();
-        BackgroundWorker bw = null;
-        ProgressControl progressControl = null;
 
-        public event FileCleanerEndEventHandler OnEnd = null;
+        public event FileCleanerStartEventHandler OnStartAsync = null;
 
-        int current = 0;
-        int total = 0;
-        string progressMessage = null;
+        public event FileCleanerEndEventHandler OnEndAsync = null;
 
-        public FileCleaner()
+        public FileCleaner() : base()
         {
-            bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-            bw.WorkerReportsProgress = true;
 
-            bw.DoWork += bw_DoWork;
-            bw.ProgressChanged += bw_ProgressChanged;
-            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
         }
 
-        public FileCleaner(List<string> files) : this()
+        public FileCleaner(ProgressControl progressControl)
+            : base(progressControl)
         {
-            this.files = files;            
-        }
-
-        public FileCleaner(List<string> files, ProgressControl progressControl)
-            : this(files)
-        {
-            this.progressControl = progressControl;
-        }
-
-        void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (this.OnEnd != null)
-                this.OnEnd(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
-
-            if (e.Cancelled)
-            {
-                if (progressControl != null)
-                    progressControl.ProgressDisplay(0, "Cancelled");
-            }
-            else
-            {
-                if (progressControl != null)
-                    progressControl.ProgressDisplay(100, "Complete");
-            }
-        }
-
-        void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            if (progressControl != null)
-                progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
-        }
-
-        void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            CleanFiles(e);
-        }
+            
+        }        
 
         bool IsFileLocked(FileInfo fi)
         {
@@ -124,27 +83,27 @@ namespace MusicFileManager
         public void CancelCleanAsync()
         {
             bw.CancelAsync();
-        }
+        }        
 
-        private void ResetCount(int total)
+        public void CleanFiles(bool aSync, List<string> files)
         {
-            this.total = total;
-            current = 0;
+            this.files = files;
+            if (aSync)
+            {
+                bw.RunWorkerAsync();
+            }
+            else
+            {
+                Process();
+
+                if (this.OnEndAsync != null)
+                {
+                    this.OnEndAsync(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
+                }
+            }                
         }
 
-        private void IncCount()
-        {
-            current++;
-        }
-
-        private int CalcPercentage()
-        {
-            int perc = (int)((float)current / (float)total * 100);
-
-            return perc;
-        }
-
-        void CleanFiles(DoWorkEventArgs e = null)
+        protected override void Process(DoWorkEventArgs e = null)
         {
             if (files == null) return;
 
@@ -167,21 +126,21 @@ namespace MusicFileManager
                     FileInfo fi = new FileInfo(files[i]);
                     if (IsFileLocked(fi))
                     {
-                        fi.Delete();
-                        deletedFiles.Add(files[i]);
+                        undeletedFiles.Add(files[i]);                        
                     }
                     else
                     {
-                        undeletedFiles.Add(files[i]);
-                    }                        
+                        //fi.Delete();
+                        deletedFiles.Add(files[i]);
+                    }
                 }
                 catch (UnauthorizedAccessException)
                 {
-                                           
+                    undeletedFiles.Add(files[i]);
                 }
                 catch (IOException)
                 {
-                    
+                    undeletedFiles.Add(files[i]);
                 }
 
                 IncCount();
@@ -191,24 +150,16 @@ namespace MusicFileManager
             }
         }
 
-        public void CleanFiles(bool aSync, List<string> files = null)
+        protected override void OnEndProcedure()
         {
-            if (files != null)
-                this.files = files;
-
-            if (aSync)
-            {
-                bw.RunWorkerAsync();
-            }
-            else
-            {
-                CleanFiles();
-
-                if (this.OnEnd != null)
-                {
-                    this.OnEnd(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
-                }
-            }                
+            if (this.OnEndAsync != null)
+                this.OnEndAsync(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
         }
+
+        protected override void OnStartProcedure()
+        {
+            if (this.OnStartAsync != null)
+                this.OnStartAsync(this);
+        }        
     }
 }

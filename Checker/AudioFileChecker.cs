@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicFileManager
+namespace MusicFileManager.Checker
 {    
     public sealed class AudioFileChecker : AbstractFileChecker
     {              

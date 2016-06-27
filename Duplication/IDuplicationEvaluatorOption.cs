@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicFileManager.DuplicationEvaluator
+namespace MusicFileManager.Duplication
 {
     public interface IDuplicationEvaluatorOption
     {
