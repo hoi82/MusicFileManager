@@ -133,7 +133,8 @@ namespace MusicFileManager
 
         public void Run(bool aSync, string directory)
         {
-            fileFinder.GetMatchedFilesAsync(directory);                        
+            fileFinder.GetMatchedFilesAsync(directory); 
+            //DuplicatedFiles d = audioDuplicationChecker.CheckDuplication(@"C:\내꺼\Music\アニメ\01. Singing！.mp3", @"C:\내꺼\Music\アニメ\2011 top 100\10. 01. Singing！.mp3");    
         }        
     }
 }

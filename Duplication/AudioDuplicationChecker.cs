@@ -34,7 +34,7 @@ namespace MusicFileManager.Duplication
                 d = new DuplicatedFiles(origin, duplicated, DuplicateType.DuplicateAudioTag);
             }
 
-            return null;
+            return d;
         }
 
         bool IsParentOrLowTreedFolder(string source, string target)
@@ -77,19 +77,23 @@ namespace MusicFileManager.Duplication
 
         string RemoveUselessString(string input)
         {
-            string result = input;
-            result = Regex.Replace(result, "^[0-9]+", "", RegexOptions.IgnoreCase);
+            string result = input.Trim();
+            //트랙번호 제거 : 예 - 01. Music.mp3
+            //result = Regex.Replace(result, "^[0-9]+", "", RegexOptions.IgnoreCase); 
+            result = Regex.Replace(result, "^([0-9]+[^a-z]*)+", "", RegexOptions.IgnoreCase); 
+            //구분기호 제거 : 예 - (Name)Music.mp3
             result = Regex.Replace(result, "^[\\[\\(].*[\\]\\)]", "", RegexOptions.IgnoreCase);
+            //기호 제거 : 예 - ----Music------.mp3
             result = Regex.Replace(result, "[^a-z0-9]+", "", RegexOptions.IgnoreCase);
             return result;
         }
 
         double GetFileSimilarityWithName(string name1, string name2)
         {
-            if ((name1 == name2) && (!string.IsNullOrEmpty(name1)))
+            if ((name1.Equals(name2)) && (!string.IsNullOrEmpty(name1)))
                 return 1.0;
 
-            if ((name1 != name2) && (GetFileNameSimilarityFromStart(name1, name2) > 0.4))
+            if ((!name1.Equals(name2)) && (GetFileNameSimilarityFromStart(name1, name2) < 0.4))
             {
                 return 0;
             }
@@ -100,11 +104,15 @@ namespace MusicFileManager.Duplication
 
         double GetFileSimilarityWithTag(string file1, string file2)
         {
+            TagLib.File tf1 = null;
+            TagLib.File tf2 = null;
             try
             {
-                TagLib.Tag t1 = TagLib.File.Create(file1).Tag;
-                TagLib.Tag t2 = TagLib.File.Create(file2).Tag;
-
+                tf1 = TagLib.File.Create(file1);
+                tf2 = TagLib.File.Create(file2);
+                TagLib.Tag t1 = tf1.Tag;
+                TagLib.Tag t2 = tf2.Tag;
+                                
                 int sPoint = 0;
                 int tPoint = 0;
 
@@ -145,6 +153,11 @@ namespace MusicFileManager.Duplication
             }
             catch (Exception)
             {
+                if (tf1 != null)
+                    tf1.Dispose();
+
+                if (tf2 != null)
+                    tf2.Dispose();
                 return 0;
             }
         }

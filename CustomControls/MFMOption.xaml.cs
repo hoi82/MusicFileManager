@@ -38,6 +38,7 @@ namespace MusicFileManager
             AudioDurationProperty = DependencyProperty.Register("AudioDuration", typeof(TimeSpan), typeof(MFMOption), new PropertyMetadata(new TimeSpan(0,0,0)));
         }
 
+        //ThreadSafe를 위해
         //get 부분 - return Dispatcher.Invoke((()=>));
         //set 부분 - Dispatcher.BeginInvoke((Action)(()=>));
         public bool DeleteArchiveWithMulipleAudio
