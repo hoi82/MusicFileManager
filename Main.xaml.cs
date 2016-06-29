@@ -79,7 +79,7 @@ namespace MusicFileManager
 
             Binding deleteWithOutBitRateBinding = new Binding("DeleteAudioWithoutFiltering");
             deleteWithOutBitRateBinding.Source = controller;
-            deleteWithOutBitRateBinding.Mode = BindingMode.OneWayToSource;
+            deleteWithOutBitRateBinding.Mode = BindingMode.TwoWay;
             ctrlOption.SetBinding(MFMOption.DeleteAudioWithOutBitRateProperty, deleteWithOutBitRateBinding);
 
             Binding bitrateBinding = new Binding("BitRate");
