@@ -13,8 +13,8 @@ namespace MusicFileManager
         public bool IsVaildFile(ref string file, bool fixExtensionIfVaild = false)
         {
             if (!System.IO.File.Exists(file))
-                return false;
-
+                return false;            
+            
             FileStream fs = null;
             bool isValid = false;
             string ext = null;

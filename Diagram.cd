@@ -1,0 +1,373 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MusicFileManager.DuplicateTypeConverter" Collapsed="true">
+    <Position X="4.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BindingConverter\DuplicateTypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.TimeSpanToDoubleConverter" Collapsed="true">
+    <Position X="6" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BindingConverter\TimeSpanToDoubleConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.AbstractFileChecker" Collapsed="true">
+    <Position X="0.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAgAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Checker\AbstractFileChecker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.Checker.ArchivedAudioFileChecker" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAEAABEAAAgAAAAEEAAAAAAAI=</HashCode>
+      <FileName>Checker\ArchivedAudioFileChecker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.ArchiveFileChecker" Collapsed="true">
+    <Position X="2.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Checker\ArchiveFileChecker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.Checker.AudioFileChecker" Collapsed="true">
+    <Position X="0.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Checker\AudioFileChecker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.Checker.DefaultFileChecker" Collapsed="true">
+    <Position X="5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Checker\DefaultFileChecker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.Cleaner.FileCleanerEndEventArgs" Collapsed="true">
+    <Position X="8.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAACAAAAAAAABAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Cleaner\FileCleaner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.Cleaner.FileCleaner" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAEIABAAAABAAAgAAAAAAAAQBAAAAAAAAgIQAAAA=</HashCode>
+      <FileName>Cleaner\FileCleaner.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.214" Collapsed="true" />
+  </Class>
+  <Class Name="MusicFileManager.FileFinderEndEventArgs" Collapsed="true">
+    <Position X="2.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAAAAA=</HashCode>
+      <FileName>Finder\AbstractFileFinder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.AbstractFileFinder" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAEAIAAAQIgAAAAQAAAAAAAARAAAAAAAAAAQAAAQ=</HashCode>
+      <FileName>Finder\AbstractFileFinder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MusicFileManager.FileFinder" Collapsed="true">
+    <Position X="4" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Finder\FileFinder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.CustomControls.MFMCleanFileControl" Collapsed="true">
+    <Position X="7.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIIAAAEQEAAHEAAAUCBAWBZ4EAAAABAglAAAXAAAsA=</HashCode>
+      <FileName>CustomControls\MFMCleanFileControl.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.CustomControls.MFMCleanFileItemControl" Collapsed="true">
+    <Position X="9.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgBAOABACAgKEQIlAEABgAAAARAUIBBABERgAAAgCgI=</HashCode>
+      <FileName>CustomControls\MFMCleanFileItemControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.MFMOption" Collapsed="true">
+    <Position X="5.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAQABAAAAgAAAAAAAAAAAAAAAABAAAAALAAAA=</HashCode>
+      <FileName>CustomControls\MFMOption.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.ModalDialogControl" Collapsed="true">
+    <Position X="7" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAkAAAAZQAAAQEAAAAAAAAACAAAaQAQAAA=</HashCode>
+      <FileName>CustomControls\ModalDialogControl.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.ProgressControl" Collapsed="true">
+    <Position X="9.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAJAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CustomControls\ProgressControl.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.AudioFile" Collapsed="true">
+    <Position X="0.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIAAAACAAAAAAAAAAAAAAAAAAIAAEAAAABAAAA=</HashCode>
+      <FileName>Data\AudioFile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.DuplicatedFiles" Collapsed="true">
+    <Position X="0.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAEgAQACABAAAgAQIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\DuplicatedFiles.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.FileSignature" Collapsed="true">
+    <Position X="2.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAQAAAABAAAAAAAAAAAAAAAAAAQAAAAEAAEAAAAE=</HashCode>
+      <FileName>Data\FileSignature.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.MFMMessage" Collapsed="true">
+    <Position X="2.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAgEAAAAEAQCAAAACAQBAAA=</HashCode>
+      <FileName>Data\MFMMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.Duplication.AbstractDuplicationEvaluator" Collapsed="true">
+    <Position X="1.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAEAAAAAABAAIAAAAAACAAAAFAAAAAAAAAAQAAAQ=</HashCode>
+      <FileName>Duplication\AbstractDuplicationEvaluator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.Duplication.ArchiveDuplicationChecker" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAQAAAAAAAAAAAAAAAEAAAAAgAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Duplication\ArchiveDuplicationChecker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MusicFileManager.Duplication.ArchiveDuplicationEvaluator" Collapsed="true">
+    <Position X="2.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAQAgAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\ArchiveDuplicationEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.Duplication.ArchiveDuplicationEvaluatorOption" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\ArchiveDuplicationEvaluatorOption.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MusicFileManager.Duplication.AudioDuplicationChecker" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABCAAAAACAAAAAAgAAEAAIgAAAgIAAAAAAEAAAAAA=</HashCode>
+      <FileName>Duplication\AudioDuplicationChecker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MusicFileManager.Duplication.AudioDuplicationEvaluator" Collapsed="true">
+    <Position X="0.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\AudioDuplicationEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.Duplication.AudioDuplicationEvaluatorOption" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\AudioDuplicationEvaluatorOption.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MusicFileManager.Duplication.DuplicationEvaluatorEndEventArgs" Collapsed="true">
+    <Position X="7.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\IDuplicationEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicFileManager.Worker.DisplayableWorker" Collapsed="true">
+    <Position X="3.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAEGCAACAAAAAAAgAAgAAAggADAAAAAEACAABAKAg=</HashCode>
+      <FileName>Worker\DisplayableWorker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.Extractor.FileExtractor" Collapsed="true">
+    <Position X="5.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAEAAAEAQQAAAAAFEAAAAAAFI=</HashCode>
+      <FileName>Extractor\FileExtractor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MusicFileManager.MainController" Collapsed="true">
+    <Position X="7.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAGABQAASAAgEAAAAABDAgAAQAHIBQQQCEAFAAI=</HashCode>
+      <FileName>MainController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="MusicFileManager.Cleaner.IFileCleaner" Collapsed="true">
+    <Position X="7" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAIQAAAA=</HashCode>
+      <FileName>Cleaner\IFileCleaner.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MusicFileManager.IFileFinder" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAIgAAAAQAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Finder\IFileFinder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="System.Windows.Data.IValueConverter" Collapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="MusicFileManager.Duplication.IDuplicationChcker" Collapsed="true">
+    <Position X="6" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\IDuplicationChecker.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MusicFileManager.Duplication.IDuplicationEvaluator" Collapsed="true">
+    <Position X="7.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Duplication\IDuplicationEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MusicFileManager.Duplication.IDuplicationEvaluatorOption" Collapsed="true">
+    <Position X="9.5" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\IDuplicationEvaluatorOption.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MusicFileManager.Extractor.IFileExtractor" Collapsed="true">
+    <Position X="5.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAFI=</HashCode>
+      <FileName>Extractor\IFileExtractor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="MusicFileManager.DialogButton" Collapsed="true">
+    <Position X="7" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAASAABAAACAAA=</HashCode>
+      <FileName>CustomControls\ModalDialogControl.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MusicFileManager.DialogResult" Collapsed="true">
+    <Position X="8.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAASAAQACBAAAAAAAAAACAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>CustomControls\ModalDialogControl.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MusicFileManager.DuplicateType" Collapsed="true">
+    <Position X="0.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAAAACAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Data\DuplicatedFiles.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MusicFileManager.FileSignatureType" Collapsed="true">
+    <Position X="2.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAEAAAA=</HashCode>
+      <FileName>Data\FileSignatureType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="MusicFileManager.Cleaner.FileCleanerStartEventHandler" Collapsed="true">
+    <Position X="8.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Cleaner\FileCleaner.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MusicFileManager.Cleaner.FileCleanerEndEventHandler" Collapsed="true">
+    <Position X="7" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Cleaner\FileCleaner.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MusicFileManager.FileFinderStartEventHandler" Collapsed="true">
+    <Position X="2.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Finder\AbstractFileFinder.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MusicFileManager.FileFinderEndEventHandler" Collapsed="true">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Finder\AbstractFileFinder.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MusicFileManager.Duplication.DuplicationEvaluatorStartEventHandler" Collapsed="true">
+    <Position X="7.75" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\IDuplicationEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MusicFileManager.Duplication.DuplicationEvaluatorEndEventHandler" Collapsed="true">
+    <Position X="6" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Duplication\IDuplicationEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MusicFileManager.MainControllerStartEvent" Collapsed="true">
+    <Position X="9.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MainController.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MusicFileManager.MainContollerEndEvent" Collapsed="true">
+    <Position X="7.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MainController.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

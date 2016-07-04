@@ -90,6 +90,12 @@
     <Compile Include="Checker\ArchivedAudioFileChecker.cs" />
     <Compile Include="Checker\DefaultFileChecker.cs" />
     <Compile Include="Cleaner\IFileCleaner.cs" />
+    <Compile Include="CustomControls\MFMCleanFileControl.xaml.cs">
+      <DependentUpon>MFMCleanFileControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\MFMCleanFileItemControl.xaml.cs">
+      <DependentUpon>MFMCleanFileItemControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Worker\DisplayableWorker.cs" />
     <Compile Include="Duplication\AbstractDuplicationEvaluator.cs" />
     <Compile Include="Duplication\ArchiveDuplicationChecker.cs" />
@@ -110,8 +116,8 @@
     <Compile Include="Cleaner\FileCleaner.cs" />
     <Compile Include="Data\FileSignature.cs" />
     <Compile Include="Data\FileSignatureType.cs" />
-    <Compile Include="CustomControls\FileToCleanControl.xaml.cs">
-      <DependentUpon>FileToCleanControl.xaml</DependentUpon>
+    <Compile Include="CustomControls\OldFileToCleanControl.xaml.cs">
+      <DependentUpon>OldFileToCleanControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Checker\IFileChecker.cs" />
     <Compile Include="Finder\IFileFinder.cs" />
@@ -120,7 +126,15 @@
     <Compile Include="MainController.cs" />
     <Compile Include="Data\DuplicatedFiles.cs" />
     <Compile Include="SerializedAsync\ISerializedAsync.cs" />
-    <Page Include="CustomControls\FileToCleanControl.xaml">
+    <Page Include="CustomControls\MFMCleanFileControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\MFMCleanFileItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\OldFileToCleanControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,6 +192,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Diagram.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

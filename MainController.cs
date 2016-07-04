@@ -42,7 +42,7 @@ namespace MusicFileManager
         List<string> archivedAudioFiles = null;
         List<DuplicatedFiles> filetoClean = null;
 
-        FileToCleanControl ctrlClean = null;
+        OldFileToCleanControl ctrlClean = null;
         
         public MainController()
         {                      
@@ -81,7 +81,7 @@ namespace MusicFileManager
             fileCleaner = new FileCleaner(window.prgControl);
             fileCleaner.OnEndAsync += fileCleaner_OnEndAsync;
 
-            ctrlClean = new FileToCleanControl(window.grdPopUp);
+            ctrlClean = new OldFileToCleanControl(window.grdPopUp);
             ctrlClean.OnOK += ctrlClean_OnOK;
             ctrlClean.OnCancel += ctrlClean_OnCancel;
         }

@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="MusicFileManager.CustomControls.MFMCleanFileItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" MouseLeave="UserControl_MouseLeave" MouseLeftButtonDown="UserControl_MouseLeftButtonDown" MouseLeftButtonUp="UserControl_MouseLeftButtonUp">
+    <Grid>
+        <Ellipse x:Name="elBack" Fill="#FFFF8484" Margin="1" x:FieldModifier="private"/>
+        <Label x:Name="lblText" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="{Binding FontFamily, ElementName=userControl, Mode=OneWay}" FontSize="{Binding FontSize, ElementName=userControl, Mode=OneWay}" Padding="0" x:FieldModifier="private" Content="{Binding IconName, ElementName=userControl}"/>
+    </Grid>
+</UserControl>

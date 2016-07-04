@@ -19,14 +19,14 @@ namespace MusicFileManager
     /// FileToCleanControl.xaml에 대한 상호 작용 논리
     /// </summary>
 
-    public class FileItem
+    public class OldFileItem
     {
         string orginalFile = null;
         string filetoClean = null;
         bool havetoClean = true;
         DuplicateType duplicateType = DuplicateType.AlreadyExtractedArchive;
-
-        public FileItem(DuplicatedFiles file)
+        
+        public OldFileItem(DuplicatedFiles file)
         {
             this.orginalFile = file.OriginalFile;
             this.filetoClean = file.DuplicatedFile;
@@ -42,15 +42,15 @@ namespace MusicFileManager
     public delegate void FileToCleanControlOnOKEventHandler(object sender, List<string> files);
     public delegate void FileToCleanControlOnCancelEventHandler(object sender);
     
-    public partial class FileToCleanControl : UserControl
+    public partial class OldFileToCleanControl : UserControl
     {
-        List<FileItem> items = new List<FileItem>();
+        List<OldFileItem> items = new List<OldFileItem>();
         Panel panel = null;
 
         public event FileToCleanControlOnOKEventHandler OnOK = null;
         public event FileToCleanControlOnCancelEventHandler OnCancel = null;
 
-        public FileToCleanControl(Panel panel)
+        public OldFileToCleanControl(Panel panel)
         {
             InitializeComponent();            
 
@@ -75,7 +75,7 @@ namespace MusicFileManager
 
             foreach (DuplicatedFiles file in files)
             {
-                items.Add(new FileItem(file));
+                items.Add(new OldFileItem(file));
             }
             //TestItemGenerate();
             dgFileList.ItemsSource = items;
@@ -85,7 +85,7 @@ namespace MusicFileManager
         {
             for (int i = 0; i < 100; i++)
             {
-                items.Add(new FileItem(new DuplicatedFiles("testorigin" + i, "testdup" + i, DuplicateType.DuplicateAudioFileName)));
+                items.Add(new OldFileItem(new DuplicatedFiles("testorigin" + i, "testdup" + i, DuplicateType.DuplicateAudioFileName)));
             }
         }
 
@@ -111,7 +111,7 @@ namespace MusicFileManager
             if (this.OnOK != null)
             {
                 List<string> files = new List<string>();
-                foreach (FileItem item in items)
+                foreach (OldFileItem item in items)
                 {
                     if (item.HaveToClean)
                         files.Add(item.FileToClean);

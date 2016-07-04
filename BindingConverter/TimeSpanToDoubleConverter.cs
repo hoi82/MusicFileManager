@@ -10,6 +10,7 @@ namespace MusicFileManager
     [ValueConversion(typeof(TimeSpan), typeof(double))]
     public class TimeSpanToDoubleConverter : IValueConverter
     {
+    
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             TimeSpan time = (TimeSpan)value;
