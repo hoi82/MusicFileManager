@@ -9,7 +9,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using Microsoft.Windows.Controls;
 using MusicFileManager;
 using System;
 using System.Diagnostics;

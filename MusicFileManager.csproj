@@ -55,11 +55,9 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\DotNetZip.1.9.8\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Windows.Shell, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
-    <Reference Include="RibbonControlsLibrary, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -75,8 +73,6 @@
     <Reference Include="taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\taglib-sharp.dll</HintPath>
     </Reference>
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -90,11 +86,11 @@
     <Compile Include="Checker\ArchivedAudioFileChecker.cs" />
     <Compile Include="Checker\DefaultFileChecker.cs" />
     <Compile Include="Cleaner\IFileCleaner.cs" />
-    <Compile Include="CustomControls\MFMCleanFileControl.xaml.cs">
-      <DependentUpon>MFMCleanFileControl.xaml</DependentUpon>
+    <Compile Include="CustomControls\MFMFileControl.xaml.cs">
+      <DependentUpon>MFMFileControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControls\MFMCleanFileItemControl.xaml.cs">
-      <DependentUpon>MFMCleanFileItemControl.xaml</DependentUpon>
+    <Compile Include="CustomControls\MFMFileItemControl.xaml.cs">
+      <DependentUpon>MFMFileItemControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Worker\DisplayableWorker.cs" />
     <Compile Include="Duplication\AbstractDuplicationEvaluator.cs" />
@@ -126,11 +122,11 @@
     <Compile Include="MainController.cs" />
     <Compile Include="Data\DuplicatedFiles.cs" />
     <Compile Include="SerializedAsync\ISerializedAsync.cs" />
-    <Page Include="CustomControls\MFMCleanFileControl.xaml">
+    <Page Include="CustomControls\MFMFileControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControls\MFMCleanFileItemControl.xaml">
+    <Page Include="CustomControls\MFMFileItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

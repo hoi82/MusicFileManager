@@ -20,7 +20,7 @@ namespace MusicFileManager.CustomControls
     /// <summary>
     /// MFMCleanFileControl.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MFMCleanFileControl : UserControl
+    public partial class MFMFileControl : UserControl
     {
         public static DependencyProperty ItemSizeProperty;
         public static DependencyProperty ItemsProperty;
@@ -35,27 +35,27 @@ namespace MusicFileManager.CustomControls
 
         Panel panel = null;
 
-        static MFMCleanFileControl()
+        static MFMFileControl()
         {
-            ItemSizeProperty = DependencyProperty.Register("ItemSize", typeof(double), typeof(MFMCleanFileControl), new PropertyMetadata(10.0));
-            ItemsProperty = DependencyProperty.Register("Items", typeof(ObservableCollection<MFMCleanFileItemControl>), typeof(MFMCleanFileControl), new PropertyMetadata(new ObservableCollection<MFMCleanFileItemControl>(), new PropertyChangedCallback(OnItemsChanged)));
-            SelectedItemForegroundProperty = DependencyProperty.Register("SelectedItemForeground", typeof(Brush), typeof(MFMCleanFileControl), new PropertyMetadata(null));
-            UnSelectedItemForegroundProperty = DependencyProperty.Register("UnSelectedItemForeground", typeof(Brush), typeof(MFMCleanFileControl), new PropertyMetadata(null));
-            SelectedItemBackgroundProperty = DependencyProperty.Register("SelectedItemBackground", typeof(Brush), typeof(MFMCleanFileControl), new PropertyMetadata(null));
-            UnSelectedItemBackgroundProperty = DependencyProperty.Register("UnSelectedItemBackground", typeof(Brush), typeof(MFMCleanFileControl), new PropertyMetadata(null));
-            ItemContentBackgroundProperty = DependencyProperty.Register("ItemContentBackground", typeof(Brush), typeof(MFMCleanFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnItemContentChanged)));
-            ItemContentForegroundProperty = DependencyProperty.Register("ItemContentForeground", typeof(Brush), typeof(MFMCleanFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnItemContentChanged)));
-            TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(MFMCleanFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnTitleChanged)));
-            EditingProperty = DependencyProperty.Register("Editing", typeof(bool), typeof(MFMCleanFileControl), new PropertyMetadata(false));
+            ItemSizeProperty = DependencyProperty.Register("ItemSize", typeof(double), typeof(MFMFileControl), new PropertyMetadata(10.0));
+            ItemsProperty = DependencyProperty.Register("Items", typeof(ObservableCollection<MFMFileItemControl>), typeof(MFMFileControl), new PropertyMetadata(new ObservableCollection<MFMFileItemControl>(), new PropertyChangedCallback(OnItemsChanged)));
+            SelectedItemForegroundProperty = DependencyProperty.Register("SelectedItemForeground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null));
+            UnSelectedItemForegroundProperty = DependencyProperty.Register("UnSelectedItemForeground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null));
+            SelectedItemBackgroundProperty = DependencyProperty.Register("SelectedItemBackground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null));
+            UnSelectedItemBackgroundProperty = DependencyProperty.Register("UnSelectedItemBackground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null));
+            ItemContentBackgroundProperty = DependencyProperty.Register("ItemContentBackground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnItemContentChanged)));
+            ItemContentForegroundProperty = DependencyProperty.Register("ItemContentForeground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnItemContentChanged)));
+            TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(MFMFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnTitleChanged)));
+            EditingProperty = DependencyProperty.Register("Editing", typeof(bool), typeof(MFMFileControl), new PropertyMetadata(false));
         }
 
-        public MFMCleanFileControl()
+        public MFMFileControl()
         {
             InitializeComponent();
-            SetValue(ItemsProperty, new ObservableCollection<MFMCleanFileItemControl>()); 
+            SetValue(ItemsProperty, new ObservableCollection<MFMFileItemControl>()); 
         }
 
-        public MFMCleanFileControl(Panel panel) : this()
+        public MFMFileControl(Panel panel) : this()
         {
             this.panel = panel;
         }
@@ -72,11 +72,11 @@ namespace MusicFileManager.CustomControls
             }
         }
 
-        public ObservableCollection<MFMCleanFileItemControl> Items
+        public ObservableCollection<MFMFileItemControl> Items
         {
             get
             {
-                return Dispatcher.Invoke(() => (ObservableCollection<MFMCleanFileItemControl>)this.GetValue(ItemsProperty));
+                return Dispatcher.Invoke(() => (ObservableCollection<MFMFileItemControl>)this.GetValue(ItemsProperty));
                 //return (ObservableCollection<object>)this.GetValue(ItemsProperty);
             }
             set
@@ -181,17 +181,17 @@ namespace MusicFileManager.CustomControls
 
         static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileControl).OnTitleChanged(e);
+            (d as MFMFileControl).OnTitleChanged(e);
         }
 
         static void OnItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileControl).OnItemsChanged();
+            (d as MFMFileControl).OnItemsChanged();
         }
 
         static void OnItemContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileControl).OnItemContentChanged(e);
+            (d as MFMFileControl).OnItemContentChanged(e);
         }
 
         void OnTitleChanged(DependencyPropertyChangedEventArgs e)
@@ -259,7 +259,7 @@ namespace MusicFileManager.CustomControls
 
             foreach (var value in values)
             {
-                MFMCleanFileItemControl item = value as MFMCleanFileItemControl;
+                MFMFileItemControl item = value as MFMFileItemControl;
                 if (item != null)
                 {
                     SetItem(item);
@@ -268,31 +268,31 @@ namespace MusicFileManager.CustomControls
             }
         }
 
-        void SetItem(MFMCleanFileItemControl b)
+        void SetItem(MFMFileItemControl b)
         {
             Binding selectedForegroundBinding = new Binding("SelectedItemForeground");
             selectedForegroundBinding.Source = this;
             selectedForegroundBinding.Mode = BindingMode.OneWay;
 
-            b.SetBinding(MFMCleanFileItemControl.SelectedForegroundProperty, selectedForegroundBinding);
+            b.SetBinding(MFMFileItemControl.SelectedForegroundProperty, selectedForegroundBinding);
 
             Binding selectedbackgroundBinding = new Binding("SelectedItemBackground");
             selectedbackgroundBinding.Source = this;
             selectedbackgroundBinding.Mode = BindingMode.OneWay;
 
-            b.SetBinding(MFMCleanFileItemControl.SelectedBackgroundProperty, selectedbackgroundBinding);
+            b.SetBinding(MFMFileItemControl.SelectedBackgroundProperty, selectedbackgroundBinding);
 
             Binding unselectedForegroundBinding = new Binding("UnSelectedItemForeground");
             unselectedForegroundBinding.Source = this;
             unselectedForegroundBinding.Mode = BindingMode.OneWay;
 
-            b.SetBinding(MFMCleanFileItemControl.UnSelectedForegroundProperty, unselectedForegroundBinding);
+            b.SetBinding(MFMFileItemControl.UnSelectedForegroundProperty, unselectedForegroundBinding);
 
             Binding unselectedbackgroundBinding = new Binding("UnSelectedItemBackground");
             unselectedbackgroundBinding.Source = this;
             unselectedbackgroundBinding.Mode = BindingMode.OneWay;
 
-            b.SetBinding(MFMCleanFileItemControl.UnSelectedBackgroundProperty, unselectedbackgroundBinding);
+            b.SetBinding(MFMFileItemControl.UnSelectedBackgroundProperty, unselectedbackgroundBinding);
 
             b.Click += b_Click;
 
@@ -306,7 +306,7 @@ namespace MusicFileManager.CustomControls
             if (!popItem.IsOpen)
                 popItem.IsOpen = true;
 
-            MFMCleanFileItemControl bi = sender as MFMCleanFileItemControl;
+            MFMFileItemControl bi = sender as MFMFileItemControl;
 
             if (popItem.PlacementTarget != bi)
                 popItem.PlacementTarget = bi;
@@ -328,7 +328,7 @@ namespace MusicFileManager.CustomControls
 
         void b_MouseMove(object sender, MouseEventArgs e)
         {
-            MFMCleanFileItemControl bi = sender as MFMCleanFileItemControl;
+            MFMFileItemControl bi = sender as MFMFileItemControl;
 
             Point currentPos = e.GetPosition(bi);
 
@@ -340,7 +340,7 @@ namespace MusicFileManager.CustomControls
         {
             if (Editing)
             {
-                MFMCleanFileItemControl bi = sender as MFMCleanFileItemControl;
+                MFMFileItemControl bi = sender as MFMFileItemControl;
                 bi.Selected = !bi.Selected;
             }            
         }
@@ -352,7 +352,7 @@ namespace MusicFileManager.CustomControls
 
             foreach (var value in values)
             {
-                MFMCleanFileItemControl b = value as MFMCleanFileItemControl;
+                MFMFileItemControl b = value as MFMFileItemControl;
 
                 if (b != null)
                 {
@@ -363,7 +363,7 @@ namespace MusicFileManager.CustomControls
 
         void MoveItem(int oldIndex, int newIndex)
         {
-            MFMCleanFileItemControl b = wpMain.Children[oldIndex] as MFMCleanFileItemControl;
+            MFMFileItemControl b = wpMain.Children[oldIndex] as MFMFileItemControl;
 
             if (b != null)
             {
@@ -379,14 +379,14 @@ namespace MusicFileManager.CustomControls
 
             for (int i = 0; i < oldvalues.Count; i++)
             {
-                MFMCleanFileItemControl oldItem = oldvalues[i] as MFMCleanFileItemControl;
+                MFMFileItemControl oldItem = oldvalues[i] as MFMFileItemControl;
 
                 if (oldItem != null)
                 {
                     int index = wpMain.Children.IndexOf(oldItem);
                     if (index != -1)
                     {
-                        MFMCleanFileItemControl newItem = newvalues[i] as MFMCleanFileItemControl;
+                        MFMFileItemControl newItem = newvalues[i] as MFMFileItemControl;
 
                         if (newItem != null)
                             wpMain.Children[index] = newItem;
@@ -402,7 +402,7 @@ namespace MusicFileManager.CustomControls
 
         public void Add(DuplicatedFiles data)
         {
-            Items.Add(new MFMCleanFileItemControl(data));
+            Items.Add(new MFMFileItemControl(data));
         }
 
         void SetDisplayPosition()
@@ -423,7 +423,7 @@ namespace MusicFileManager.CustomControls
 
             foreach (DuplicatedFiles file in files)
             {
-                Items.Add(new MFMCleanFileItemControl(file));
+                Items.Add(new MFMFileItemControl(file));
             }
         }
     }

@@ -19,7 +19,7 @@ namespace MusicFileManager.CustomControls
     /// <summary>
     /// MFMCleanFileItemControl.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MFMCleanFileItemControl : UserControl, ICustomTypeDescriptor
+    public partial class MFMFileItemControl : UserControl, ICustomTypeDescriptor
     {
         public static DependencyProperty UnSelectedBackgroundProperty;
         public static DependencyProperty UnSelectedForegroundProperty;
@@ -33,56 +33,56 @@ namespace MusicFileManager.CustomControls
 
         bool clicked = false;
 
-        static MFMCleanFileItemControl()
+        static MFMFileItemControl()
         {
-            UnSelectedBackgroundProperty = DependencyProperty.Register("UnSelectedBackground", typeof(Brush), typeof(MFMCleanFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnUnSelectedBackgroundChanged)));
-            UnSelectedForegroundProperty = DependencyProperty.Register("UnSelectedForeground", typeof(Brush), typeof(MFMCleanFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnUnSelectedForegroundChanged)));
-            SelectedBackgroundProperty = DependencyProperty.Register("SelectedBackground", typeof(Brush), typeof(MFMCleanFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnSelectedBackgroundChanged)));
-            SelectedForegroundProperty = DependencyProperty.Register("SelectedForeground", typeof(Brush), typeof(MFMCleanFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnSelectedForegroundChanged)));
-            SelectedProperty = DependencyProperty.Register("Selected", typeof(bool), typeof(MFMCleanFileItemControl), new PropertyMetadata(false, new PropertyChangedCallback(OnSelectedChanged)));
-            IconNameProperty = DependencyProperty.Register("IconName", typeof(string), typeof(MFMCleanFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnIconNameChanged)));
-            DataProperty = DependencyProperty.Register("Data", typeof(DuplicatedFiles), typeof(MFMCleanFileItemControl), new PropertyMetadata(null));
+            UnSelectedBackgroundProperty = DependencyProperty.Register("UnSelectedBackground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnUnSelectedBackgroundChanged)));
+            UnSelectedForegroundProperty = DependencyProperty.Register("UnSelectedForeground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnUnSelectedForegroundChanged)));
+            SelectedBackgroundProperty = DependencyProperty.Register("SelectedBackground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnSelectedBackgroundChanged)));
+            SelectedForegroundProperty = DependencyProperty.Register("SelectedForeground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnSelectedForegroundChanged)));
+            SelectedProperty = DependencyProperty.Register("Selected", typeof(bool), typeof(MFMFileItemControl), new PropertyMetadata(false, new PropertyChangedCallback(OnSelectedChanged)));
+            IconNameProperty = DependencyProperty.Register("IconName", typeof(string), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnIconNameChanged)));
+            DataProperty = DependencyProperty.Register("Data", typeof(DuplicatedFiles), typeof(MFMFileItemControl), new PropertyMetadata(null));
 
-            ClickEvent = EventManager.RegisterRoutedEvent("Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(MFMCleanFileItemControl));
+            ClickEvent = EventManager.RegisterRoutedEvent("Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(MFMFileItemControl));
         }
-        public MFMCleanFileItemControl()
+        public MFMFileItemControl()
         {
             InitializeComponent();
         }
 
-        public MFMCleanFileItemControl(DuplicatedFiles data)
+        public MFMFileItemControl(DuplicatedFiles data)
         {
             this.Data = data;
         }
 
         static void OnSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileItemControl).OnSelectedChanged(e);
+            (d as MFMFileItemControl).OnSelectedChanged(e);
         }
 
         static void OnSelectedForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileItemControl).OnSelectedForegroundChanged(e);
+            (d as MFMFileItemControl).OnSelectedForegroundChanged(e);
         }
 
         static void OnSelectedBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileItemControl).OnSelectedBackgroundChanged(e);
+            (d as MFMFileItemControl).OnSelectedBackgroundChanged(e);
         }
 
         static void OnUnSelectedForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileItemControl).OnUnSelectedForegroundChanged(e);
+            (d as MFMFileItemControl).OnUnSelectedForegroundChanged(e);
         }
 
         static void OnUnSelectedBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileItemControl).OnUnSelectedBackgroundChanged(e);
+            (d as MFMFileItemControl).OnUnSelectedBackgroundChanged(e);
         }
 
         static void OnIconNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MFMCleanFileItemControl).OnIconNameChanged(e);
+            (d as MFMFileItemControl).OnIconNameChanged(e);
         }
 
         void OnSelectedChanged(DependencyPropertyChangedEventArgs e)
@@ -307,7 +307,7 @@ namespace MusicFileManager.CustomControls
             if (clicked)
             {
                 clicked = false;
-                RoutedEventArgs args = new RoutedEventArgs(MFMCleanFileItemControl.ClickEvent);
+                RoutedEventArgs args = new RoutedEventArgs(MFMFileItemControl.ClickEvent);
                 RaiseEvent(args);
             }
         }
