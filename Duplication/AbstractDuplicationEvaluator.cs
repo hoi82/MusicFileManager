@@ -10,36 +10,57 @@ namespace MusicFileManager.Duplication
     public abstract class AbstractDuplicationEvaluator : DisplayableWorker, IDuplicationEvaluator
     {
         protected List<string> sourceFiles = null;
+        protected List<string> targetFiles = null;
         protected List<DuplicatedFiles> duplicatedFiles = null;
 
         protected IDuplicationEvaluatorOption option = null;
         protected IDuplicationChcker duplicationChecker = null;
 
-        public AbstractDuplicationEvaluator(ProgressControl progressControl, IDuplicationEvaluatorOption option, IDuplicationChcker duplicationChecker)
-            : base(progressControl)
+        protected int outerCurrent = 0;
+        protected int outerTotal = 0;
+
+        public AbstractDuplicationEvaluator(IDuplicationEvaluatorOption option, IDuplicationChcker duplicationChecker)
+            : base()
         {
             this.option = option;
             this.duplicationChecker = duplicationChecker;
         }
 
-        public event DuplicationEvaluatorStartEventHandler OnStartAsync;
-
-        public event DuplicationEvaluatorEndEventHandler OnEndAsync;
-
-        protected override void OnEndProcedure()
-        {
-            if (this.OnEndAsync != null)
-                this.OnEndAsync(this, new DuplicationEvaluatorEndEventArgs(duplicatedFiles));
-        }
-
-        protected override void OnStartProcedure()
-        {
-            if (this.OnStartAsync != null)
-                this.OnStartAsync(this);
-        }
+        public event DuplicationEvaluatorStartEventHandler OnStartAsync;        
+        public event DuplicationEvaluatorCompleteEventHandler OnCompleteAsync;
+        public event DuplicationEvaluatorProgressEventHandler OnProgressAsync;
+        public event DuplicationEvaluatorCancelEventHandler OnCancelAsync;
 
         public abstract List<DuplicatedFiles> GetDuplications(List<string> list, bool aSync);
 
         public abstract List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2, bool aSync);        
+
+        protected override void OnStartProcedure()
+        {
+            if (this.OnStartAsync != null)
+                this.OnStartAsync(this, new EventArgs());
+        }
+
+        protected override void OnProcedure()
+        {
+            if (this.OnProgressAsync != null)
+            {
+                this.OnProgressAsync(this, new DuplicationEvaluatorProgressEventArgs(current, total, outerCurrent, outerTotal));
+            }
+        }
+
+        protected override void OnCancelProcedure()
+        {
+            if (this.OnCancelAsync != null)
+            {
+                this.OnCancelAsync(this, new EventArgs());
+            }
+        }
+
+        protected override void OnCompleteProcedure()
+        {
+            if (this.OnCompleteAsync != null)
+                this.OnCompleteAsync(this, new DuplicationEvaluatorEndEventArgs(duplicatedFiles));
+        }        
     }
 }

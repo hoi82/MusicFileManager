@@ -3,6 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
         xmlns:local="clr-namespace:MusicFileManager" x:Class="MusicFileManager.MainWindow"        
         Title="MainWindow" Height="190" Width="190" Background="{x:Null}" WindowStyle="None" ResizeMode="NoResize" Loaded="Window_Loaded" AllowsTransparency="True">
+    <Window.Resources>
+
+    </Window.Resources>
     <Grid x:Name="grdBackground" Margin="0">
         <Border x:Name="bdOuterBack" CornerRadius="20" Background="#FF323232" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Height="170">
             <Border.Effect>
@@ -10,21 +13,27 @@
             </Border.Effect>
             <Border x:Name="bdInnerBack" BorderThickness="1" Margin="10" CornerRadius="15" Background="#FF1E1E1E" MouseLeftButtonDown="bdInnerBack_MouseLeftButtonDown">
                 <Grid x:Name="grdMain">
-                    <Button x:Name="btnOption" Content="Option" HorizontalAlignment="Left" Margin="78,10,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseRightButtonDown="btnOption_MouseRightButtonDown" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove"/>
+                    <Button x:Name="btnOption" Content="Option" HorizontalAlignment="Left" Margin="78,10,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnOption_Click"/>
                     <Button x:Name="btnProc" Content="Find" HorizontalAlignment="Left" Margin="10,78,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseRightButtonDown="btnProc_MouseRightButtonDown" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove"/>
-                    <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseEnter="btn_MouseEnter" MouseMove="btn_MouseMove" MouseLeave="btn_MouseLeave">                        
-                    </Button>
+                    <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseEnter="btn_MouseEnter" MouseMove="btn_MouseMove" MouseLeave="btn_MouseLeave" Click="btnBrowse_Click"/>
                     <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="78,78,0,0" VerticalAlignment="Top" Width="60" Height="60" Click="btnExit_Click" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove"/>
                 </Grid>
             </Border>
         </Border>
         <Popup x:Name="popMain" AllowsTransparency="True" Placement="Relative">
-            <Grid x:Name="grdPop" Height="120" Width="320">
+            <Grid x:Name="grdOuterPop" Height="90" Width="250">
                 <Border x:Name="bdOuterPop" Margin="10" Background="#FF1E1E1E" CornerRadius="15">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="10"/>
                     </Border.Effect>
-                    <Border x:Name="bdInnerPop" Background="#FF323232" CornerRadius="10" Margin="5"/>
+                    <Border x:Name="bdInnerPop" Background="#FF323232" CornerRadius="10" Margin="5">
+                        <Grid x:Name="grdInnerPop">
+                            <Label x:Name="lblBackgroundPop" Content="Processing" FontFamily="/MusicFileManager;component/Fonts/#Walkway Black" VerticalContentAlignment="Center" FontSize="36" Foreground="#FF282828" UseLayoutRounding="False" HorizontalContentAlignment="Center"/>
+                            <Label x:Name="lblUpperPop" xml:space="preserve" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Foreground="Orange" FontFamily="/MusicFileManager;component/Fonts/#Walkway Black" FontSize="14" Content="Ready for finding files to clean">                                
+                            </Label>
+                            <Label x:Name="lblLowerPop" Content="*Click for show detail options" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" FontSize="10" Foreground="White" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold" RenderTransformOrigin="0.474,-0.619"/>
+                        </Grid>
+                    </Border>
                 </Border>
             </Grid>
         </Popup>

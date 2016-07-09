@@ -39,13 +39,7 @@ namespace MusicFileManager.Cleaner
         public FileCleaner() : base()
         {
 
-        }
-
-        public FileCleaner(ProgressControl progressControl)
-            : base(progressControl)
-        {
-            
-        }        
+        }      
 
         bool IsFileLocked(FileInfo fi)
         {
@@ -82,7 +76,7 @@ namespace MusicFileManager.Cleaner
 
         public void CancelCleanAsync()
         {
-            bw.CancelAsync();
+            CancelAsync();
         }        
 
         public void CleanFiles(bool aSync, List<string> files)
@@ -90,7 +84,7 @@ namespace MusicFileManager.Cleaner
             this.files = files;
             if (aSync)
             {
-                bw.RunWorkerAsync();
+                StartAsync();
             }
             else
             {
@@ -109,7 +103,7 @@ namespace MusicFileManager.Cleaner
 
             for (int i = 0; i < files.Count; i++)
             {
-                if ((e != null) && bw.CancellationPending)
+                if ((e != null) && Canceled())
                 {
                     e.Cancel = true;
                     break;
@@ -144,13 +138,12 @@ namespace MusicFileManager.Cleaner
                 }
 
                 IncCount();
-                progressMessage = string.Format("Deleting Files...{0}/{1}", current, total);
 
-                bw.ReportProgress(CalcPercentage());
+                OnProcedure();
             }
         }
 
-        protected override void OnEndProcedure()
+        protected override void OnCompleteProcedure()
         {
             if (this.OnEndAsync != null)
                 this.OnEndAsync(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
@@ -160,6 +153,16 @@ namespace MusicFileManager.Cleaner
         {
             if (this.OnStartAsync != null)
                 this.OnStartAsync(this);
-        }        
+        }
+
+        protected override void OnProcedure()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void OnCancelProcedure()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -12,40 +12,34 @@ namespace MusicFileManager
     {
         public FileFinder(IFileChecker fileChecker) : base(fileChecker) { }
 
-        public FileFinder(IFileChecker fileChecker, ProgressControl progressControl)
-            : base(fileChecker, progressControl) { }
+        //protected override void Process(System.ComponentModel.DoWorkEventArgs e = null)
+        //{
+        //    if (allFiles == null)
+        //        return;
 
-        public FileFinder(IFileChecker fileChecker, ProgressControl progressControl, string progressMessageOnStep)
-            : base(fileChecker, progressControl, progressMessageOnStep) { }
+        //    ResetCount(allFiles.Count());
+        //    mathcedFiles = new List<string>();
 
-        protected override void Process(System.ComponentModel.DoWorkEventArgs e = null)
-        {
-            if (allFiles == null)
-                return;
+        //    for (int i = 0; i < allFiles.Count(); i++)
+        //    {
+        //        string sFile = allFiles[i];
 
-            ResetCount(allFiles.Count());
-            mathcedFiles = new List<string>();
+        //        if ((e != null) && bw.CancellationPending)
+        //        {
+        //            e.Cancel = true;
+        //            break;
+        //        }
 
-            for (int i = 0; i < allFiles.Count(); i++)
-            {
-                string sFile = allFiles[i];
+        //        if (fileChecker.IsVaildFile(ref sFile, true))
+        //        {
+        //            mathcedFiles.Add(sFile);
+        //        }
 
-                if ((e != null) && bw.CancellationPending)
-                {
-                    e.Cancel = true;
-                    break;
-                }
+        //        IncCount();
+        //        progressMessage = string.Format(progressMessageOnStep, current, total);
 
-                if (fileChecker.IsVaildFile(ref sFile, true))
-                {
-                    mathcedFiles.Add(sFile);
-                }
-
-                IncCount();
-                progressMessage = string.Format(progressMessageOnStep, current, total);
-
-                bw.ReportProgress(CalcPercentage());                
-            }
-        } 
+        //        bw.ReportProgress(CalcPercentage());                
+        //    }
+        //} 
     }
 }

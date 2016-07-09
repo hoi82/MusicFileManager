@@ -10,18 +10,18 @@ namespace MusicFileManager.Worker
 {
     public abstract class DisplayableWorker : IDisposable
     {
-        protected BackgroundWorker bw = null;
-
-        protected ProgressControl progressControl = null;
-        protected string progressMessage = null;
-        protected string progressMessageOnStep = null;
+        BackgroundWorker bw = null;
+        
+        //protected ProgressControl progressControl = null;        
+        //protected string progressMessage = null;
+        //protected string progressMessageOnStep = null;
 
         protected int total = 0;
         protected int current = 0;
 
         protected bool working = false;        
 
-        protected DisplayableWorker()
+        public DisplayableWorker()
         {
             bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
@@ -32,33 +32,27 @@ namespace MusicFileManager.Worker
 
             total = 0;
             current = 0;            
-        }
-
-        public DisplayableWorker(ProgressControl progressControl) : this()
-        {
-            this.progressControl = progressControl;
-        }        
+        }       
 
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {                   
             if (e.Cancelled)
             {
-                if ((progressControl != null) && working)
-                    progressControl.ProgressDisplay(0, "Cancelled");
+                OnCancelProcedure();
             }
             else
             {
-                if ((progressControl != null) && working)
-                    progressControl.ProgressDisplay(100, "Complete");
-            }            
-
-            OnEndProcedure();
+                OnCompleteProcedure();
+            }                        
         }
 
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {               
-            if ((progressControl != null) && working)            
-                progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
+        {
+            //OnProcedure();
+            //if ((progressControl != null) && working)
+            //{                
+            //    progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
+            //}                
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -84,6 +78,16 @@ namespace MusicFileManager.Worker
             return perc;
         }
 
+        public void StartAsync()
+        {
+            bw.RunWorkerAsync();
+        }
+
+        public bool Canceled()
+        {
+            return bw.CancellationPending;
+        }
+
         public void CancelAsync()
         {
             bw.CancelAsync();
@@ -100,8 +104,12 @@ namespace MusicFileManager.Worker
 
         protected abstract void Process(DoWorkEventArgs e = null);
 
-        protected abstract void OnEndProcedure();
+        protected abstract void OnCompleteProcedure();
 
-        protected abstract void OnStartProcedure();
+        protected abstract void OnProcedure(); 
+
+        protected abstract void OnStartProcedure();        
+
+        protected abstract void OnCancelProcedure();
     }
 }

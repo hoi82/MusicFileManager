@@ -18,13 +18,33 @@ namespace MusicFileManager.Duplication
         public List<DuplicatedFiles> DuplicatedFiles { get { return this.duplicatedFiles; } }
     }
 
-    public delegate void DuplicationEvaluatorStartEventHandler(object sender);
-    public delegate void DuplicationEvaluatorEndEventHandler(object sender, DuplicationEvaluatorEndEventArgs e);
+    public class DuplicationEvaluatorProgressEventArgs : EventArgs
+    {
+        int innerCurrent = 0;
+        int innerTotal = 0;
+        int outerCurrent = 0;
+        int outerTotal = 0;
+
+        public DuplicationEvaluatorProgressEventArgs(int innerCurrent, int innerTotal, int outerCurrent, int outerTotal)
+        {
+            this.innerCurrent = innerCurrent;
+            this.innerTotal = innerTotal;
+            this.outerCurrent = outerCurrent;
+            this.outerTotal = outerTotal;
+        }
+    }
+
+    public delegate void DuplicationEvaluatorStartEventHandler(object sender, EventArgs e);
+    public delegate void DuplicationEvaluatorProgressEventHandler(object sender, DuplicationEvaluatorProgressEventArgs e);
+    public delegate void DuplicationEvaluatorCancelEventHandler(object sender, EventArgs e);
+    public delegate void DuplicationEvaluatorCompleteEventHandler(object sender, DuplicationEvaluatorEndEventArgs e);
 
     public interface IDuplicationEvaluator
     {
         event DuplicationEvaluatorStartEventHandler OnStartAsync;
-        event DuplicationEvaluatorEndEventHandler OnEndAsync;
+        event DuplicationEvaluatorProgressEventHandler OnProgressAsync;
+        event DuplicationEvaluatorCancelEventHandler OnCancelAsync;
+        event DuplicationEvaluatorCompleteEventHandler OnCompleteAsync;        
         List<DuplicatedFiles> GetDuplications(List<string> list, bool aSync);        
         List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2, bool aSync);                
     }

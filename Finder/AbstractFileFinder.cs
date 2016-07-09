@@ -6,34 +6,26 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.IO;
 using MusicFileManager.Worker;
+using MusicFileManager.CustomControls;
 
 namespace MusicFileManager
-{    
-    public class FileFinderEndEventArgs : EventArgs
-    {
-        List<string> matchedFiles = null;
-
-        public FileFinderEndEventArgs(List<string> matchedFiles)
-        {
-            this.matchedFiles = matchedFiles;
-        }
-
-        public List<string> MatchedFiles { get { return this.matchedFiles; } }
-    }
-
-    public delegate void FileFinderStartEventHandler(object sender, EventArgs e);
-    public delegate void FileFinderEndEventHandler(object sender, FileFinderEndEventArgs e);    
+{        
     public abstract class AbstractFileFinder : DisplayableWorker, IFileFinder
     {
         //Event
         public event FileFinderStartEventHandler OnStartAsync = null;
 
-        public event FileFinderEndEventHandler OnEndAsync = null;               
+        public event FildFinderProgressEventHandler OnProgressAsync = null;
+
+        public event FileFinderCompleteEventHandler OnCompleteAsync = null;
+
+        public event FileFinderCancelEventHandler OnCancelAsync = null;               
 
         //Properties
         protected IFileChecker fileChecker = null;
         protected List<string> mathcedFiles = null;
         protected List<string> allFiles = null;
+        protected MFMFileControl fileControl = null;
 
         //Serialization
         protected IFileFinder serializedFinder = null;  
@@ -47,18 +39,6 @@ namespace MusicFileManager
         {
             this.fileChecker = fileChecker;
         }        
-
-        protected AbstractFileFinder(IFileChecker fileChecker, ProgressControl progressControl) 
-            : this(fileChecker)
-        {
-            this.progressControl = progressControl;
-        }
-
-        public AbstractFileFinder(IFileChecker fileChecker, ProgressControl progressControl, string progressMessageOnStep)
-            : this(fileChecker, progressControl)
-        {
-            this.progressMessageOnStep = progressMessageOnStep;
-        }
 
         public List<string> GetMatchedFiles(string directory)
         {
@@ -78,10 +58,10 @@ namespace MusicFileManager
 
         public void GetMatchedFilesAsync(string directory)
         {
-            working = true;            
-            OnStartProcedure();
+            working = true;
             allFiles = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).ToList();
-            bw.RunWorkerAsync();
+            OnStartProcedure();            
+            StartAsync();
         }
 
         public void GetMatchedFilesAsync(List<string> files)
@@ -89,28 +69,13 @@ namespace MusicFileManager
             working = true;
             allFiles = files;
             OnStartProcedure();
-            bw.RunWorkerAsync();
-        }
-
-        protected override void OnEndProcedure()
-        {
-            working = false;
-
-            if (this.OnEndAsync != null)
-                this.OnEndAsync(this, new FileFinderEndEventArgs(mathcedFiles));
-        }
-
-        protected override void OnStartProcedure()
-        {
-            if (this.OnStartAsync != null)
-                this.OnStartAsync(this, new EventArgs());
-        }
-
+            StartAsync();
+        }        
 
         public void SetSerializedFinder(IFileFinder finder, bool usePreMathcedFiles = false)
         {
             serializedFinder = finder;
-            this.OnEndAsync += new FileFinderEndEventHandler(
+            this.OnCompleteAsync += new FileFinderCompleteEventHandler(
                 delegate 
                 {
                     if (usePreMathcedFiles)
@@ -120,5 +85,63 @@ namespace MusicFileManager
                 }
                 );
         }        
+
+        protected override void Process(DoWorkEventArgs e = null)
+        {
+            if (allFiles == null)
+                return;
+
+            ResetCount(allFiles.Count());
+            mathcedFiles = new List<string>();
+
+            for (int i = 0; i < allFiles.Count(); i++)
+            {
+                string sFile = allFiles[i];
+
+                if ((e != null) && Canceled())
+                {
+                    e.Cancel = true;
+                    break;
+                }
+
+                if (fileChecker.IsVaildFile(ref sFile, true))
+                {
+                    mathcedFiles.Add(sFile);
+                }
+
+                IncCount();                
+                OnProcedure();
+            }
+        }
+
+        protected override void OnStartProcedure()
+        {
+            if (this.OnStartAsync != null)
+                this.OnStartAsync(this, new EventArgs());
+        }       
+
+        protected override void OnProcedure() 
+        {
+            if (this.OnProgressAsync != null)
+            {
+                this.OnProgressAsync(this, new FileFinderProgressEventArgs(current, total));
+            }
+        }
+
+        protected override void OnCancelProcedure() 
+        {
+            if (this.OnCancelAsync != null)
+            {
+                this.OnCancelAsync(this, new EventArgs());
+            }
+        }
+
+        protected override void OnCompleteProcedure()
+        {
+            working = false;
+
+            if (this.OnCompleteAsync != null)
+                this.OnCompleteAsync(this, new FileFinderEndEventArgs(mathcedFiles));
+        } 
     }
 }

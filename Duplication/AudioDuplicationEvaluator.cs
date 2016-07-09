@@ -8,8 +8,8 @@ namespace MusicFileManager.Duplication
 {
     public class AudioDuplicationEvaluator : AbstractDuplicationEvaluator
     {       
-        public AudioDuplicationEvaluator(ProgressControl progressControl, IDuplicationEvaluatorOption option, IDuplicationChcker duplicationChecker)
-            : base(progressControl, option, duplicationChecker)
+        public AudioDuplicationEvaluator(IDuplicationEvaluatorOption option, IDuplicationChcker duplicationChecker)
+            : base(option, duplicationChecker)
         {
             
         }
@@ -21,7 +21,7 @@ namespace MusicFileManager.Duplication
 
             for (int i = 0; i < sourceFiles.Count(); i++)
             {
-                if ((e != null) && bw.CancellationPending)
+                if ((e != null) && Canceled())
                 {
                     e.Cancel = true;
                     break;
@@ -29,7 +29,7 @@ namespace MusicFileManager.Duplication
 
                 for (int j = 0; j < sourceFiles.Count(); j++)
                 {
-                    if ((e != null) && bw.CancellationPending)
+                    if ((e != null) && Canceled())
                     {
                         e.Cancel = true;
                         break;
@@ -50,27 +50,23 @@ namespace MusicFileManager.Duplication
 
                     current = j + 1;
 
-                    progressMessage = string.Format(MFMMessage.Message9, i + 1, total, current, total);
-
-                    bw.ReportProgress(CalcPercentage());
+                    OnProcedure();
                 }
 
                 current = i + 1;
 
-                progressMessage = string.Format(MFMMessage.Message10, current, total);
-
-                bw.ReportProgress(CalcPercentage());
+                OnProcedure();
             }            
         }        
 
         public override List<DuplicatedFiles> GetDuplications(List<string> list, bool aSync)
         {
-            sourceFiles = list;
+            sourceFiles = list;            
             if (aSync)
             {
                 working = true;
                 OnStartProcedure();
-                bw.RunWorkerAsync();
+                StartAsync();
                 return null;
             }
             else
@@ -84,6 +80,6 @@ namespace MusicFileManager.Duplication
         public override List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2, bool aSync)
         {
             throw new NotImplementedException();
-        }       
+        }
     }
 }

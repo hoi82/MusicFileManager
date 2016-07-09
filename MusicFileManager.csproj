@@ -189,6 +189,15 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="Diagram.cd" />
+    <Resource Include="Fonts\Walkway_Black.ttf" />
+    <Resource Include="Fonts\Walkway_Bold.ttf" />
+    <Resource Include="Fonts\Walkway_Oblique.ttf" />
+    <Resource Include="Fonts\Walkway_Oblique_Black.ttf" />
+    <Resource Include="Fonts\Walkway_Oblique_Bold.ttf" />
+    <Resource Include="Fonts\Walkway_Oblique_SemiBold.ttf" />
+    <Resource Include="Fonts\Walkway_Oblique_UltraBold.ttf" />
+    <Resource Include="Fonts\Walkway_SemiBold.ttf" />
+    <Resource Include="Fonts\Walkway_UltraBold.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 namespace MusicFileManager.Duplication
 {
     public class ArchiveDuplicationEvaluator : AbstractDuplicationEvaluator
-    {        
-        List<string> targetFiles = null;        
-                
+    {                                       
         Extractor.IFileExtractor fileExtractor = null;                
 
-        public ArchiveDuplicationEvaluator(ProgressControl progressControl, IDuplicationEvaluatorOption option, IDuplicationChcker duplicationChecker, Extractor.IFileExtractor fileExtractor)
-            : base(progressControl, option, duplicationChecker)
+        public ArchiveDuplicationEvaluator(IDuplicationEvaluatorOption option, IDuplicationChcker duplicationChecker, Extractor.IFileExtractor fileExtractor)
+            : base(option, duplicationChecker)
         {                        
             this.fileExtractor = fileExtractor;
         }             
@@ -30,7 +28,7 @@ namespace MusicFileManager.Duplication
                 total = sourceFiles.Count();
                 current = i + 1;
 
-                if ((e != null) && bw.CancellationPending)
+                if ((e != null) && Canceled())
                 {
                     e.Cancel = true;
                     break;
@@ -53,7 +51,7 @@ namespace MusicFileManager.Duplication
 
                 for (int j = 0; j < extractedAudioFiles.Count(); j++)
                 {
-                    if ((e != null) && bw.CancellationPending)
+                    if ((e != null) && Canceled())
                     {
                         e.Cancel = true;
                         break;
@@ -64,7 +62,7 @@ namespace MusicFileManager.Duplication
 
                     for (int k = 0; k < targetFiles.Count(); k++)
                     {
-                        if ((e != null) && bw.CancellationPending)
+                        if ((e != null) && Canceled())
                         {
                             e.Cancel = true;
                             break;
@@ -84,14 +82,13 @@ namespace MusicFileManager.Duplication
                         }
 
                         //IncCount();
-                        progressMessage = string.Format(MFMMessage.Message8, j + 1, extractedAudioFiles.Count(), i + 1, sourceFiles.Count, current, total);
-                        bw.ReportProgress(CalcPercentage());
+                        OnProcedure();
                     }
 
                     if (isDuplicated)
                         break;
 
-                    bw.ReportProgress(CalcPercentage());
+                    OnProcedure();
                 }
 
                 if (isDuplicated)
@@ -102,7 +99,7 @@ namespace MusicFileManager.Duplication
 
                 fileExtractor.CleanExtractedFiles();
 
-                bw.ReportProgress(CalcPercentage());
+                OnProcedure();
             }
         }
 
@@ -120,7 +117,7 @@ namespace MusicFileManager.Duplication
             {
                 working = true;
                 OnStartProcedure();
-                bw.RunWorkerAsync();
+                StartAsync();
                 return null;
             }
             else

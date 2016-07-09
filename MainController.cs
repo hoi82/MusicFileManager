@@ -52,7 +52,7 @@ namespace MusicFileManager
 
         public MainController(MainWindow window) : this()
         {
-            //this.window = window;
+            this.window = window;
 
             //fileFinder = new FileFinder(new DefaultFileChecker(), window.prgControl, MFMMessage.Message4);
             //audioFinder = new FileFinder(new AudioFileChecker(), window.prgControl, MFMMessage.Message6);
@@ -66,13 +66,13 @@ namespace MusicFileManager
 
             //audioDuplcationOption = new AudioDuplicationEvaluatorOption(window.ctrlOption);
             //audioDuplicationChecker = new AudioDuplicationChecker();
-            //audioDuplicationEvaluator = new AudioDuplicationEvaluator(window.prgControl, audioDuplcationOption, audioDuplicationChecker);            
+            //audioDuplicationEvaluator = new AudioDuplicationEvaluator(window.prgControl, audioDuplcationOption, audioDuplicationChecker);
 
             //fileFinder.SetSerializedFinder(audioFinder);
             //audioFinder.SetSerializedFinder(archiveFinder, true);
             //archiveFinder.SetSerializedFinder(archivedAudioFinder);
-            
-            //audioFinder.OnEndAsync += audioFinder_OnEndAsync;            
+
+            //audioFinder.OnEndAsync += audioFinder_OnEndAsync;
             //archivedAudioFinder.OnEndAsync += archivedAudioFinder_OnEndAsync;
 
             //archiveDuplicationEvaluator.OnEndAsync += archiveDuplicationEvaluator_OnEndAsync;

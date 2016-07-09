@@ -24,7 +24,7 @@ namespace MusicFileManager
     /// MainWindow.xaml에 대한 상호 작용 논리
     /// </summary>
     public partial class MainWindow : Window
-    {
+    {        
         enum ExtendMode { File, Option };
 
         string searchLocation = null;
@@ -55,14 +55,14 @@ namespace MusicFileManager
         {
             InitializeComponent();
 
-            InitializeRegistryKey();                        
-
             controller = new MainController(this);
             controller.OnStart += controller_OnStart;
             controller.OnEnd += controller_OnEnd;
 
             option = new MFMOption();
             fileControl = new MFMFileControl();
+
+            InitializeRegistryKey();                                    
         }
 
         void controller_OnEnd(object sender)
@@ -109,11 +109,11 @@ namespace MusicFileManager
         {
             try
             {
-                searchLocation = regKey.GetValue(regKeySearch) as string;                
-                //ctrlOption.DeleteArchiveWithMulipleAudio = Convert.ToBoolean(regKey.GetValue(regKeyMultiFileInArchive));
-                //ctrlOption.DeleteAudioWithOutBitRate = Convert.ToBoolean(regKey.GetValue(regKeyDupAudioWithoutBitAndDur));
-                //ctrlOption.AudioBitRate = Convert.ToInt32(regKey.GetValue(regKeyBitRate));
-                //ctrlOption.AudioDuration = TimeSpan.FromSeconds(Convert.ToDouble(regKey.GetValue(regKeyDuration)));
+                searchLocation = regKey.GetValue(regKeySearch) as string;
+                option.DeleteArchiveWithMulipleAudio = Convert.ToBoolean(regKey.GetValue(regKeyMultiFileInArchive));
+                option.DeleteAudioWithOutBitRate = Convert.ToBoolean(regKey.GetValue(regKeyDupAudioWithoutBitAndDur));
+                option.AudioBitRate = Convert.ToInt32(regKey.GetValue(regKeyBitRate));
+                option.AudioDuration = TimeSpan.FromSeconds(Convert.ToDouble(regKey.GetValue(regKeyDuration)));
             }
             catch (Exception)
             {
@@ -126,11 +126,11 @@ namespace MusicFileManager
         {
             try
             {
-                //regKey.SetValue(regKeySearch, searchLocation);
-                //regKey.SetValue(regKeyMultiFileInArchive, ctrlOption.DeleteArchiveWithMulipleAudio);
-                //regKey.SetValue(regKeyDupAudioWithoutBitAndDur, ctrlOption.DeleteAudioWithOutBitRate);
-                //regKey.SetValue(regKeyBitRate, ctrlOption.AudioBitRate);
-                //regKey.SetValue(regKeyDuration, ctrlOption.AudioDuration.TotalSeconds);
+                regKey.SetValue(regKeySearch, searchLocation);
+                regKey.SetValue(regKeyMultiFileInArchive, option.DeleteArchiveWithMulipleAudio);
+                regKey.SetValue(regKeyDupAudioWithoutBitAndDur, option.DeleteAudioWithOutBitRate);
+                regKey.SetValue(regKeyBitRate, option.AudioBitRate);
+                regKey.SetValue(regKeyDuration, option.AudioDuration.TotalSeconds);
             }
             catch (Exception)
             {
@@ -277,7 +277,54 @@ namespace MusicFileManager
         void OpenPopUp(Button btn)
         {
             if ((!popMain.IsOpen) && ((!extended) || (prevPressedButton != btn)))
-                popMain.IsOpen = true;            
+            {
+                popMain.IsOpen = true;
+
+                if (btn == btnBrowse)
+                {
+                    grdOuterPop.Width = 350;
+                    grdOuterPop.Height = 80;                    
+                    lblBackgroundPop.Content = "Searching Location";
+                    lblUpperPop.Content = searchLocation;
+                    lblLowerPop.Content = "Click this button for select directory for clean";
+                }
+                else if (btn == btnOption)
+                {
+                    grdOuterPop.Width = 350;                                                          
+                    lblBackgroundPop.Content = "Filtering Options";
+                    string optionStr = null;
+
+                    if (option.DeleteAudioWithOutBitRate)
+                    {
+                        optionStr = string.Format("Include archive file with multiple musics : {0} \r\nInclude similar music files unconditionally : {1}", option.DeleteArchiveWithMulipleAudio, option.DeleteAudioWithOutBitRate);                        
+                        grdOuterPop.Height = 90;
+                    }
+                    else
+                    {
+                        optionStr = string.Format("Include archive file with multiple musics : {0} \r\nInclude similar music files unconditionally : {1} \r\nAudio BitRate : {2} \r\nDuration : {3}", option.DeleteArchiveWithMulipleAudio, option.DeleteAudioWithOutBitRate, option.AudioBitRate, option.AudioDuration);
+                        grdOuterPop.Height = 120;
+
+                    }
+                    lblUpperPop.Content = optionStr;
+                    lblLowerPop.Content = "Click for show detail options";
+                }
+                else if (btn == btnProc)
+                {
+                    grdOuterPop.Width = 250;
+                    grdOuterPop.Height = 80; 
+                    lblBackgroundPop.Content = "Processing";
+                    lblUpperPop.Content = "Ready for finding files to clean";
+                    lblLowerPop.Content = "Right click for show details";
+                }
+                else if (btn == btnExit)
+                {
+                    grdOuterPop.Width = 200;
+                    grdOuterPop.Height = 80; 
+                    lblBackgroundPop.Content = "Exit";
+                    lblUpperPop.Content = "Click for exit application";
+                    lblLowerPop.Content = "Right click for tray icon";
+                }
+            }                
         }
 
         void ClosePopUp()
@@ -305,8 +352,9 @@ namespace MusicFileManager
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.FolderBrowserDialog fd = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.FolderBrowserDialog fd = new System.Windows.Forms.FolderBrowserDialog();            
             fd.RootFolder = Environment.SpecialFolder.Desktop;
+            fd.ShowNewFolderButton = true;
             System.Windows.Forms.DialogResult result = fd.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
@@ -331,15 +379,15 @@ namespace MusicFileManager
             this.DragMove();
         }
 
-        private void btnOption_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DoExtendAnimation(ExtendMode.Option, sender as Button);
-            ClosePopUp();
-        }
-
         private void btnProc_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             DoExtendAnimation(ExtendMode.File, sender as Button);
+            ClosePopUp();
+        }
+
+        private void btnOption_Click(object sender, RoutedEventArgs e)
+        {
+            DoExtendAnimation(ExtendMode.Option, sender as Button);
             ClosePopUp();
         }
 
