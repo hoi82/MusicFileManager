@@ -46,7 +46,7 @@ namespace MusicFileManager
         bool extended = false;
 
         MFMOption option = null;
-        MFMFileControl fileControl = null;
+        public MFMFileControl fileControl = null;
 
         ExtendMode mode = ExtendMode.File;
         Button prevPressedButton = null;
@@ -61,6 +61,13 @@ namespace MusicFileManager
 
             option = new MFMOption();
             fileControl = new MFMFileControl();
+            fileControl.ProcessingFailItemBackground = Brushes.Red;
+            fileControl.ProcessingFailItemForeground = Brushes.White;
+            fileControl.ProcessingReadyItemBackground = Brushes.Orange;
+            fileControl.ProcessingReadyItemForeground = Brushes.White;
+            fileControl.ProcessingSuccessItemBackground = Brushes.Green;
+            fileControl.ProcessingSuccessItemForeground = Brushes.White;
+            fileControl.ItemSize = 20;
 
             InitializeRegistryKey();                                    
         }
@@ -364,8 +371,9 @@ namespace MusicFileManager
             e.Handled = true;
         }
 
-        private void btnClean_Click(object sender, RoutedEventArgs e)
+        private void btnProc_Click(object sender, RoutedEventArgs e)
         {
+            btnProc.Content = "Cancel";
             controller.Run(true, searchLocation);
 
             using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))

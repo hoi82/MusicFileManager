@@ -14,7 +14,7 @@
             <Border x:Name="bdInnerBack" BorderThickness="1" Margin="10" CornerRadius="15" Background="#FF1E1E1E" MouseLeftButtonDown="bdInnerBack_MouseLeftButtonDown">
                 <Grid x:Name="grdMain">
                     <Button x:Name="btnOption" Content="Option" HorizontalAlignment="Left" Margin="78,10,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnOption_Click"/>
-                    <Button x:Name="btnProc" Content="Find" HorizontalAlignment="Left" Margin="10,78,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseRightButtonDown="btnProc_MouseRightButtonDown" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove"/>
+                    <Button x:Name="btnProc" Content="Find" HorizontalAlignment="Left" Margin="10,78,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseRightButtonDown="btnProc_MouseRightButtonDown" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnProc_Click"/>
                     <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60" Height="60" MouseEnter="btn_MouseEnter" MouseMove="btn_MouseMove" MouseLeave="btn_MouseLeave" Click="btnBrowse_Click"/>
                     <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="78,78,0,0" VerticalAlignment="Top" Width="60" Height="60" Click="btnExit_Click" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove"/>
                 </Grid>

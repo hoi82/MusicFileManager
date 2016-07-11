@@ -6,6 +6,18 @@ using System.Threading.Tasks;
 
 namespace MusicFileManager
 {
+    public class FileFinderStartEventAtgs : EventArgs
+    {
+        List<string> preMatchedFiles = null;
+
+        public FileFinderStartEventAtgs(List<string> preMatchedFiles)
+        {
+            this.preMatchedFiles = preMatchedFiles;
+        }
+
+        public List<string> PreMatchedFiles { get { return this.preMatchedFiles; } }
+    }
+
     public class FileFinderEndEventArgs : EventArgs
     {
         List<string> matchedFiles = null;
@@ -33,7 +45,7 @@ namespace MusicFileManager
         public int Total { get { return this.total; } }
     }
 
-    public delegate void FileFinderStartEventHandler(object sender, EventArgs e);
+    public delegate void FileFinderStartEventHandler(object sender, FileFinderStartEventAtgs e);
     public delegate void FildFinderProgressEventHandler(object sender, FileFinderProgressEventArgs e);
     public delegate void FileFinderCompleteEventHandler(object sender, FileFinderEndEventArgs e);
     public delegate void FileFinderCancelEventHandler(object sender, EventArgs e);

@@ -92,6 +92,9 @@
     <Compile Include="CustomControls\MFMFileItemControl.xaml.cs">
       <DependentUpon>MFMFileItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TestPage.xaml.cs">
+      <DependentUpon>TestPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Worker\DisplayableWorker.cs" />
     <Compile Include="Duplication\AbstractDuplicationEvaluator.cs" />
     <Compile Include="Duplication\ArchiveDuplicationChecker.cs" />
@@ -157,6 +160,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControls\ProgressControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TestPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -91,7 +91,7 @@ namespace MusicFileManager
             if (allFiles == null)
                 return;
 
-            ResetCount(allFiles.Count());
+            ResetCount(allFiles.Count());            
             mathcedFiles = new List<string>();
 
             for (int i = 0; i < allFiles.Count(); i++)
@@ -109,7 +109,8 @@ namespace MusicFileManager
                     mathcedFiles.Add(sFile);
                 }
 
-                IncCount();                
+                //IncCount();        
+                current = i;
                 OnProcedure();
             }
         }
@@ -117,7 +118,7 @@ namespace MusicFileManager
         protected override void OnStartProcedure()
         {
             if (this.OnStartAsync != null)
-                this.OnStartAsync(this, new EventArgs());
+                this.OnStartAsync(this, new FileFinderStartEventAtgs(allFiles));
         }       
 
         protected override void OnProcedure() 

@@ -1,0 +1,16 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:CustomControls="clr-namespace:MusicFileManager.CustomControls" x:Class="MusicFileManager.TestPage" 
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="500"
+	Title="TestPage">
+
+    <Grid Background="Black">
+
+        <CustomControls:MFMFileControl HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="317" Width="480" ProcessingFailItemBackground="#FFFF0808" ProcessingFailItemForeground="White" ProcessingReadyItemBackground="#FFFFDC00" ProcessingReadyItemForeground="White" ProcessingSuccessItemBackground="Lime" ProcessingSuccessItemForeground="White" ItemSize="20" Mode="Processing"/>
+
+    </Grid>
+</Page>

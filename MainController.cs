@@ -9,6 +9,8 @@ using MusicFileManager.Checker;
 using MusicFileManager.Extractor;
 using MusicFileManager.Duplication;
 using MusicFileManager.Cleaner;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace MusicFileManager
 {    
@@ -54,10 +56,10 @@ namespace MusicFileManager
         {
             this.window = window;
 
-            //fileFinder = new FileFinder(new DefaultFileChecker(), window.prgControl, MFMMessage.Message4);
-            //audioFinder = new FileFinder(new AudioFileChecker(), window.prgControl, MFMMessage.Message6);
-            //archiveFinder = new FileFinder(new ArchiveFileChecker(), window.prgControl, MFMMessage.Message5);
-            //archivedAudioFinder = new FileFinder(new ArchivedAudioFileChecker(new AudioFileChecker()), window.prgControl, MFMMessage.Message7);
+            fileFinder = new FileFinder(new DefaultFileChecker());            
+            audioFinder = new FileFinder(new AudioFileChecker());
+            archiveFinder = new FileFinder(new ArchiveFileChecker());
+            archivedAudioFinder = new FileFinder(new ArchivedAudioFileChecker(new AudioFileChecker()));
             //audioExtractor = new FileExtractor(new AudioFileChecker());
 
             //archiveDuplicationOption = new ArchiveDuplicationEvaluatorOption(window.ctrlOption);
@@ -72,6 +74,11 @@ namespace MusicFileManager
             //audioFinder.SetSerializedFinder(archiveFinder, true);
             //archiveFinder.SetSerializedFinder(archivedAudioFinder);
 
+            fileFinder.OnStartAsync += fileFinder_OnStartAsync;
+            fileFinder.OnProgressAsync += fileFinder_OnProgressAsync;
+            fileFinder.OnCancelAsync += fileFinder_OnCancelAsync;
+            fileFinder.OnCompleteAsync += fileFinder_OnCompleteAsync;
+
             //audioFinder.OnEndAsync += audioFinder_OnEndAsync;
             //archivedAudioFinder.OnEndAsync += archivedAudioFinder_OnEndAsync;
 
@@ -84,6 +91,34 @@ namespace MusicFileManager
             //ctrlClean = new OldFileToCleanControl(window.grdPopUp);
             //ctrlClean.OnOK += ctrlClean_OnOK;
             //ctrlClean.OnCancel += ctrlClean_OnCancel;
+        }
+
+        void fileFinder_OnCompleteAsync(object sender, FileFinderEndEventArgs e)
+        {
+            MessageBox.Show("Complete");
+        }
+
+        void fileFinder_OnCancelAsync(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void fileFinder_OnProgressAsync(object sender, FileFinderProgressEventArgs e)
+        {            
+            //window.Dispatcher.Invoke(() =>
+            //{
+            //    window.fileControl.Items[e.Current].Processing = CustomControls.MFMFileProcessing.Success;                    
+            //});            
+        }
+
+        void fileFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
+        {
+            //window.fileControl.Mode = CustomControls.MFMFileControlMode.Processing;
+            //for (int i = 0; i < e.PreMatchedFiles.Count(); i++)
+            //{
+            //    window.fileControl.Items.Add(new CustomControls.MFMFileItemControl() { Data = e.PreMatchedFiles[i] });                                  
+            //}    
+            MessageBox.Show("Start");            
         }
 
         void ctrlClean_OnCancel(object sender)
