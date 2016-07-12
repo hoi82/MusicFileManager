@@ -19,14 +19,14 @@ namespace MusicFileManager.Duplication
         protected override void Process(System.ComponentModel.DoWorkEventArgs e = null)
         {
             duplicatedFiles = new List<DuplicatedFiles>();
-            ResetCount(targetFiles.Count());
+            //ResetCount(targetFiles.Count());
 
             for (int i = 0; i < sourceFiles.Count(); i++)
             {
                 DuplicatedFiles d = null;
 
-                total = sourceFiles.Count();
-                current = i + 1;
+                outerTotal = sourceFiles.Count();
+                outerCurrent = i;
 
                 if ((e != null) && Canceled())
                 {
@@ -57,8 +57,8 @@ namespace MusicFileManager.Duplication
                         break;
                     }
 
-                    total = extractedAudioFiles.Count();
-                    current = j + 1;
+                    //outerTotal = extractedAudioFiles.Count();
+                    //outerCurrent = j;
 
                     for (int k = 0; k < targetFiles.Count(); k++)
                     {

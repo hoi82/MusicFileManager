@@ -47,7 +47,6 @@ C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\CustomControls\MFMFileCont
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\CustomControls\MFMFileItemControl.g.cs
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\TestPage.g.cs
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\TestPage.baml
-C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csprojResolveAssemblyReference.cache
 E:\Mytest\MS\MusicFileManager\bin\Debug\policy.2.0.taglib-sharp.dll
 E:\Mytest\MS\MusicFileManager\bin\Debug\taglib-sharp.dll
 E:\Mytest\MS\MusicFileManager\obj\Debug\CustomControls\MFMFileControl.baml
@@ -64,3 +63,4 @@ E:\Mytest\MS\MusicFileManager\obj\Debug\TestPage.g.cs
 E:\Mytest\MS\MusicFileManager\obj\Debug\CustomControls\OldFileToCleanControl.baml
 E:\Mytest\MS\MusicFileManager\obj\Debug\CustomControls\MFMOption.baml
 E:\Mytest\MS\MusicFileManager\obj\Debug\TestPage.baml
+C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csprojResolveAssemblyReference.cache

@@ -32,6 +32,7 @@
                             <Label x:Name="lblUpperPop" xml:space="preserve" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Foreground="Orange" FontFamily="/MusicFileManager;component/Fonts/#Walkway Black" FontSize="14" Content="Ready for finding files to clean">                                
                             </Label>
                             <Label x:Name="lblLowerPop" Content="*Click for show detail options" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" FontSize="10" Foreground="White" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold" RenderTransformOrigin="0.474,-0.619"/>
+                            <ProgressBar x:Name="prgPop" Height="10" Margin="15,30,15,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="White" BorderThickness="0"/>
                         </Grid>
                     </Border>
                 </Border>

@@ -17,7 +17,9 @@ namespace MusicFileManager.Duplication
         protected override void Process(System.ComponentModel.DoWorkEventArgs e = null)
         {
             duplicatedFiles = new List<DuplicatedFiles>();
-            ResetCount(sourceFiles.Count());
+            //ResetCount(sourceFiles.Count());
+            outerTotal = sourceFiles.Count();
+            outerCurrent = 0;
 
             for (int i = 0; i < sourceFiles.Count(); i++)
             {
@@ -27,7 +29,9 @@ namespace MusicFileManager.Duplication
                     break;
                 }
 
-                for (int j = 0; j < sourceFiles.Count(); j++)
+                total = targetFiles.Count();
+
+                for (int j = 0; j < targetFiles.Count(); j++)
                 {
                     if ((e != null) && Canceled())
                     {
@@ -37,23 +41,23 @@ namespace MusicFileManager.Duplication
 
                     //옵션에서 처리 안하게 되어있거나 같은 파일일 경우 건너뛴다.
                     if (option != null)
-                    {                        
-                        if ((i == j) | (!option.SatifyOption(sourceFiles[j]))) continue;
-                    }                    
+                    {
+                        if ((i == j) | (!option.SatifyOption(targetFiles[j]))) continue;
+                    }
 
-                    DuplicatedFiles d = duplicationChecker.CheckDuplication(sourceFiles[i], sourceFiles[j]);
+                    DuplicatedFiles d = duplicationChecker.CheckDuplication(sourceFiles[i], targetFiles[j]);
 
                     if ((d != null) && (!duplicatedFiles.Contains(d)))
                     {
                         duplicatedFiles.Add(d);
                     }
 
-                    current = j + 1;
+                    current = j;
 
                     OnProcedure();
                 }
 
-                current = i + 1;
+                outerCurrent = i;
 
                 OnProcedure();
             }            
@@ -61,7 +65,13 @@ namespace MusicFileManager.Duplication
 
         public override List<DuplicatedFiles> GetDuplications(List<string> list, bool aSync)
         {
-            sourceFiles = list;            
+            return GetDuplications(list, list, aSync);                       
+        }
+
+        public override List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2, bool aSync)
+        {
+            sourceFiles = list1;
+            targetFiles = list2;
             if (aSync)
             {
                 working = true;
@@ -74,12 +84,7 @@ namespace MusicFileManager.Duplication
                 working = false;
                 Process();
                 return duplicatedFiles;
-            }            
-        }
-
-        public override List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2, bool aSync)
-        {
-            throw new NotImplementedException();
+            } 
         }
     }
 }

@@ -32,6 +32,11 @@ namespace MusicFileManager.Duplication
             this.outerCurrent = outerCurrent;
             this.outerTotal = outerTotal;
         }
+
+        public int InnerCurrent { get { return this.innerCurrent; } }
+        public int InnerTotal { get { return this.innerTotal; } }
+        public int OuterCurrent { get { return this.outerCurrent; } }
+        public int OuterTotal { get { return this.outerTotal; } }
     }
 
     public delegate void DuplicationEvaluatorStartEventHandler(object sender, EventArgs e);
