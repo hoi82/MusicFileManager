@@ -62,6 +62,7 @@ namespace MusicFileManager
         void GetMatchedFilesAsync(string directory);
         void GetMatchedFilesAsync(List<string> files);
         void SetSerializedFinder(IFileFinder finder, bool usePreMathcedFiles = false);
+        void Cancel();
         
     }
 }

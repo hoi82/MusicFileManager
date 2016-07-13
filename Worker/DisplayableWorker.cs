@@ -26,8 +26,7 @@ namespace MusicFileManager.Worker
             bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.WorkerReportsProgress = true;
-            bw.DoWork += bw_DoWork;
-            bw.ProgressChanged += bw_ProgressChanged;
+            bw.DoWork += bw_DoWork;            
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
             total = 0;
@@ -44,15 +43,6 @@ namespace MusicFileManager.Worker
             {
                 OnCompleteProcedure();
             }                        
-        }
-
-        void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            //OnProcedure();
-            //if ((progressControl != null) && working)
-            //{                
-            //    progressControl.ProgressDisplay(e.ProgressPercentage, progressMessage);
-            //}                
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)

@@ -51,6 +51,7 @@ namespace MusicFileManager.Duplication
         event DuplicationEvaluatorCancelEventHandler OnCancelAsync;
         event DuplicationEvaluatorCompleteEventHandler OnCompleteAsync;        
         List<DuplicatedFiles> GetDuplications(List<string> list, bool aSync);        
-        List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2, bool aSync);                
+        List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2, bool aSync);
+        void Cancel();
     }
 }

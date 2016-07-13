@@ -24,8 +24,7 @@ namespace MusicFileManager.CustomControls
     /// </summary>
     public partial class MFMFileControl : UserControl
     {
-        public static DependencyProperty ItemSizeProperty;
-        public static DependencyProperty ItemsProperty;
+        public static DependencyProperty ItemSizeProperty;        
         public static DependencyProperty SelectedItemForegroundProperty;
         public static DependencyProperty UnSelectedItemForegroundProperty;
         public static DependencyProperty SelectedItemBackgroundProperty;
@@ -41,12 +40,13 @@ namespace MusicFileManager.CustomControls
         public static DependencyProperty TitleProperty;
         public static DependencyProperty ModeProperty;
 
+        List<object> datas = null;
+
         Panel panel = null;
 
         static MFMFileControl()
         {
-            ItemSizeProperty = DependencyProperty.Register("ItemSize", typeof(double), typeof(MFMFileControl), new PropertyMetadata(10.0));
-            ItemsProperty = DependencyProperty.Register("Items", typeof(ObservableCollection<MFMFileItemControl>), typeof(MFMFileControl), new PropertyMetadata(new ObservableCollection<MFMFileItemControl>(), new PropertyChangedCallback(OnItemsChanged)));
+            ItemSizeProperty = DependencyProperty.Register("ItemSize", typeof(double), typeof(MFMFileControl), new PropertyMetadata(10.0));            
             SelectedItemForegroundProperty = DependencyProperty.Register("SelectedItemForeground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null));
             UnSelectedItemForegroundProperty = DependencyProperty.Register("UnSelectedItemForeground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null));
             SelectedItemBackgroundProperty = DependencyProperty.Register("SelectedItemBackground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null));
@@ -60,13 +60,14 @@ namespace MusicFileManager.CustomControls
             ItemContentBackgroundProperty = DependencyProperty.Register("ItemContentBackground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnItemContentChanged)));
             ItemContentForegroundProperty = DependencyProperty.Register("ItemContentForeground", typeof(Brush), typeof(MFMFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnItemContentChanged)));
             TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(MFMFileControl), new PropertyMetadata(null, new PropertyChangedCallback(OnTitleChanged)));
-            ModeProperty = DependencyProperty.Register("Mode", typeof(MFMFileControlMode), typeof(MFMFileControl), new PropertyMetadata(MFMFileControlMode.Editing, new PropertyChangedCallback(OnModeChanged)));            
+            ModeProperty = DependencyProperty.Register("Mode", typeof(MFMFileControlMode), typeof(MFMFileControl), new PropertyMetadata(MFMFileControlMode.Editing));            
         }
 
         public MFMFileControl()
         {
             InitializeComponent();
-            SetValue(ItemsProperty, new ObservableCollection<MFMFileItemControl>()); 
+
+            datas = new List<object>();
         }
 
         public MFMFileControl(Panel panel) : this()
@@ -78,29 +79,13 @@ namespace MusicFileManager.CustomControls
         {
             get
             {
-                return (double)this.GetValue(ItemSizeProperty);
-                //return Dispatcher.Invoke(() => (double)this.GetValue(ItemSizeProperty));
+                return (double)this.GetValue(ItemSizeProperty);                
             }
             set
             {
-                this.SetValue(ItemSizeProperty, value);
-                //Dispatcher.BeginInvoke((Action)(() => this.SetValue(ItemSizeProperty, value)));
+                this.SetValue(ItemSizeProperty, value);                
             }
-        }
-
-        public ObservableCollection<MFMFileItemControl> Items
-        {
-            get
-            {
-                //return Dispatcher.Invoke(() => (ObservableCollection<MFMFileItemControl>)this.GetValue(ItemsProperty));
-                return (ObservableCollection<MFMFileItemControl>)this.GetValue(ItemsProperty);
-            }
-            set
-            {
-                //Dispatcher.BeginInvoke((Action)(() => this.SetValue(ItemsProperty, value)));
-                this.SetValue(ItemsProperty, value);
-            }
-        }
+        }        
 
         public Brush SelectedItemForeground
         {
@@ -272,19 +257,9 @@ namespace MusicFileManager.CustomControls
             (d as MFMFileControl).OnTitleChanged(e);
         }
 
-        static void OnItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileControl).OnItemsChanged();
-        }
-
         static void OnItemContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as MFMFileControl).OnItemContentChanged(e);
-        }
-
-        static void OnModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileControl).OnModeChanged(e);
         }
 
         void OnTitleChanged(DependencyPropertyChangedEventArgs e)
@@ -292,79 +267,11 @@ namespace MusicFileManager.CustomControls
             lbTitle.Content = e.NewValue;
         }
 
-        void OnItemsChanged()
-        {
-            if (Items != null)
-                Items.CollectionChanged += new NotifyCollectionChangedEventHandler(ItemsChanged);
-        }
-
         void OnItemContentChanged(DependencyPropertyChangedEventArgs e)
         {
             grdItemContent.Background = ItemContentBackground;
             tblItemContent.Foreground = ItemContentForeground;
-        }
-
-        void OnModeChanged(DependencyPropertyChangedEventArgs e)
-        {
-
-        }
-
-        void ItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            //추가되는 아이템은 NewItem에, 제거되는 아이템은 OldItem에 들어있다.
-            //Move의 경우 움직이는 아이템이 NewItem과 Old아이템 모두에 들어있고,
-            //이전 인덱스가 OldStartingIndex, 새 인덱스가 NewStartingIndex에 들어있다.
-            //Replace의 경우 들어올 아이템이 NewItem, 이전 아이템이 OldItem
-            //Reset일 경우 NewItem과 OldItem 둘다 null
-            //사후 이벤트이기 때문에 실제 리스트는 이미 바껴있는 상태다.                        
-
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    {
-                        AddItems(e.NewStartingIndex, e.NewItems);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    {
-                        MoveItem(e.OldStartingIndex, e.NewStartingIndex);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    {
-                        DeleteItems(e.OldItems);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    {
-                        ReplaceItems(e.OldItems, e.NewItems);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    {
-                        ClearItems();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        void AddItems(int startingIndex, System.Collections.IList values)
-        {
-            if (values == null)
-                return;
-
-            for (int i = 0; i < values.Count; i++)
-            {
-                MFMFileItemControl item = values[i] as MFMFileItemControl;
-                if (item != null)
-                {
-                    SetItem(item);
-                    wpMain.Children.Insert(startingIndex + i, item);
-                }
-            }  
-        }
+        }         
 
         void SetItem(MFMFileItemControl b)
         {
@@ -482,89 +389,79 @@ namespace MusicFileManager.CustomControls
             {
                 MFMFileItemControl bi = sender as MFMFileItemControl;
                 bi.Selected = !bi.Selected;
-            }            
+            }                        
         }
 
-        void DeleteItems(System.Collections.IList values)
+        public void AddItem(object data)
         {
-            if (values == null)
-                return;
+            MFMFileItemControl item = new MFMFileItemControl() { Data = data };
+            SetItem(item);
+            datas.Add(data);
+            wpMain.Children.Add(item);            
+        }
 
-            foreach (var value in values)
+        public void AddItem(object data, string name)
+        {
+            MFMFileItemControl item = new MFMFileItemControl() { Data = data, IconName = name };
+            SetItem(item);
+            datas.Add(data);
+            wpMain.Children.Add(item);
+        }
+
+        public void DeleteItem(object data)
+        {
+            int index = datas.IndexOf(data);
+
+            if (index > -1)
             {
-                MFMFileItemControl b = value as MFMFileItemControl;
-
-                if (b != null)
-                {
-                    wpMain.Children.Remove(b);
-                }
+                datas.Remove(data);
+                wpMain.Children.RemoveAt(index);
             }
         }
 
-        void MoveItem(int oldIndex, int newIndex)
+        public void AddItems(IList<object> datas)
         {
-            MFMFileItemControl b = wpMain.Children[oldIndex] as MFMFileItemControl;
-
-            if (b != null)
+            foreach (var data in datas)
             {
-                wpMain.Children.RemoveAt(oldIndex);
-                wpMain.Children.Insert(newIndex, b);
+                AddItem(data);
             }
         }
 
-        void ReplaceItems(System.Collections.IList oldvalues, System.Collections.IList newvalues)
+        public void ClearItems()
         {
-            if ((oldvalues == null) | (newvalues == null))
-                return;
-
-            for (int i = 0; i < oldvalues.Count; i++)
-            {
-                MFMFileItemControl oldItem = oldvalues[i] as MFMFileItemControl;
-
-                if (oldItem != null)
-                {
-                    int index = wpMain.Children.IndexOf(oldItem);
-                    if (index != -1)
-                    {
-                        MFMFileItemControl newItem = newvalues[i] as MFMFileItemControl;
-
-                        if (newItem != null)
-                            wpMain.Children[index] = newItem;
-                    }
-                }
-            }
-        }
-
-        void ClearItems()
-        {
+            datas.Clear();
             wpMain.Children.Clear();
         }
 
-        public void Add(DuplicatedFiles data)
+        public List<MFMFileItemControl> SelectedItems()
         {
-            Items.Add(new MFMFileItemControl(data));
-        }
-
-        void SetDisplayPosition()
-        {
-            this.Width = double.NaN;
-            this.Height = double.NaN;
-            this.HorizontalAlignment = HorizontalAlignment.Stretch;
-            this.VerticalAlignment = VerticalAlignment.Stretch;
-        }
-
-        public void Display(List<DuplicatedFiles> files)
-        {
-            SetDisplayPosition();
-            panel.Children.Add(this);
-
-            if (files == null)
-                return;
-
-            foreach (DuplicatedFiles file in files)
+            List<MFMFileItemControl> items = new List<MFMFileItemControl>();
+            foreach (var child in wpMain.Children)
             {
-                Items.Add(new MFMFileItemControl(file));
+                MFMFileItemControl item = child as MFMFileItemControl;
+
+                if (item != null)
+                {
+                    if (item.Selected)
+                        items.Add(item);
+                }
             }
+            return items;
+        }
+
+        public List<MFMFileItemControl> Items()
+        {
+            List<MFMFileItemControl> items = new List<MFMFileItemControl>();
+            foreach (var child in wpMain.Children)
+            {
+                MFMFileItemControl item = child as MFMFileItemControl;
+
+                if (item != null)
+                {                    
+                    items.Add(item);
+                }
+            }
+            return items;
         }
     }
 }

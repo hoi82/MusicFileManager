@@ -87,6 +87,7 @@
     <Compile Include="Checker\AbstractFileChecker.cs" />
     <Compile Include="Checker\ArchivedAudioFileChecker.cs" />
     <Compile Include="Checker\DefaultFileChecker.cs" />
+    <Compile Include="Cleaner\FileCleanerResult.cs" />
     <Compile Include="Cleaner\IFileCleaner.cs" />
     <Compile Include="CustomControls\MFMFileControl.xaml.cs">
       <DependentUpon>MFMFileControl.xaml</DependentUpon>

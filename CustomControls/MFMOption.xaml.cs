@@ -88,5 +88,17 @@ namespace MusicFileManager
                 Dispatcher.BeginInvoke((Action)(() => this.SetValue(AudioDurationProperty, value)));                
             }
         }
+
+        private void cbDeleteWithOutFiltering_Checked(object sender, RoutedEventArgs e)
+        {
+            sldBitRate.IsEnabled = false;
+            sldDuration.IsEnabled = false;
+        }
+
+        private void cbDeleteWithOutFiltering_Unchecked(object sender, RoutedEventArgs e)
+        {
+            sldBitRate.IsEnabled = true;
+            sldDuration.IsEnabled = true;
+        }
     }
 }

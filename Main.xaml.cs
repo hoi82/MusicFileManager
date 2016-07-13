@@ -59,8 +59,6 @@ namespace MusicFileManager
             option = new MFMOption();
 
             controller = new MainController(this);
-            controller.OnStart += controller_OnStart;
-            controller.OnEnd += controller_OnEnd;
             
             fileControl = new MFMFileControl();
             fileControl.ProcessingFailItemBackground = Brushes.Red;
@@ -72,17 +70,7 @@ namespace MusicFileManager
             fileControl.ItemSize = 20;
 
             InitializeRegistryKey();                                    
-        }
-
-        void controller_OnEnd(object sender)
-        {
-            btnProc.Content = "Clean";
-        }
-
-        void controller_OnStart(object sender)
-        {
-            btnProc.Content = "Cancel";
-        }        
+        }     
 
         private void InitializeRegistryKey()
         {                       
@@ -329,13 +317,19 @@ namespace MusicFileManager
             {
                 grdOuterPop.Width = 250;
                 lblBackgroundPop.Content = "Processing";
-
-                if (controller.processingMode == ProcessingMode.CollectFile)
+                if (controller.processingMode == ProcessingMode.ReadyFind)
+                {
+                    grdOuterPop.Height = 80;
+                    prgPop.Visibility = Visibility.Hidden;
+                    lblUpperPop.Content = "Ready for Check Files";
+                    lblLowerPop.Content = "Click for Check Files";
+                }
+                else if (controller.processingMode == ProcessingMode.CollectFile)
                 {
                     grdOuterPop.Height = 90;
                     prgPop.Visibility = Visibility.Visible;
-                    lblUpperPop.Content = "Ready for Check Files";
-                    lblLowerPop.Content = "Click for Check Files";
+                    //lblUpperPop.Content = "Ready for Check Files";
+                    //lblLowerPop.Content = "Click for Check Files";
                 }
                 else if (controller.processingMode == ProcessingMode.CheckDuplication)
                 {
@@ -345,12 +339,19 @@ namespace MusicFileManager
                     lblUpperPop.Content = "Ready for Check Files";
                     lblLowerPop.Content = "Click for Check Files";
                 }
-                else if (controller.processingMode == ProcessingMode.Clean)
+                else if (controller.processingMode == ProcessingMode.ReadyClean)
                 {
                     grdOuterPop.Height = 90;
-                    prgPop.Visibility = Visibility.Visible;
+                    prgPop.Visibility = Visibility.Hidden;
                     lblUpperPop.Content = "Ready for Clean files";
-                    lblLowerPop.Content = "Click for Clean files";
+                    lblLowerPop.Content = "Click for Clean files\r\nRight Click for Show Details";
+                }
+                else if (controller.processingMode == ProcessingMode.Clean)
+                {
+                    grdOuterPop.Height = 100;
+                    prgPop.Visibility = Visibility.Visible;
+                    //lblUpperPop.Content = "Ready for Clean files";
+                    //lblLowerPop.Content = "Click for Clean files";
                 }
             }
             else if (btn == btnExit)
@@ -403,12 +404,26 @@ namespace MusicFileManager
 
         private void btnProc_Click(object sender, RoutedEventArgs e)
         {
-            btnProc.Content = "Cancel";
-            controller.Run(true, searchLocation);
+            if (controller.processingMode == ProcessingMode.ReadyFind)
+            {                
+                controller.Find(searchLocation);
 
-            using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
+                using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
+                {
+                    SaveRegistryKeyValue(regKey);
+                }
+            }
+            else if (controller.processingMode == ProcessingMode.ReadyClean)
             {
-                SaveRegistryKeyValue(regKey);
+                controller.Clean();
+            }
+            else if ((controller.processingMode == ProcessingMode.CollectFile) || (controller.processingMode == ProcessingMode.CheckDuplication))
+            {                
+                controller.CancelFind();                
+            }
+            else if (controller.processingMode == ProcessingMode.Clean)
+            {
+                controller.CancelClean();
             }
         }
 
@@ -421,7 +436,7 @@ namespace MusicFileManager
         {
             Button b = sender as Button;
 
-            if (controller.processingMode == ProcessingMode.Clean)
+            if ((controller.processingMode == ProcessingMode.ReadyClean) || (controller.processingMode == ProcessingMode.Clean))
             {
                 DoExtendAnimation(ExtendMode.File, sender as Button);
                 ClosePopUp();

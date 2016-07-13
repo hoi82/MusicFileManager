@@ -143,6 +143,16 @@ namespace MusicFileManager
 
             if (this.OnCompleteAsync != null)
                 this.OnCompleteAsync(this, new FileFinderEndEventArgs(mathcedFiles));
-        } 
+        }
+
+
+        public void Cancel()
+        {
+            base.CancelAsync();
+            if (serializedFinder != null)
+            {
+                serializedFinder.Cancel();
+            }
+        }
     }
 }

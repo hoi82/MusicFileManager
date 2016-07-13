@@ -61,6 +61,12 @@ namespace MusicFileManager.Duplication
         {
             if (this.OnCompleteAsync != null)
                 this.OnCompleteAsync(this, new DuplicationEvaluatorEndEventArgs(duplicatedFiles));
-        }        
+        }
+
+
+        public void Cancel()
+        {
+            base.CancelAsync();
+        }
     }
 }

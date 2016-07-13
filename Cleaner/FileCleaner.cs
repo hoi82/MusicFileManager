@@ -6,40 +6,38 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.IO;
 using MusicFileManager.Worker;
+using MusicFileManager.CustomControls;
 
 namespace MusicFileManager.Cleaner
 {
-    public class FileCleanerEndEventArgs : EventArgs
-    {
-        List<string> deletedFiles = null;
-        List<string> unDeletedFiles = null;
-
-        public FileCleanerEndEventArgs(List<string> deletedFiles, List<string> unDeletedFiles)
-        {
-            this.deletedFiles = deletedFiles;
-            this.unDeletedFiles = unDeletedFiles;
-        }
-
-        public List<string> DeletedFiles { get { return this.deletedFiles; } }
-        public List<string> UnDeletedFiles { get { return this.unDeletedFiles; } }
-    }
-
-    public delegate void FileCleanerStartEventHandler(object sender);
-    public delegate void FileCleanerEndEventHandler(object sender, FileCleanerEndEventArgs e);
+    /// <summary>
+    /// 
+    /// </summary>
     public class FileCleaner : DisplayableWorker, IFileCleaner
-    {
-        List<string> files = null;        
-        List<string> deletedFiles = new List<string>();
-        List<string> undeletedFiles = new List<string>();
-
+    {        
         public event FileCleanerStartEventHandler OnStartAsync = null;
 
-        public event FileCleanerEndEventHandler OnEndAsync = null;
+        public event FileCleanerCompleteEventHandler OnCompleteAsync = null;
+
+        public event FileCleanerProgressEventHander OnProgressAsync = null;
+
+        public event FileCleanerCancelEventHandler OnCancelAsync = null;
+        
+        List<string> deletedFiles = new List<string>();
+        List<string> failedFiles = new List<string>();
+        List<string> undeletedFiles = new List<string>();
+
+        MFMFileControl fileControl = null;
 
         public FileCleaner() : base()
         {
 
-        }      
+        }
+
+        public FileCleaner(MFMFileControl fileControl) : this()
+        {
+            this.fileControl = fileControl;
+        }
 
         bool IsFileLocked(FileInfo fi)
         {
@@ -77,31 +75,17 @@ namespace MusicFileManager.Cleaner
         public void CancelCleanAsync()
         {
             CancelAsync();
-        }        
-
-        public void CleanFiles(bool aSync, List<string> files)
-        {
-            this.files = files;
-            if (aSync)
-            {
-                StartAsync();
-            }
-            else
-            {
-                Process();
-
-                if (this.OnEndAsync != null)
-                {
-                    this.OnEndAsync(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
-                }
-            }                
-        }
+        }                
 
         protected override void Process(DoWorkEventArgs e = null)
         {
-            if (files == null) return;
+            if (fileControl == null) return;
 
-            for (int i = 0; i < files.Count; i++)
+            List<MFMFileItemControl> items = fileControl.Items();
+
+            total = items.Count;
+
+            for (int i = 0; i < items.Count; i++)
             {
                 if ((e != null) && Canceled())
                 {
@@ -109,35 +93,45 @@ namespace MusicFileManager.Cleaner
                     break;
                 }
 
-                if (!File.Exists(files[i]))
-                {
-                    undeletedFiles.Add(files[i]);
-                    continue;
-                }
+                DuplicatedFiles d = items[i].Data as DuplicatedFiles;
 
-                try
+                if (items[i].Selected)
                 {
-                    FileInfo fi = new FileInfo(files[i]);
-                    if (IsFileLocked(fi))
+                    if (d == null)
                     {
-                        undeletedFiles.Add(files[i]);                        
+                        failedFiles.Add("unknown");
                     }
                     else
                     {
-                        //fi.Delete();
-                        deletedFiles.Add(files[i]);
+                        if (File.Exists(d.DuplicatedFile))
+                        {
+                            FileInfo fi = new FileInfo(d.DuplicatedFile);
+
+                            if (IsFileLocked(fi))
+                            {
+                                failedFiles.Add(d.DuplicatedFile);
+                            }
+                            else
+                            {
+                                fi.Delete();
+                                deletedFiles.Add(d.DuplicatedFile);
+                            }
+                        }
+                        else
+                        {
+                            failedFiles.Add(d.DuplicatedFile);
+                        }
                     }
                 }
-                catch (UnauthorizedAccessException)
+                else
                 {
-                    undeletedFiles.Add(files[i]);
-                }
-                catch (IOException)
-                {
-                    undeletedFiles.Add(files[i]);
+                    if (d == null)
+                        failedFiles.Add("unknown");
+                    else
+                        undeletedFiles.Add(d.DuplicatedFile);
                 }
 
-                IncCount();
+                current = i;
 
                 OnProcedure();
             }
@@ -145,24 +139,49 @@ namespace MusicFileManager.Cleaner
 
         protected override void OnCompleteProcedure()
         {
-            if (this.OnEndAsync != null)
-                this.OnEndAsync(this, new FileCleanerEndEventArgs(deletedFiles, undeletedFiles));
+            if (this.OnCompleteAsync != null)
+                this.OnCompleteAsync(this, new FileCleanerCompleteEventArgs(deletedFiles, undeletedFiles));
         }
 
         protected override void OnStartProcedure()
         {
             if (this.OnStartAsync != null)
-                this.OnStartAsync(this);
+                this.OnStartAsync(this, new EventArgs());
         }
 
         protected override void OnProcedure()
         {
-            throw new NotImplementedException();
+            if (this.OnProgressAsync != null)
+                this.OnProgressAsync(this, new FileCleanerProgressEventArgs(current, total));
         }
 
         protected override void OnCancelProcedure()
         {
+            if (this.OnCancelAsync != null)
+                this.OnCancelAsync(this, new EventArgs());
+        }
+
+
+        public FileCleanerResult CleanFiles(List<string> files)
+        {
             throw new NotImplementedException();
+        }
+
+        public void CleanFilesAsync(List<string> files)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FileCleanerResult CleanFiles()
+        {
+            Process();
+            return new FileCleanerResult(deletedFiles, undeletedFiles, failedFiles);
+        }
+
+        public void CleanFilesAsync()
+        {
+            OnStartProcedure();
+            StartAsync();
         }
     }
 }

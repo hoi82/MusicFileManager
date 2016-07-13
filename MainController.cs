@@ -14,15 +14,12 @@ using System.Windows.Forms;
 
 namespace MusicFileManager
 {
-    public enum ProcessingMode { CollectFile, CheckDuplication, Clean }
+    public enum ProcessingMode { ReadyFind, CollectFile, CheckDuplication, ReadyClean, Clean }
     public delegate void MainControllerStartEvent(object sender);
     public delegate void MainContollerEndEvent(object sender);
 
     public class MainController
     {
-        public event MainControllerStartEvent OnStart = null;
-        public event MainContollerEndEvent OnEnd = null;
-
         MainWindow window = null;        
 
         IFileFinder fileFinder = null;
@@ -43,11 +40,9 @@ namespace MusicFileManager
         
         List<string> audioFiles = null;        
         List<string> archivedAudioFiles = null;
-        List<DuplicatedFiles> filetoClean = null;
+        List<DuplicatedFiles> filetoClean = null;        
 
-        OldFileToCleanControl ctrlClean = null;
-
-        public ProcessingMode processingMode = ProcessingMode.CollectFile;
+        public ProcessingMode processingMode = ProcessingMode.ReadyFind;
         
         public MainController()
         {                      
@@ -72,6 +67,8 @@ namespace MusicFileManager
             audioDuplcationOption = new AudioDuplicationEvaluatorOption(window.option);
             audioDuplicationChecker = new AudioDuplicationChecker();
             audioDuplicationEvaluator = new AudioDuplicationEvaluator(audioDuplcationOption, audioDuplicationChecker);
+
+            fileCleaner = new FileCleaner(window.fileControl);
 
             fileFinder.SetSerializedFinder(audioFinder);
             audioFinder.SetSerializedFinder(archiveFinder, true);
@@ -107,39 +104,56 @@ namespace MusicFileManager
             audioDuplicationEvaluator.OnCancelAsync += audioDuplicationEvaluator_OnCancelAsync;
             audioDuplicationEvaluator.OnCompleteAsync += audioDuplicationEvaluator_OnCompleteAsync;
 
-            //fileCleaner = new FileCleaner(window.prgControl);
-            //fileCleaner.OnEndAsync += fileCleaner_OnEndAsync;
+            fileCleaner.OnStartAsync += fileCleaner_OnStartAsync;
+            fileCleaner.OnProgressAsync += fileCleaner_OnProgressAsync;
+            fileCleaner.OnCancelAsync += fileCleaner_OnCancelAsync;
+            fileCleaner.OnCompleteAsync += fileCleaner_OnCompleteAsync;
+        }
 
-            //ctrlClean = new OldFileToCleanControl(window.grdPopUp);
-            //ctrlClean.OnOK += ctrlClean_OnOK;
-            //ctrlClean.OnCancel += ctrlClean_OnCancel;
+        void fileCleaner_OnCompleteAsync(object sender, FileCleanerCompleteEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void fileCleaner_OnCancelAsync(object sender, EventArgs e)
+        {
+            processingMode = ProcessingMode.ReadyClean;
+            window.option.IsEnabled = true;
+            window.btnProc.Content = "Clean";
+        }
+
+        void fileCleaner_OnProgressAsync(object sender, FileCleanerProgressEventArgs e)
+        {
+            DisplayProgressPopUp(string.Format("Deleting Files {0}/{1}", e.Current + 1, e.Total), e.Current + 1, e.Total);            
+        }
+
+        void fileCleaner_OnStartAsync(object sender, EventArgs e)
+        {
+            processingMode = ProcessingMode.Clean;
+            window.option.IsEnabled = false;
+            window.btnProc.Content = "Cancel";
         }
 
         void audioDuplicationEvaluator_OnCompleteAsync(object sender, DuplicationEvaluatorEndEventArgs e)
         {
             window.lblUpperPop.Content = "Complete";
-            processingMode = ProcessingMode.Clean;
+            processingMode = ProcessingMode.ReadyClean;
             window.btnProc.Content = "Clean";
             filetoClean.AddRange(e.DuplicatedFiles);
+            window.option.IsEnabled = true;
         }
 
         void audioDuplicationEvaluator_OnCancelAsync(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            processingMode = ProcessingMode.ReadyFind;
+            window.btnProc.Content = "Find";
+            window.DisplayPopUp(window.currentMouserOverButton);
+            window.option.IsEnabled = true;
         }
 
         void audioDuplicationEvaluator_OnProgressAsync(object sender, DuplicationEvaluatorProgressEventArgs e)
         {
-            if (window.currentMouserOverButton == window.btnProc)
-            {
-                window.Dispatcher.Invoke(() =>
-                {
-                    float cur = e.InnerCurrent + 1;
-                    float total = e.InnerTotal;
-                    window.lblUpperPop.Content = string.Format("Finding Duplicated Music Files {0}/{1} of {2}/{3}", cur, total, e.OuterCurrent + 1, e.OuterTotal);
-                    window.prgPop.Value = cur / total * 100;
-                });
-            }            
+            DisplayProgressPopUp(string.Format("Finding Duplicated Music Files {0}/{1} of {2}/{3}", e.InnerCurrent + 1, e.InnerTotal, e.OuterCurrent + 1, e.OuterTotal), e.InnerCurrent + 1, e.InnerTotal);            
         }
 
         void audioDuplicationEvaluator_OnStartAsync(object sender, EventArgs e)
@@ -157,27 +171,21 @@ namespace MusicFileManager
 
         void archiveDuplicationEvaluator_OnCancelAsync(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            processingMode = ProcessingMode.ReadyFind;
+            window.btnProc.Content = "Find";
+            window.DisplayPopUp(window.currentMouserOverButton);
+            window.option.IsEnabled = true;
         }
 
         void archiveDuplicationEvaluator_OnProgressAsync(object sender, DuplicationEvaluatorProgressEventArgs e)
         {
-            if (window.currentMouserOverButton == window.btnProc)
-            {
-                window.Dispatcher.Invoke(() =>
-                {
-                    float cur = e.InnerCurrent + 1;
-                    float total = e.InnerTotal;
-                    window.lblUpperPop.Content = string.Format("Finding Duplicated Archive Files {0}/{1} of {2}/{3}", cur, total, e.OuterCurrent + 1, e.OuterTotal);
-                    window.prgPop.Value = cur / total * 100;
-                }); 
-            }            
+            DisplayProgressPopUp(string.Format("Finding Duplicated Archive Files {0}/{1} of {2}/{3}", e.InnerCurrent + 1, e.InnerTotal, e.OuterCurrent + 1, e.OuterTotal), e.InnerCurrent + 1, e.InnerTotal);            
         }
 
         void archiveDuplicationEvaluator_OnStartAsync(object sender, EventArgs e)
         {
             window.prgPop.Value = 0;
-            window.DisplayPopUp(window.currentMouserOverButton);
+            window.DisplayPopUp(window.currentMouserOverButton);            
         }
 
         void archivedAudioFinder_OnCompleteAsync(object sender, FileFinderEndEventArgs e)
@@ -185,26 +193,20 @@ namespace MusicFileManager
             window.lblUpperPop.Content = "Complete";
             archivedAudioFiles = e.MatchedFiles;
             processingMode = ProcessingMode.CheckDuplication;
-            archiveDuplicationEvaluator.GetDuplications(archivedAudioFiles, audioFiles, true);
+            archiveDuplicationEvaluator.GetDuplications(archivedAudioFiles, audioFiles, true);            
         }
 
         void archivedAudioFinder_OnCancelAsync(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            processingMode = ProcessingMode.ReadyFind;
+            window.btnProc.Content = "Find";
+            window.DisplayPopUp(window.currentMouserOverButton);
+            window.option.IsEnabled = true;
         }
 
         void archivedAudioFinder_OnProgressAsync(object sender, FileFinderProgressEventArgs e)
-        {            
-            window.Dispatcher.Invoke(() =>
-            {
-                if (window.currentMouserOverButton == window.btnProc)
-                {
-                    float cur = e.Current + 1;
-                    float total = e.Total;
-                    window.lblUpperPop.Content = string.Format("Finding Archived Audio Files {0}/{1}", cur, total);
-                    window.prgPop.Value = cur / total * 100;
-                }                
-            }); 
+        {
+            DisplayProgressPopUp(string.Format("Finding Archived Audio Files {0}/{1}", e.Current + 1, e.Total), e.Current + 1, e.Total);            
         }
 
         void archivedAudioFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
@@ -220,21 +222,15 @@ namespace MusicFileManager
 
         void archiveFinder_OnCancelAsync(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            processingMode = ProcessingMode.ReadyFind;
+            window.btnProc.Content = "Find";
+            window.DisplayPopUp(window.currentMouserOverButton);
+            window.option.IsEnabled = true;
         }
 
         void archiveFinder_OnProgressAsync(object sender, FileFinderProgressEventArgs e)
-        {            
-            window.Dispatcher.Invoke(() =>
-            {
-                if (window.currentMouserOverButton == window.btnProc)
-                {
-                    float cur = e.Current + 1;
-                    float total = e.Total;
-                    window.lblUpperPop.Content = string.Format("Finding Archived Files {0}/{1}", cur, total);
-                    window.prgPop.Value = cur / total * 100;
-                }                
-            }); 
+        {
+            DisplayProgressPopUp(string.Format("Finding Archived Files {0}/{1}", e.Current + 1, e.Total), e.Current + 1, e.Total);            
         }
 
         void archiveFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
@@ -251,21 +247,15 @@ namespace MusicFileManager
 
         void audioFinder_OnCancelAsync(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            processingMode = ProcessingMode.ReadyFind;
+            window.btnProc.Content = "Find";
+            window.DisplayPopUp(window.currentMouserOverButton);
+            window.option.IsEnabled = true;
         }
 
         void audioFinder_OnProgressAsync(object sender, FileFinderProgressEventArgs e)
-        {            
-            window.Dispatcher.Invoke(() =>
-            {
-                if (window.currentMouserOverButton == window.btnProc)
-                {
-                    float cur = e.Current + 1;
-                    float total = e.Total;
-                    window.lblUpperPop.Content = string.Format("Finding Music Files {0}/{1}", cur, total);
-                    window.prgPop.Value = cur / total * 100;
-                }                
-            });            
+        {
+            DisplayProgressPopUp(string.Format("Finding Music Files {0}/{1}", e.Current + 1, e.Total), e.Current + 1, e.Total);            
         }
 
         void audioFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
@@ -281,79 +271,61 @@ namespace MusicFileManager
 
         void fileFinder_OnCancelAsync(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            processingMode = ProcessingMode.ReadyFind;
+            window.btnProc.Content = "Find";
+            window.DisplayPopUp(window.currentMouserOverButton);
+            window.option.IsEnabled = true;
         }
 
         void fileFinder_OnProgressAsync(object sender, FileFinderProgressEventArgs e)
-        {
-            window.Dispatcher.Invoke(() =>
-            {
-                if (window.currentMouserOverButton == window.btnProc)
-                {
-                    float cur = e.Current + 1;
-                    float total = e.Total;
-                    window.lblUpperPop.Content = string.Format("Finding All Files {0}/{1}", cur, total);
-                    window.prgPop.Value = cur / total * 100;
-                }                
-            });            
+        {            
+            DisplayProgressPopUp(string.Format("Finding All Files {0}/{1}", e.Current + 1, e.Total), e.Current + 1, e.Total);                                     
         }
 
         void fileFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
         {
             processingMode = ProcessingMode.CollectFile;
+            window.btnProc.Content = "Cancel";
             window.prgPop.Value = 0;
             window.DisplayPopUp(window.currentMouserOverButton);
-        }
+            window.lblLowerPop.Content = "Click for cancel";
+            window.option.IsEnabled = false;
+        }                                                
 
-        void ctrlClean_OnCancel(object sender)
-        {
-            if (this.OnEnd != null)
-                this.OnEnd(this);
-        }
-
-        void ctrlClean_OnOK(object sender, List<string> files)
-        {
-            fileCleaner.CleanFiles(true, files);
-        }
-
-        void fileCleaner_OnEndAsync(object sender, FileCleanerEndEventArgs e)
-        {
-            if (this.OnEnd != null)
-                this.OnEnd(this);
-
-            //ModalDialogControl m = new ModalDialogControl(window.grdPopUp, DialogButton.OK);
-
-            string message = string.Format("Deleted Files : {0} \r\n Undeleted Files : {1}", e.DeletedFiles.Count(), e.UnDeletedFiles.Count());
-            //m.ShowDialog(message);
-        }
-
-        void audioDuplicationEvaluator_OnEndAsync(object sender, DuplicationEvaluatorEndEventArgs e)
-        {
-            filetoClean.AddRange(e.DuplicatedFiles);
-            ctrlClean.Display(filetoClean);
-        }
-
-        void archiveDuplicationEvaluator_OnEndAsync(object sender, DuplicationEvaluatorEndEventArgs e)
-        {
-            filetoClean.AddRange(e.DuplicatedFiles);
-            audioDuplicationEvaluator.GetDuplications(audioFiles, true);
-        }
-
-        void archivedAudioFinder_OnEndAsync(object sender, FileFinderEndEventArgs e)
-        {
-            archivedAudioFiles = e.MatchedFiles;
-            archiveDuplicationEvaluator.GetDuplications(archivedAudioFiles, audioFiles, true);
-        }
-
-        void audioFinder_OnEndAsync(object sender, FileFinderEndEventArgs e)
-        {
-            audioFiles = e.MatchedFiles;
-        }                                          
-
-        public void Run(bool aSync, string directory)
+        public void Find(string directory)
         {
             fileFinder.GetMatchedFilesAsync(directory); 
             //DuplicatedFiles d = audioDuplicationChecker.CheckDuplication(@"C:\내꺼\Music\アニメ\01. Singing！.mp3", @"C:\내꺼\Music\アニメ\2011 top 100\10. 01. Singing！.mp3");    
+        }
+
+        public void CancelFind()
+        {
+            fileFinder.Cancel();
+            audioDuplicationEvaluator.Cancel();
+            archiveDuplicationEvaluator.Cancel();
         }        
+
+        public void Clean()
+        {
+            fileCleaner.CleanFilesAsync();
+        }
+
+        public void CancelClean()
+        {
+            fileCleaner.CancelCleanAsync();
+        }
+
+        public void DisplayProgressPopUp(string message, int current, int total)
+        {
+            if (window.currentMouserOverButton == window.btnProc)
+            {
+                window.Dispatcher.Invoke(() => 
+                {
+                    window.lblUpperPop.Content = message;
+                    window.prgPop.Value = (float)current / (float)total * 100;
+                    window.lblLowerPop.Content = "Click for Cancel";
+                });                               
+            } 
+        }
     }
 }
