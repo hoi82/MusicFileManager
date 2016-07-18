@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ionic.Zip;
 using System.IO;
 using System.Text.RegularExpressions;
+using SevenZip;
 
 namespace MusicFileManager.Checker
 {
@@ -30,41 +30,91 @@ namespace MusicFileManager.Checker
                 return false;
 
             bool IsAudio = false;
+
+            SevenZipExtractor extractor = null;
+
             try
             {
-                ZipFile z = ZipFile.Read(fileName);
-                foreach (ZipEntry entry in z.Entries)
+                extractor = new SevenZipExtractor(fileName);
+                foreach (ArchiveFileInfo afInfo in extractor.ArchiveFileData)
                 {
-                    string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
+                    string filePath = System.IO.Path.Combine(extractDir, afInfo.FileName);
 
-                    if (entry.IsDirectory)
+                    if (afInfo.IsDirectory)
                     {
-                        extractedDir.Add(extractedPath);
-                        continue;
+                        if (!Directory.Exists(filePath))
+                            Directory.CreateDirectory(filePath);
+
+                        if (!filePath.Equals(extractDir))
+                            extractedDir.Add(filePath);
                     }
                     else
                     {
-                        extractedFiles.Add(extractedPath);
-                    }
+                        if (!Directory.Exists(filePath))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                            if (!Path.GetDirectoryName(filePath).Equals(extractDir))                                
+                                extractedDir.Add(Path.GetDirectoryName(filePath));
+                        }                            
 
-                    entry.Extract(extractDir, ExtractExistingFileAction.OverwriteSilently);
+                        extractedFiles.Add(filePath);
 
-                    if (audioCheker.IsVaildFile(ref extractedPath))
-                    {
-                        IsAudio = true;
-                        break;
+                        FileStream fs = File.OpenWrite(filePath);
+                        extractor.ExtractFile(afInfo.FileName, fs);
+                        fs.Close();
+                        if (audioCheker.IsVaildFile(ref filePath))
+                        {
+                            IsAudio = true;
+                            break;
+                        }
                     }
                 }
-                z.Dispose();
             }
             catch (Exception)
             {
+                
                 throw;
             }
             finally
-            {
+            {               
                 CleanExtractedFiles();
             }
+
+            //try
+            //{
+            //    SevenZip.SevenZipExtractor z = new SevenZipExtractor(fileName);
+            //    foreach (string entry in z.ArchiveFileNames)
+            //    {
+            //        string extractedPath = extractDir + @"\" + entry.FileName;//.Replace("/",@"\");
+
+            //        if (entry.IsDirectory)
+            //        {
+            //            extractedDir.Add(extractedPath);
+            //            continue;
+            //        }
+            //        else
+            //        {
+            //            extractedFiles.Add(extractedPath);
+            //        }
+
+            //        entry.Extract(extractDir, ExtractExistingFileAction.OverwriteSilently);
+
+            //        if (audioCheker.IsVaildFile(ref extractedPath))
+            //        {
+            //            IsAudio = true;
+            //            break;
+            //        }
+            //    }
+            //    z.Dispose();
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
+            //finally
+            //{
+            //    CleanExtractedFiles();
+            //}
 
             return IsAudio;
         }

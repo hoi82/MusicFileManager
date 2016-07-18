@@ -275,71 +275,77 @@ namespace MusicFileManager.CustomControls
 
         void SetItem(MFMFileItemControl b)
         {
-            Binding selectedForegroundBinding = new Binding("SelectedItemForeground");
-            selectedForegroundBinding.Source = this;
-            selectedForegroundBinding.Mode = BindingMode.OneWay;
+            b.SelectedBackground = this.SelectedItemBackground;
+            b.SelectedForeground = this.SelectedItemForeground;
+            b.UnSelectedBackground = this.UnSelectedItemBackground;
+            b.UnSelectedForeground = this.UnSelectedItemForeground;
+            b.Mode = this.Mode;
 
-            b.SetBinding(MFMFileItemControl.SelectedForegroundProperty, selectedForegroundBinding);
+            //Binding selectedForegroundBinding = new Binding("SelectedItemForeground");
+            //selectedForegroundBinding.Source = this;
+            //selectedForegroundBinding.Mode = BindingMode.OneWay;
 
-            Binding selectedbackgroundBinding = new Binding("SelectedItemBackground");
-            selectedbackgroundBinding.Source = this;
-            selectedbackgroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.SelectedForegroundProperty, selectedForegroundBinding);
 
-            b.SetBinding(MFMFileItemControl.SelectedBackgroundProperty, selectedbackgroundBinding);
+            //Binding selectedbackgroundBinding = new Binding("SelectedItemBackground");
+            //selectedbackgroundBinding.Source = this;
+            //selectedbackgroundBinding.Mode = BindingMode.OneWay;
 
-            Binding unselectedForegroundBinding = new Binding("UnSelectedItemForeground");
-            unselectedForegroundBinding.Source = this;
-            unselectedForegroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.SelectedBackgroundProperty, selectedbackgroundBinding);
 
-            b.SetBinding(MFMFileItemControl.UnSelectedForegroundProperty, unselectedForegroundBinding);
+            //Binding unselectedForegroundBinding = new Binding("UnSelectedItemForeground");
+            //unselectedForegroundBinding.Source = this;
+            //unselectedForegroundBinding.Mode = BindingMode.OneWay;
 
-            Binding unselectedbackgroundBinding = new Binding("UnSelectedItemBackground");
-            unselectedbackgroundBinding.Source = this;
-            unselectedbackgroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.UnSelectedForegroundProperty, unselectedForegroundBinding);
 
-            b.SetBinding(MFMFileItemControl.UnSelectedBackgroundProperty, unselectedbackgroundBinding);
+            //Binding unselectedbackgroundBinding = new Binding("UnSelectedItemBackground");
+            //unselectedbackgroundBinding.Source = this;
+            //unselectedbackgroundBinding.Mode = BindingMode.OneWay;
 
-            Binding procSuccessBackgroundBinding = new Binding("ProcessingSuccessItemBackground");
-            procSuccessBackgroundBinding.Source = this;
-            procSuccessBackgroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.UnSelectedBackgroundProperty, unselectedbackgroundBinding);
 
-            b.SetBinding(MFMFileItemControl.ProcessingSuccessBackgroundProperty, procSuccessBackgroundBinding);
+            //Binding procSuccessBackgroundBinding = new Binding("ProcessingSuccessItemBackground");
+            //procSuccessBackgroundBinding.Source = this;
+            //procSuccessBackgroundBinding.Mode = BindingMode.OneWay;
 
-            Binding procSuccessForegroundBinding = new Binding("ProcessingSuccessItemForeground");
-            procSuccessForegroundBinding.Source = this;
-            procSuccessForegroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.ProcessingSuccessBackgroundProperty, procSuccessBackgroundBinding);
 
-            b.SetBinding(MFMFileItemControl.ProcessingSuccessForegroundProperty, procSuccessForegroundBinding);
+            //Binding procSuccessForegroundBinding = new Binding("ProcessingSuccessItemForeground");
+            //procSuccessForegroundBinding.Source = this;
+            //procSuccessForegroundBinding.Mode = BindingMode.OneWay;
 
-            Binding procFailBackgroundBinding = new Binding("ProcessingFailItemBackground");
-            procFailBackgroundBinding.Source = this;
-            procFailBackgroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.ProcessingSuccessForegroundProperty, procSuccessForegroundBinding);
 
-            b.SetBinding(MFMFileItemControl.ProcessingFailBackgroundProperty, procFailBackgroundBinding);
+            //Binding procFailBackgroundBinding = new Binding("ProcessingFailItemBackground");
+            //procFailBackgroundBinding.Source = this;
+            //procFailBackgroundBinding.Mode = BindingMode.OneWay;
 
-            Binding procFailForegroundBinding = new Binding("ProcessingFailItemForeground");
-            procFailForegroundBinding.Source = this;
-            procFailForegroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.ProcessingFailBackgroundProperty, procFailBackgroundBinding);
 
-            b.SetBinding(MFMFileItemControl.ProcessingFailForegroundProperty, procFailForegroundBinding);
+            //Binding procFailForegroundBinding = new Binding("ProcessingFailItemForeground");
+            //procFailForegroundBinding.Source = this;
+            //procFailForegroundBinding.Mode = BindingMode.OneWay;
 
-            Binding procReadyBackgroundBinding = new Binding("ProcessingReadyItemBackground");
-            procReadyBackgroundBinding.Source = this;
-            procReadyBackgroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.ProcessingFailForegroundProperty, procFailForegroundBinding);
 
-            b.SetBinding(MFMFileItemControl.ProcessingReadyBackgroundProperty, procReadyBackgroundBinding);
+            //Binding procReadyBackgroundBinding = new Binding("ProcessingReadyItemBackground");
+            //procReadyBackgroundBinding.Source = this;
+            //procReadyBackgroundBinding.Mode = BindingMode.OneWay;
 
-            Binding procReadyForegroundBinding = new Binding("ProcessingReadyItemForeground");
-            procReadyForegroundBinding.Source = this;
-            procReadyForegroundBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.ProcessingReadyBackgroundProperty, procReadyBackgroundBinding);
 
-            b.SetBinding(MFMFileItemControl.ProcessingReadyForegroundProperty, procReadyForegroundBinding);
+            //Binding procReadyForegroundBinding = new Binding("ProcessingReadyItemForeground");
+            //procReadyForegroundBinding.Source = this;
+            //procReadyForegroundBinding.Mode = BindingMode.OneWay;
 
-            Binding modeBinding = new Binding("Mode");
-            modeBinding.Source = this;
-            modeBinding.Mode = BindingMode.OneWay;
+            //b.SetBinding(MFMFileItemControl.ProcessingReadyForegroundProperty, procReadyForegroundBinding);
 
-            b.SetBinding(MFMFileItemControl.ModeProperty, modeBinding);
+            //Binding modeBinding = new Binding("Mode");
+            //modeBinding.Source = this;
+            //modeBinding.Mode = BindingMode.OneWay;
+
+            //b.SetBinding(MFMFileItemControl.ModeProperty, modeBinding);
 
             b.Click += b_Click;
 
@@ -394,18 +400,18 @@ namespace MusicFileManager.CustomControls
 
         public void AddItem(object data)
         {
-            MFMFileItemControl item = new MFMFileItemControl() { Data = data };
-            SetItem(item);
-            datas.Add(data);
-            wpMain.Children.Add(item);            
+            AddItem(data, null);            
         }
 
         public void AddItem(object data, string name)
         {
-            MFMFileItemControl item = new MFMFileItemControl() { Data = data, IconName = name };
-            SetItem(item);
-            datas.Add(data);
-            wpMain.Children.Add(item);
+            //MFMFileItemControl item = new MFMFileItemControl() { Data = data, IconName = name };
+            //SetItem(item);
+            //datas.Add(data);
+            //wpMain.Children.Add(item);
+            Ellipse el = new Ellipse();
+            el.Fill = Brushes.Pink;
+            wpMain.Children.Add(el);
         }
 
         public void DeleteItem(object data)

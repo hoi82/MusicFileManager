@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Ionic.Zip;
 using System.Text.RegularExpressions;
+using SevenZip;
 
 namespace MusicFileManager.Extractor
 {
     public class FileExtractor : IFileExtractor
     {
-        const string EXTRACT_DIR = "Extracts";
+        const string EXTRACT_DIR = @"Extracts";
         string extractPath = System.AppDomain.CurrentDomain.BaseDirectory + EXTRACT_DIR;
         List<string> extractedFiles = new List<string>();
         List<string> extractedDir = new List<string>();
@@ -72,45 +72,100 @@ namespace MusicFileManager.Extractor
         public List<string> ExtractMathcedFiles(string archiveFile, IFileChecker checker = null)
         {
             List<string> matchedFiles = new List<string>();
-            ZipFile z = null;
+
+            SevenZipExtractor extractor = null;
+
             try
             {
-                z = ZipFile.Read(archiveFile);
-                foreach (ZipEntry entry in z.Entries)
+                extractor = new SevenZipExtractor(archiveFile);
+
+                foreach (ArchiveFileInfo afInfo in extractor.ArchiveFileData)
                 {
-                    string extractedPath = extractPath + @"\" + entry.FileName;//.Replace("/",@"\");
+                    string filePath = System.IO.Path.Combine(extractPath, afInfo.FileName);
 
-                    if (entry.IsDirectory)
+                    if (afInfo.IsDirectory)
                     {
-                        extractedDir.Add(extractedPath);
-                        continue;
-                    }
-
-                    entry.Extract(extractPath);
-
-                    if (checker != null)
-                        fileChecker = checker;
-                    
-                    if (fileChecker.IsVaildFile(ref extractedPath))
-                    {
-                        matchedFiles.Add(extractedPath);
-                        extractedFiles.Add(extractedPath);
+                        Directory.CreateDirectory(filePath);
+                        if (!filePath.Equals(extractPath))
+                            extractedDir.Add(filePath);
                     }
                     else
                     {
-                        DeleteFile(extractedPath);
+                        if (!Directory.Exists(filePath))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                            if (!Path.GetDirectoryName(filePath).Equals(extractPath))
+                                extractedDir.Add(Path.GetDirectoryName(filePath));
+                        }         
+                  
+                        FileStream fs = File.OpenWrite(filePath);
+                        extractor.ExtractFile(afInfo.FileName, fs);
+                        fs.Close();
+
+                        if (checker != null)
+                            fileChecker = checker;
+
+                        if (fileChecker.IsVaildFile(ref filePath))
+                        {
+                            matchedFiles.Add(filePath);
+                            extractedFiles.Add(filePath);
+                        }
+                        else
+                        {
+                            DeleteFile(filePath);
+                        }                      
                     }
-                }                
+                }
             }
             catch (Exception)
             {
                 
+                throw;
             }
             finally
             {
-                if (z != null)
-                    z.Dispose();
+               
             }
+
+            //ZipFile z = null;
+            //try
+            //{
+            //    z = ZipFile.Read(archiveFile);
+            //    foreach (ZipEntry entry in z.Entries)
+            //    {
+            //        string extractedPath = extractPath + @"\" + entry.FileName;//.Replace("/",@"\");
+
+            //        if (entry.IsDirectory)
+            //        {
+            //            extractedDir.Add(extractedPath);
+            //            continue;
+            //        }
+
+            //        entry.Extract(extractPath);
+
+            //        if (checker != null)
+            //            fileChecker = checker;
+                    
+            //        if (fileChecker.IsVaildFile(ref extractedPath))
+            //        {
+            //            matchedFiles.Add(extractedPath);
+            //            extractedFiles.Add(extractedPath);
+            //        }
+            //        else
+            //        {
+            //            DeleteFile(extractedPath);
+            //        }
+            //    }                
+            //}
+            //catch (Exception)
+            //{
+                
+            //}
+            //finally
+            //{
+            //    if (z != null)
+            //        z.Dispose();
+            //}
             return matchedFiles;
         }
 

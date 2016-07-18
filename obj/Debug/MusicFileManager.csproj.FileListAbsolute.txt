@@ -21,7 +21,6 @@ E:\Mytest\MS\MusicFileManager\bin\Debug\MusicFileManager.exe.config
 E:\Mytest\MS\MusicFileManager\bin\Debug\MusicFileManager.exe
 E:\Mytest\MS\MusicFileManager\bin\Debug\MusicFileManager.pdb
 E:\Mytest\MS\MusicFileManager\bin\Debug\policy.2.0.taglib-sharp.config
-E:\Mytest\MS\MusicFileManager\obj\Debug\MusicFileManager.csprojResolveAssemblyReference.cache
 E:\Mytest\MS\MusicFileManager\obj\Debug\Main.g.cs
 E:\Mytest\MS\MusicFileManager\obj\Debug\App.g.cs
 E:\Mytest\MS\MusicFileManager\obj\Debug\GeneratedInternalTypeHelper.g.cs
@@ -64,3 +63,5 @@ E:\Mytest\MS\MusicFileManager\obj\Debug\CustomControls\OldFileToCleanControl.bam
 E:\Mytest\MS\MusicFileManager\obj\Debug\CustomControls\MFMOption.baml
 E:\Mytest\MS\MusicFileManager\obj\Debug\TestPage.baml
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csprojResolveAssemblyReference.cache
+E:\Mytest\MS\MusicFileManager\bin\Debug\SevenZipSharp.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\SevenZipSharp.pdb

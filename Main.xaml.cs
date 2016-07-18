@@ -436,11 +436,11 @@ namespace MusicFileManager
         {
             Button b = sender as Button;
 
-            if ((controller.processingMode == ProcessingMode.ReadyClean) || (controller.processingMode == ProcessingMode.Clean))
-            {
+            //if ((controller.processingMode == ProcessingMode.ReadyClean) || (controller.processingMode == ProcessingMode.Clean))
+            //{
                 DoExtendAnimation(ExtendMode.File, sender as Button);
                 ClosePopUp();
-            }            
+            //}            
         }
 
         private void btnOption_Click(object sender, RoutedEventArgs e)
