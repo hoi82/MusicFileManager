@@ -56,18 +56,22 @@ namespace MusicFileManager
         {
             InitializeComponent();
 
-            option = new MFMOption();
-
-            controller = new MainController(this);
+            option = new MFMOption();            
             
             fileControl = new MFMFileControl();
+            fileControl.SelectedItemBackground = Brushes.Orange;
+            fileControl.SelectedItemForeground = Brushes.White;
+            fileControl.UnSelectedItemBackground = Brushes.Aquamarine;
+            fileControl.UnSelectedItemForeground = Brushes.White;
             fileControl.ProcessingFailItemBackground = Brushes.Red;
             fileControl.ProcessingFailItemForeground = Brushes.White;
             fileControl.ProcessingReadyItemBackground = Brushes.Orange;
             fileControl.ProcessingReadyItemForeground = Brushes.White;
             fileControl.ProcessingSuccessItemBackground = Brushes.Green;
-            fileControl.ProcessingSuccessItemForeground = Brushes.White;
+            fileControl.ProcessingSuccessItemForeground = Brushes.White;            
             fileControl.ItemSize = 20;
+
+            controller = new MainController(this);
 
             InitializeRegistryKey();                                    
         }     
@@ -249,7 +253,7 @@ namespace MusicFileManager
                 fileControl.Height = 388;
                 fileControl.Margin = new Thickness(10, 150, 10, 10);
                 fileControl.Background = new SolidColorBrush(Color.FromArgb(100, 50, 50, 50));
-                grdMain.Children.Add(fileControl);
+                grdMain.Children.Add(fileControl);                
             }
             else if (mode == ExtendMode.Option)
             {                
@@ -405,7 +409,7 @@ namespace MusicFileManager
         private void btnProc_Click(object sender, RoutedEventArgs e)
         {
             if (controller.processingMode == ProcessingMode.ReadyFind)
-            {                
+            {
                 controller.Find(searchLocation);
 
                 using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
@@ -418,13 +422,13 @@ namespace MusicFileManager
                 controller.Clean();
             }
             else if ((controller.processingMode == ProcessingMode.CollectFile) || (controller.processingMode == ProcessingMode.CheckDuplication))
-            {                
-                controller.CancelFind();                
+            {
+                controller.CancelFind();
             }
             else if (controller.processingMode == ProcessingMode.Clean)
             {
                 controller.CancelClean();
-            }
+            }            
         }
 
         private void bdInnerBack_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -436,11 +440,11 @@ namespace MusicFileManager
         {
             Button b = sender as Button;
 
-            //if ((controller.processingMode == ProcessingMode.ReadyClean) || (controller.processingMode == ProcessingMode.Clean))
-            //{
+            if ((controller.processingMode == ProcessingMode.ReadyClean) || (controller.processingMode == ProcessingMode.Clean))
+            {
                 DoExtendAnimation(ExtendMode.File, sender as Button);
                 ClosePopUp();
-            //}            
+            }            
         }
 
         private void btnOption_Click(object sender, RoutedEventArgs e)

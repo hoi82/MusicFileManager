@@ -60,8 +60,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="SevenZipSharp, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c8ff6ba0184838bb, processorArchitecture=MSIL">
-      <HintPath>packages\SevenZipSharp.Net45.1.0.5\lib\net45\SevenZipSharp.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SevenZipSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -205,13 +205,7 @@
     <None Include="Diagram.cd" />
     <Resource Include="Fonts\Walkway_Black.ttf" />
     <Resource Include="Fonts\Walkway_Bold.ttf" />
-    <Resource Include="Fonts\Walkway_Oblique.ttf" />
-    <Resource Include="Fonts\Walkway_Oblique_Black.ttf" />
-    <Resource Include="Fonts\Walkway_Oblique_Bold.ttf" />
-    <Resource Include="Fonts\Walkway_Oblique_SemiBold.ttf" />
-    <Resource Include="Fonts\Walkway_Oblique_UltraBold.ttf" />
     <Resource Include="Fonts\Walkway_SemiBold.ttf" />
-    <Resource Include="Fonts\Walkway_UltraBold.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

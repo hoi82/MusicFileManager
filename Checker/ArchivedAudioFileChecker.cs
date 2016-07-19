@@ -31,10 +31,9 @@ namespace MusicFileManager.Checker
 
             bool IsAudio = false;
 
-            SevenZipExtractor extractor = null;
-
+            SevenZipExtractor extractor = null;            
             try
-            {
+            {                                              
                 extractor = new SevenZipExtractor(fileName);
                 foreach (ArchiveFileInfo afInfo in extractor.ArchiveFileData)
                 {
@@ -50,7 +49,7 @@ namespace MusicFileManager.Checker
                     }
                     else
                     {
-                        if (!Directory.Exists(filePath))
+                        if (!Directory.Exists(Path.GetDirectoryName(filePath)))
                         {
                             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                             if (!Path.GetDirectoryName(filePath).Equals(extractDir))                                
@@ -59,9 +58,10 @@ namespace MusicFileManager.Checker
 
                         extractedFiles.Add(filePath);
 
-                        FileStream fs = File.OpenWrite(filePath);
+                        FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
                         extractor.ExtractFile(afInfo.FileName, fs);
-                        fs.Close();
+                        fs.Close();                        
+
                         if (audioCheker.IsVaildFile(ref filePath))
                         {
                             IsAudio = true;
@@ -78,6 +78,8 @@ namespace MusicFileManager.Checker
             finally
             {               
                 CleanExtractedFiles();
+                if (extractor != null)
+                    extractor.Dispose();             
             }
 
             //try

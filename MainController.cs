@@ -111,8 +111,8 @@ namespace MusicFileManager
         }
 
         void fileCleaner_OnCompleteAsync(object sender, FileCleanerCompleteEventArgs e)
-        {
-            throw new NotImplementedException();
+        {            
+            MessageBox.Show(string.Format("Deleted File : {0} "+"\r\n"+ "UnDeleted File : {1}", e.DeletedFiles.Count, e.UnDeletedFiles.Count));            
         }
 
         void fileCleaner_OnCancelAsync(object sender, EventArgs e)
@@ -124,7 +124,9 @@ namespace MusicFileManager
 
         void fileCleaner_OnProgressAsync(object sender, FileCleanerProgressEventArgs e)
         {
-            DisplayProgressPopUp(string.Format("Deleting Files {0}/{1}", e.Current + 1, e.Total), e.Current + 1, e.Total);            
+            DisplayProgressPopUp(string.Format("Deleting Files {0}/{1}", e.Current + 1, e.Total), e.Current + 1, e.Total);
+            window.Dispatcher.Invoke(() => { window.fileControl.Items()[e.Current].Processing = CustomControls.MFMFileProcessing.Success; });
+            
         }
 
         void fileCleaner_OnStartAsync(object sender, EventArgs e)
@@ -132,6 +134,7 @@ namespace MusicFileManager
             processingMode = ProcessingMode.Clean;
             window.option.IsEnabled = false;
             window.btnProc.Content = "Cancel";
+            window.fileControl.Mode = CustomControls.MFMFileControlMode.Processing;
         }
 
         void audioDuplicationEvaluator_OnCompleteAsync(object sender, DuplicationEvaluatorEndEventArgs e)
@@ -139,7 +142,17 @@ namespace MusicFileManager
             window.lblUpperPop.Content = "Complete";
             processingMode = ProcessingMode.ReadyClean;
             window.btnProc.Content = "Clean";
-            filetoClean.AddRange(e.DuplicatedFiles);
+            window.DisplayPopUp(window.currentMouserOverButton);
+            filetoClean.AddRange(e.DuplicatedFiles);                      
+            foreach (var item in filetoClean)
+            {
+                window.fileControl.AddItem(new CustomControls.MFMFileItemControl() 
+                { 
+                    Selected = true, 
+                    IconName = System.IO.Path.GetFileNameWithoutExtension(item.DuplicatedFile).Substring(0,2), 
+                    Data = item 
+                });               
+            }            
             window.option.IsEnabled = true;
         }
 
@@ -294,8 +307,7 @@ namespace MusicFileManager
 
         public void Find(string directory)
         {
-            fileFinder.GetMatchedFilesAsync(directory); 
-            //DuplicatedFiles d = audioDuplicationChecker.CheckDuplication(@"C:\내꺼\Music\アニメ\01. Singing！.mp3", @"C:\내꺼\Music\アニメ\2011 top 100\10. 01. Singing！.mp3");    
+            fileFinder.GetMatchedFilesAsync(directory);             
         }
 
         public void CancelFind()

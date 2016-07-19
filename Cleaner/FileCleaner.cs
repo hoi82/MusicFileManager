@@ -113,7 +113,7 @@ namespace MusicFileManager.Cleaner
                             }
                             else
                             {
-                                fi.Delete();
+                                //fi.Delete();
                                 deletedFiles.Add(d.DuplicatedFile);
                             }
                         }

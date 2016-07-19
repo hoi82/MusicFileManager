@@ -73,10 +73,9 @@ namespace MusicFileManager.Extractor
         {
             List<string> matchedFiles = new List<string>();
 
-            SevenZipExtractor extractor = null;
-
+            SevenZipExtractor extractor = null;            
             try
-            {
+            {                
                 extractor = new SevenZipExtractor(archiveFile);
 
                 foreach (ArchiveFileInfo afInfo in extractor.ArchiveFileData)
@@ -91,16 +90,18 @@ namespace MusicFileManager.Extractor
                     }
                     else
                     {
-                        if (!Directory.Exists(filePath))
+                        if (!Directory.Exists(Path.GetDirectoryName(filePath)))
                         {
                             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                             if (!Path.GetDirectoryName(filePath).Equals(extractPath))
                                 extractedDir.Add(Path.GetDirectoryName(filePath));
-                        }         
-                  
-                        FileStream fs = File.OpenWrite(filePath);
+                        }
+
+                        FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
                         extractor.ExtractFile(afInfo.FileName, fs);
                         fs.Close();
+                        fs.Dispose();
+                        fs = null;
 
                         if (checker != null)
                             fileChecker = checker;
@@ -124,48 +125,10 @@ namespace MusicFileManager.Extractor
             }
             finally
             {
-               
+                if (extractor != null)
+                    extractor.Dispose();
             }
-
-            //ZipFile z = null;
-            //try
-            //{
-            //    z = ZipFile.Read(archiveFile);
-            //    foreach (ZipEntry entry in z.Entries)
-            //    {
-            //        string extractedPath = extractPath + @"\" + entry.FileName;//.Replace("/",@"\");
-
-            //        if (entry.IsDirectory)
-            //        {
-            //            extractedDir.Add(extractedPath);
-            //            continue;
-            //        }
-
-            //        entry.Extract(extractPath);
-
-            //        if (checker != null)
-            //            fileChecker = checker;
-                    
-            //        if (fileChecker.IsVaildFile(ref extractedPath))
-            //        {
-            //            matchedFiles.Add(extractedPath);
-            //            extractedFiles.Add(extractedPath);
-            //        }
-            //        else
-            //        {
-            //            DeleteFile(extractedPath);
-            //        }
-            //    }                
-            //}
-            //catch (Exception)
-            //{
-                
-            //}
-            //finally
-            //{
-            //    if (z != null)
-            //        z.Dispose();
-            //}
+            
             return matchedFiles;
         }
 

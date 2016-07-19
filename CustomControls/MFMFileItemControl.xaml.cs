@@ -19,46 +19,30 @@ namespace MusicFileManager.CustomControls
     /// <summary>
     /// MFMCleanFileItemControl.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MFMFileItemControl : UserControl, ICustomTypeDescriptor
-    {
-        public static DependencyProperty UnSelectedBackgroundProperty;
-        public static DependencyProperty UnSelectedForegroundProperty;
-        public static DependencyProperty SelectedBackgroundProperty;
-        public static DependencyProperty SelectedForegroundProperty;
-        public static DependencyProperty SelectedProperty;
-        public static DependencyProperty ProcessingSuccessBackgroundProperty;
-        public static DependencyProperty ProcessingSuccessForegroundProperty;
-        public static DependencyProperty ProcessingFailBackgroundProperty;
-        public static DependencyProperty ProcessingFailForegroundProperty;
-        public static DependencyProperty ProcessingReadyBackgroundProperty;
-        public static DependencyProperty ProcessingReadyForegroundProperty;
-        public static DependencyProperty ProcessingProperty;
-        public static DependencyProperty IconNameProperty;
-        public static DependencyProperty DataProperty;
-        public static DependencyProperty ModeProperty;
+    public partial class MFMFileItemControl : UserControl
+    {        
+        Brush unSelectedBackground = null;
+        Brush unSelectedForeground = null;
+        Brush selectedBackground = null;
+        Brush selectedForeground = null;
+        bool selected = false;
+        Brush processingSuccessBackground = null;
+        Brush processingSuccessForeground = null;
+        Brush processingFailBackground = null;
+        Brush processingFailForeground = null;
+        Brush processingReadyBackground = null;
+        Brush processingReadyForeground = null;
+        MFMFileProcessing processing = MFMFileProcessing.Ready;
+        string iconName = null;
+        object data = null;
+        MFMFileControlMode mode = MFMFileControlMode.Editing;
 
         public static readonly RoutedEvent ClickEvent;
 
         bool clicked = false;
 
         static MFMFileItemControl()
-        {
-            UnSelectedBackgroundProperty = DependencyProperty.Register("UnSelectedBackground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnUnSelectedBackgroundChanged)));
-            UnSelectedForegroundProperty = DependencyProperty.Register("UnSelectedForeground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnUnSelectedForegroundChanged)));
-            SelectedBackgroundProperty = DependencyProperty.Register("SelectedBackground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnSelectedBackgroundChanged)));
-            SelectedForegroundProperty = DependencyProperty.Register("SelectedForeground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnSelectedForegroundChanged)));
-            SelectedProperty = DependencyProperty.Register("Selected", typeof(bool), typeof(MFMFileItemControl), new PropertyMetadata(false, new PropertyChangedCallback(OnSelectedChanged)));
-            ProcessingSuccessBackgroundProperty = DependencyProperty.Register("ProcessingSuccessBackground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnProcessingSuccessBackgroundChanged)));
-            ProcessingSuccessForegroundProperty = DependencyProperty.Register("ProcessingSuccessForeground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnProcessingSuccessForegroundChanged)));
-            ProcessingFailBackgroundProperty = DependencyProperty.Register("ProcessingFailBackground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnProcessingFailBackgroundChanged)));
-            ProcessingFailForegroundProperty = DependencyProperty.Register("ProcessingFailForeground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnProcessingFailForegroundChanged)));
-            ProcessingReadyBackgroundProperty = DependencyProperty.Register("ProcessingReadyBackground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnProcessingReadyBackgroundChanged)));
-            ProcessingReadyForegroundProperty = DependencyProperty.Register("ProcessingReadyForeground", typeof(Brush), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnProcessingReadyForegroundChanged)));
-            ProcessingProperty = DependencyProperty.Register("Processing", typeof(MFMFileProcessing), typeof(MFMFileItemControl), new PropertyMetadata(MFMFileProcessing.Ready, new PropertyChangedCallback(OnProcessingChanged)));
-            IconNameProperty = DependencyProperty.Register("IconName", typeof(string), typeof(MFMFileItemControl), new PropertyMetadata(null, new PropertyChangedCallback(OnIconNameChanged)));
-            DataProperty = DependencyProperty.Register("Data", typeof(object), typeof(MFMFileItemControl), new PropertyMetadata(null));
-            ModeProperty = DependencyProperty.Register("Mode", typeof(MFMFileControlMode), typeof(MFMFileItemControl), new PropertyMetadata(MFMFileControlMode.Editing, new PropertyChangedCallback(OnModeChanged)));
-
+        {            
             ClickEvent = EventManager.RegisterRoutedEvent("Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(MFMFileItemControl));
         }        
         
@@ -70,421 +54,200 @@ namespace MusicFileManager.CustomControls
         public MFMFileItemControl(object data)
         {
             this.Data = data;
-        }
-
-        static void OnModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnModeChanged(e);
-        }        
-
-        static void OnProcessingReadyForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnProcessingReadyForegroundChanged(e);
-        }        
-
-        static void OnProcessingReadyBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnProcessingReadyBackgroundChanged(e);
-        }        
-
-        static void OnProcessingFailForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnProcessingFailForegroundChanged(e);
-        }
-
-        static void OnProcessingFailBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnProcessingFailBackgroundChanged(e);
-        }        
-
-        static void OnProcessingSuccessForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnProcessingSuccessForegroundChanged(e);
-        }        
-
-        static void OnProcessingSuccessBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnProcessingSuccessBackgroundChanged(e);
-        }        
-
-        static void OnProcessingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnProcessingChanged(e);
-        }
-
-        static void OnSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnSelectedChanged(e);
-        }
-
-        static void OnSelectedForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnSelectedForegroundChanged(e);
-        }
-
-        static void OnSelectedBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnSelectedBackgroundChanged(e);
-        }
-
-        static void OnUnSelectedForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnUnSelectedForegroundChanged(e);
-        }
-
-        static void OnUnSelectedBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnUnSelectedBackgroundChanged(e);
-        }
-
-        static void OnIconNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MFMFileItemControl).OnIconNameChanged(e);
-        }
-
-        void OnModeChanged(DependencyPropertyChangedEventArgs e)
-        {
-            switch (Mode)
-            {
-                case MFMFileControlMode.Editing:
-                    {
-                        if (Selected)
-                        {
-                            elBack.Fill = SelectedBackground;
-                            lblText.Foreground = SelectedForeground;
-                        }
-                        else
-                        {
-                            elBack.Fill = UnSelectedBackground;
-                            lblText.Foreground = UnSelectedForeground;
-                        }
-                    }
-                    break;
-                case MFMFileControlMode.Processing:
-                    {
-                        switch (Processing)
-                        {
-                            case MFMFileProcessing.Ready:
-                                {
-                                    elBack.Fill = ProcessingReadyBackground;
-                                    lblText.Foreground = ProcessingReadyForeground;
-                                }
-                                break;
-                            case MFMFileProcessing.Success:
-                                {
-                                    elBack.Fill = ProcessingSuccessBackground;
-                                    lblText.Foreground = ProcessingSuccessForeground;
-                                }
-                                break;
-                            case MFMFileProcessing.Fail:
-                                {
-                                    elBack.Fill = ProcessingFailBackground;
-                                    lblText.Foreground = ProcessingFailForeground;
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        void OnProcessingReadyForegroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if ((Mode == MFMFileControlMode.Processing) && (Processing == MFMFileProcessing.Ready))
-                lblText.Foreground = ProcessingReadyForeground;
-        }
-
-        void OnProcessingReadyBackgroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if ((Mode == MFMFileControlMode.Processing) && (Processing == MFMFileProcessing.Ready))
-                elBack.Fill = ProcessingReadyBackground;
-        }
-
-        void OnProcessingFailForegroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if ((Mode == MFMFileControlMode.Processing) && (Processing == MFMFileProcessing.Fail))
-                lblText.Foreground = ProcessingFailForeground;
-        }
-
-        void OnProcessingFailBackgroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (Mode == MFMFileControlMode.Processing && Processing == MFMFileProcessing.Fail)
-                elBack.Fill = ProcessingFailBackground;
-        }
-
-        void OnProcessingSuccessForegroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if ((Mode == MFMFileControlMode.Processing) && (Processing == MFMFileProcessing.Success))
-                lblText.Foreground = ProcessingSuccessForeground;
-        }
-
-        void OnProcessingSuccessBackgroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (Mode == MFMFileControlMode.Processing && Processing == MFMFileProcessing.Success)
-                elBack.Fill = ProcessingSuccessBackground;
-        }
-
-        void OnProcessingChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (Mode == MFMFileControlMode.Processing)
-            {
-                switch (Processing)
-                {
-                    case MFMFileProcessing.Ready:
-                        {
-                            elBack.Fill = ProcessingReadyBackground;
-                            lblText.Foreground = ProcessingReadyForeground;
-                        }
-                        break;
-                    case MFMFileProcessing.Success:
-                        {
-                            elBack.Fill = ProcessingSuccessBackground;
-                            lblText.Foreground = ProcessingSuccessForeground;
-                        }
-                        break;
-                    case MFMFileProcessing.Fail:
-                        {
-                            elBack.Fill = ProcessingFailBackground;
-                            lblText.Foreground = ProcessingFailForeground;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }            
-        }
-
-        void OnSelectedChanged(DependencyPropertyChangedEventArgs e)
-        {            
-            if ((Mode == MFMFileControlMode.Editing) && Selected)
-            {
-                elBack.Fill = SelectedBackground;
-                lblText.Foreground = SelectedForeground;
-            }
-            else
-            {
-                elBack.Fill = UnSelectedBackground;
-                lblText.Foreground = UnSelectedForeground;
-            }
-        }
-
-        void OnSelectedForegroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if ((Mode == MFMFileControlMode.Editing) && Selected)
-                lblText.Foreground = e.NewValue as Brush;
-        }
-
-        void OnSelectedBackgroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if ((Mode == MFMFileControlMode.Editing) && Selected)
-                elBack.Fill = e.NewValue as Brush;
-        }
-
-        void OnUnSelectedForegroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if ((Mode == MFMFileControlMode.Editing) && !Selected)
-                lblText.Foreground = e.NewValue as Brush;
-        }
-
-        void OnUnSelectedBackgroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if ((Mode == MFMFileControlMode.Editing) && !Selected)
-                elBack.Fill = e.NewValue as Brush;
-        }
-
-        void OnIconNameChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (e != null)
-            {
-                lblText.Content = e.NewValue.ToString().Substring(0, 2);
-            }
-            else
-            {
-                lblText.Content = "??";
-            }
-        }       
+        }                       
 
         public Brush UnSelectedBackground
         {
             get
-            {
-                return (Brush)GetValue(UnSelectedBackgroundProperty);
+            {                
+                return this.unSelectedBackground;
             }
             set
-            {
-                SetValue(UnSelectedBackgroundProperty, value);
+            {                
+                this.unSelectedBackground = value;
+                SetDispalyColor();
             }
         }
 
         public Brush UnSelectedForeground
         {
             get
-            {
-                return (Brush)GetValue(UnSelectedForegroundProperty);
+            {                
+                return this.unSelectedForeground;
             }
             set
-            {
-                SetValue(UnSelectedForegroundProperty, value);
+            {                
+                this.unSelectedForeground = value;
+                SetDispalyColor();
             }
         }
 
         public Brush SelectedBackground
         {
             get
-            {
-                return (Brush)GetValue(SelectedBackgroundProperty);
+            {                
+                return this.selectedBackground;
             }
             set
-            {
-                SetValue(SelectedBackgroundProperty, value);
+            {                
+                this.selectedBackground = value;
+                SetDispalyColor();
             }
         }
 
         public Brush SelectedForeground
         {
             get
-            {
-                return (Brush)GetValue(SelectedForegroundProperty);
+            {                
+                return this.selectedForeground;
             }
             set
-            {
-                SetValue(SelectedForegroundProperty, value);
+            {                
+                this.selectedForeground = value;
+                SetDispalyColor();
             }
         }
 
         public bool Selected
         {
             get
-            {
-                return (bool)GetValue(SelectedProperty);
+            {                
+                return this.selected;
             }
             set
-            {
-                SetValue(SelectedProperty, value);
+            {                
+                this.selected = value;
+                SetDispalyColor();
             }
         }
 
         public Brush ProcessingSuccessBackground
         {
             get
-            {
-                return (Brush)GetValue(ProcessingSuccessBackgroundProperty);
+            {                
+                return this.processingSuccessBackground;
             }
             set
-            {
-                SetValue(ProcessingSuccessBackgroundProperty, value);
+            {                
+                this.processingSuccessBackground = value;
+                SetDispalyColor();
             }
         }
 
         public Brush ProcessingSuccessForeground
         {
             get
-            {
-                return (Brush)GetValue(ProcessingSuccessForegroundProperty);
+            {                
+                return this.processingSuccessForeground;
             }
             set
-            {
-                SetValue(ProcessingSuccessForegroundProperty, value);
+            {                
+                this.processingSuccessForeground = value;
+                SetDispalyColor();
             }
         }
 
         public Brush ProcessingFailBackground
         {
             get
-            {
-                return (Brush)GetValue(ProcessingFailBackgroundProperty);
+            {                
+                return this.processingFailBackground;
             }
             set
-            {
-                SetValue(ProcessingFailBackgroundProperty, value);
+            {                
+                this.processingFailBackground = value;
+                SetDispalyColor();
             }
         }
 
         public Brush ProcessingFailForeground
         {
             get
-            {
-                return (Brush)GetValue(ProcessingFailForegroundProperty);
+            {                
+                return this.processingFailForeground;
             }
             set
-            {
-                SetValue(ProcessingFailForegroundProperty, value);
+            {                
+                this.processingFailForeground = value;
+                SetDispalyColor();
             }
         }
 
         public Brush ProcessingReadyBackground
         {
             get
-            {
-                return (Brush)GetValue(ProcessingReadyBackgroundProperty);
+            {                
+                return this.processingReadyBackground;
             }
             set
-            {
-                SetValue(ProcessingReadyBackgroundProperty, value);
+            {                
+                this.processingReadyBackground = value;
+                SetDispalyColor();
             }
         }
 
         public Brush ProcessingReadyForeground
         {
             get
-            {
-                return (Brush)GetValue(ProcessingReadyForegroundProperty);
+            {                
+                return this.processingReadyForeground;
             }
             set
-            {
-                SetValue(ProcessingReadyForegroundProperty, value);
+            {                
+                this.processingReadyForeground = value;
+                SetDispalyColor();
             }
         }
 
         public MFMFileProcessing Processing
         {
             get
-            {
-                return (MFMFileProcessing)GetValue(ProcessingProperty);
+            {                
+                return this.processing;
             }
             set
-            {
-                SetValue(ProcessingProperty, value);
+            {                
+                this.processing = value;
+                SetDispalyColor();
             }
         }
 
         public MFMFileControlMode Mode
         {
             get
-            {
-                return (MFMFileControlMode)GetValue(ModeProperty);
+            {                
+                return this.mode;
             }
             set
-            {
-                SetValue(ModeProperty, value);
+            {                
+                this.mode = value;
+                SetDispalyColor();
             }
         }
 
         public string IconName
         {
             get
-            {
-                return (string)GetValue(IconNameProperty);
+            {                
+                return this.iconName;
             }
             set
-            {
-                SetValue(IconNameProperty, value);
+            {                
+                this.iconName = value;
+                if (this.lblText != null)
+                    this.lblText.Content = value;
             }
         }
 
         public object Data
         {
             get
-            {
-                return GetValue(DataProperty);
+            {                
+                return this.data;
             }
             set
-            {
-                SetValue(DataProperty, value);
+            {                
+                this.data = value;
             }
         }
 
@@ -500,64 +263,54 @@ namespace MusicFileManager.CustomControls
             }
         }
 
-        public AttributeCollection GetAttributes()
+        void SetDispalyColor()
         {
-            return TypeDescriptor.GetAttributes(this, true);
-        }
-
-        public string GetClassName()
-        {
-            return TypeDescriptor.GetClassName(this, true);
-        }
-
-        public string GetComponentName()
-        {
-            return TypeDescriptor.GetComponentName(this, true);
-        }
-
-        public TypeConverter GetConverter()
-        {
-            return TypeDescriptor.GetConverter(this, true);
-        }
-
-        public EventDescriptor GetDefaultEvent()
-        {
-            return TypeDescriptor.GetDefaultEvent(this, true);
-        }
-
-        public PropertyDescriptor GetDefaultProperty()
-        {
-            return TypeDescriptor.GetDefaultProperty(this, true);
-        }
-
-        public object GetEditor(Type editorBaseType)
-        {
-            return TypeDescriptor.GetEditor(this, editorBaseType, true);
-        }
-
-        public EventDescriptorCollection GetEvents(Attribute[] attributes)
-        {
-            return TypeDescriptor.GetEvents(this, attributes, true);
-        }
-
-        public EventDescriptorCollection GetEvents()
-        {
-            return TypeDescriptor.GetEvents(this, true);
-        }
-
-        public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
-        {
-            return TypeDescriptor.GetProperties(this, attributes, true);
-        }
-
-        public PropertyDescriptorCollection GetProperties()
-        {
-            return TypeDescriptor.GetProperties(this, true);
-        }
-
-        public object GetPropertyOwner(PropertyDescriptor pd)
-        {
-            return this;
+            switch (this.mode)
+            {
+                case MFMFileControlMode.Editing:
+                    {
+                        if (selected)
+                        {
+                            this.elBack.Fill = selectedBackground;
+                            this.lblText.Foreground = selectedForeground;
+                        }
+                        else
+                        {
+                            this.elBack.Fill = unSelectedBackground;
+                            this.lblText.Foreground = unSelectedForeground;
+                        }
+                    }
+                    break;
+                case MFMFileControlMode.Processing:
+                    {
+                        switch (processing)
+                        {
+                            case MFMFileProcessing.Ready:
+                                {
+                                    this.elBack.Fill = processingReadyBackground;
+                                    this.lblText.Foreground = processingReadyForeground;
+                                }
+                                break;
+                            case MFMFileProcessing.Success:
+                                {
+                                    this.elBack.Fill = processingSuccessBackground;
+                                    this.lblText.Foreground = processingSuccessForeground;
+                                }
+                                break;
+                            case MFMFileProcessing.Fail:
+                                {
+                                    this.elBack.Fill = processingFailBackground;
+                                    this.lblText.Foreground = processingFailForeground;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void UserControl_MouseLeave(object sender, MouseEventArgs e)
@@ -579,6 +332,6 @@ namespace MusicFileManager.CustomControls
                 RoutedEventArgs args = new RoutedEventArgs(MFMFileItemControl.ClickEvent);
                 RaiseEvent(args);
             }
-        }        
+        }       
     }
 }

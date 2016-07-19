@@ -16,8 +16,7 @@ namespace MusicFileManager.Duplication
 
         protected override void Process(System.ComponentModel.DoWorkEventArgs e = null)
         {
-            duplicatedFiles = new List<DuplicatedFiles>();
-            //ResetCount(sourceFiles.Count());
+            duplicatedFiles = new List<DuplicatedFiles>();            
             outerTotal = sourceFiles.Count();
             outerCurrent = 0;
 

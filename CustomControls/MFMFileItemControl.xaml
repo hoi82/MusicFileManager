@@ -7,6 +7,6 @@
              d:DesignHeight="300" d:DesignWidth="300" MouseLeave="UserControl_MouseLeave" MouseLeftButtonDown="UserControl_MouseLeftButtonDown" MouseLeftButtonUp="UserControl_MouseLeftButtonUp">
     <Grid>
         <Ellipse x:Name="elBack" Fill="#FFFF8484" Margin="1" x:FieldModifier="private"/>
-        <Label x:Name="lblText" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="{Binding FontFamily, ElementName=userControl, Mode=OneWay}" FontSize="{Binding FontSize, ElementName=userControl, Mode=OneWay}" Padding="0" x:FieldModifier="private" Content="{Binding IconName, ElementName=userControl}"/>
+        <Label x:Name="lblText" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0" x:FieldModifier="private" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold"/>
     </Grid>
 </UserControl>

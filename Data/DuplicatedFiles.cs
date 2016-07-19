@@ -35,7 +35,9 @@ namespace MusicFileManager
 
         public override string ToString()
         {
-            return base.ToString();
+            string message = null;
+            message = "Duplicated File : " + this.duplicatedFile + Environment.NewLine + "Original File : " + this.originalFile + Environment.NewLine + "Duplicate Type : " + similarType.ToString();
+            return message;
         }
 
         public override int GetHashCode()
