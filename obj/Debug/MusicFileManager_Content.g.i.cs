@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("windows_media_player.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/zoom_icon&48.png")]
 
 

@@ -12,30 +12,20 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Microsoft.Win32;
 using System.IO;
 using System.ComponentModel;
 using System.Windows.Media.Animation;
 using MusicFileManager.CustomControls;
+using System.Globalization;
 
 namespace MusicFileManager
 {
     /// <summary>
     /// MainWindow.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {        
         enum ExtendMode { File, Option };
-
-        string searchLocation = null;
-        string regKeyLocation = @"SOFTWARE\\Yong";
-        const string regKeySearch = "SearchLocation";
-        const string regKeyMultiFileInArchive = "DeleteArchiveHasMultiAudio";
-        const string regKeyDupAudioWithoutBitAndDur = "DeleteAudioWithoutBitRateAndDuration";
-        const string regKeyBitRate = "BitRate";
-        const string regKeyDuration = "Duration";
-
-        RegistryKey regKey = null;
 
         MainController controller = null;
 
@@ -71,74 +61,8 @@ namespace MusicFileManager
             fileControl.ProcessingSuccessItemForeground = Brushes.White;            
             fileControl.ItemSize = 20;
 
-            controller = new MainController(this);
-
-            InitializeRegistryKey();                                    
-        }     
-
-        private void InitializeRegistryKey()
-        {                       
-            using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
-            {
-                if (regKey == null)
-                {
-                    regKey = Registry.CurrentUser.CreateSubKey(regKeyLocation, RegistryKeyPermissionCheck.ReadWriteSubTree);
-                    InitRegistryKeyValue(regKey);
-                }
-                OpenRegistryKeyValue(regKey);            
-            }            
-        }
-
-        void InitRegistryKeyValue(RegistryKey key) 
-        {
-            try
-            {
-                regKey.SetValue(regKeySearch, AppDomain.CurrentDomain.BaseDirectory);
-                regKey.SetValue(regKeyMultiFileInArchive, false);
-                regKey.SetValue(regKeyDupAudioWithoutBitAndDur, false);
-                regKey.SetValue(regKeyBitRate, 0);
-                regKey.SetValue(regKeyDuration, 0);
-            }
-            catch (Exception)
-            {
-                
-                throw;
-            }            
-        }
-
-        void OpenRegistryKeyValue(RegistryKey key)
-        {
-            try
-            {
-                searchLocation = regKey.GetValue(regKeySearch) as string;
-                option.DeleteArchiveWithMulipleAudio = Convert.ToBoolean(regKey.GetValue(regKeyMultiFileInArchive));
-                option.DeleteAudioWithOutBitRate = Convert.ToBoolean(regKey.GetValue(regKeyDupAudioWithoutBitAndDur));
-                option.AudioBitRate = Convert.ToInt32(regKey.GetValue(regKeyBitRate));
-                option.AudioDuration = TimeSpan.FromSeconds(Convert.ToDouble(regKey.GetValue(regKeyDuration)));
-            }
-            catch (Exception)
-            {
-                
-                throw;
-            }
-        }
-
-        void SaveRegistryKeyValue(RegistryKey key)
-        {
-            try
-            {
-                regKey.SetValue(regKeySearch, searchLocation);
-                regKey.SetValue(regKeyMultiFileInArchive, option.DeleteArchiveWithMulipleAudio);
-                regKey.SetValue(regKeyDupAudioWithoutBitAndDur, option.DeleteAudioWithOutBitRate);
-                regKey.SetValue(regKeyBitRate, option.AudioBitRate);
-                regKey.SetValue(regKeyDuration, option.AudioDuration.TotalSeconds);
-            }
-            catch (Exception)
-            {
-                
-                throw;
-            }            
-        }
+            controller = new MainController(this);                                          
+        }                                     
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -275,99 +199,149 @@ namespace MusicFileManager
             }
         }
 
-        void OpenPopUp(Button btn)
+        Size MeasureString(string candidate, Label label)
         {
-            if ((!popMain.IsOpen) && ((!extended) || (prevPressedButton != btn)))
-            {
-                popMain.IsOpen = true;
+            var formattedText = new FormattedText(
+                candidate,
+                CultureInfo.CurrentUICulture,
+                System.Windows.FlowDirection.LeftToRight,
+                new Typeface(label.FontFamily, label.FontStyle, label.FontWeight, label.FontStretch),
+                label.FontSize,
+                Brushes.Black);
 
-                DisplayPopUp(btn);
-            }                
+            return new Size(formattedText.Width, formattedText.Height);
         }
 
-        public void DisplayPopUp(Button btn)
+        public void SetPopUpDisplay(bool progressBarVisible, params string[] contents)
         {
-            if (btn == btnBrowse)
-            {
-                grdOuterPop.Width = 350;
-                grdOuterPop.Height = 80;
+            const double PADDING_BETWEEN_CONTROL = 10;
+            double width = 0;
+            double height = 0;
+            //grdOuterPop.Width = width;
+            //grdOuterPop.Height = height;
+
+            if (progressBarVisible)
+                prgPop.Visibility = Visibility.Visible;
+            else
                 prgPop.Visibility = Visibility.Hidden;
-                lblBackgroundPop.Content = "Searching Location";
-                lblUpperPop.Content = searchLocation;
-                lblLowerPop.Content = "Click this button for select directory for clean";
+
+            if (contents.Length > 2)
+            {
+                if (!string.IsNullOrEmpty(contents[0]))
+                    lblBackgroundPop.Content = contents[0];
+
+                if (!string.IsNullOrEmpty(contents[1]))
+                    lblUpperPop.Content = contents[1];
+
+                if (!string.IsNullOrEmpty(contents[2]))
+                    lblLowerPop.Content = contents[2];
             }
-            else if (btn == btnOption)
+
+            Size upperSize = MeasureString(lblUpperPop.Content.ToString(), lblUpperPop);
+            Size lowerSize = MeasureString(lblLowerPop.Content.ToString(), lblLowerPop);
+            
+            if (progressBarVisible)
             {
-                grdOuterPop.Width = 350;
-                prgPop.Visibility = Visibility.Hidden;
-                lblBackgroundPop.Content = "Filtering Options";
-                string optionStr = null;
+                height += prgPop.Height;
+                prgPop.Margin = new Thickness(PADDING_BETWEEN_CONTROL, lblUpperPop.Margin.Top + upperSize.Height + PADDING_BETWEEN_CONTROL, PADDING_BETWEEN_CONTROL, 0);
+                lblLowerPop.Margin = new Thickness(PADDING_BETWEEN_CONTROL, prgPop.Margin.Top + PADDING_BETWEEN_CONTROL, 0, 0);
+            }
+            else
+            {
+                lblLowerPop.Margin = new Thickness(PADDING_BETWEEN_CONTROL, lblUpperPop.Margin.Top + upperSize.Height + PADDING_BETWEEN_CONTROL, 0, 0);
+            }
+
+            width = Math.Max(upperSize.Width, lowerSize.Width) + PADDING_BETWEEN_CONTROL + ((lblUpperPop.Margin.Left + bdInnerPop.Margin.Left + bdOuterPop.Margin.Left) * 2);            
+            height = lblLowerPop.Margin.Top + lowerSize.Height + PADDING_BETWEEN_CONTROL + ((lblUpperPop.Margin.Top + bdInnerPop.Margin.Top + bdOuterPop.Margin.Top) * 2);
+            //글자로 인한 진동 방지            
+            if (Math.Abs(width - grdOuterPop.Width) > lblUpperPop.FontSize)
+                grdOuterPop.Width = width;
+            else
+                grdOuterPop.Width = Math.Max(grdOuterPop.Width, width);
+            grdOuterPop.Height = height;
+        }
+
+        public void DisplayPopUp()
+        {
+            if (currentMouserOverButton == btnBrowse)
+            {
+                SetPopUpDisplay(false, "Searching Location", controller.SearchLocation, "Click this button for select directory for clean");                
+            }
+            else if (currentMouserOverButton == btnOption)
+            {
+                string upperStr = null;
+                string lowerStr = null;                
 
                 if (option.DeleteAudioWithOutBitRate)
                 {
-                    optionStr = string.Format("Include archive file with multiple musics : {0} \r\nInclude similar music files unconditionally : {1}", option.DeleteArchiveWithMulipleAudio, option.DeleteAudioWithOutBitRate);
-                    grdOuterPop.Height = 90;
+                    upperStr = string.Format("Include archive file with multiple musics : {0} \r\nInclude similar music files unconditionally : {1}", option.DeleteArchiveWithMulipleAudio, option.DeleteAudioWithOutBitRate);                    
                 }
                 else
                 {
-                    optionStr = string.Format("Include archive file with multiple musics : {0} \r\nInclude similar music files unconditionally : {1} \r\nAudio BitRate : {2} \r\nDuration : {3}", option.DeleteArchiveWithMulipleAudio, option.DeleteAudioWithOutBitRate, option.AudioBitRate, option.AudioDuration);
-                    grdOuterPop.Height = 120;
-
+                    upperStr = string.Format("Include archive file with multiple musics : {0} \r\nInclude similar music files unconditionally : {1} \r\nAudio BitRate : {2} \r\nDuration : {3}", option.DeleteArchiveWithMulipleAudio, option.DeleteAudioWithOutBitRate, option.AudioBitRate, option.AudioDuration);                    
                 }
-                lblUpperPop.Content = optionStr;
-                lblLowerPop.Content = "Click for show detail options";
+
+                if (extended)
+                    lowerStr = "Click for hide detail options";
+                else
+                    lowerStr = "Click for show detail options";
+
+                SetPopUpDisplay(false, "Filtering Options", upperStr, lowerStr);                
             }
-            else if (btn == btnProc)
+            else if (currentMouserOverButton == btnProc)
             {
-                grdOuterPop.Width = 250;
+                bool prgVisible = false;
+                string upperStr = null;
+                string lowerStr = null;
+
                 lblBackgroundPop.Content = "Processing";
                 if (controller.processingMode == ProcessingMode.ReadyFind)
-                {
-                    grdOuterPop.Height = 80;
-                    prgPop.Visibility = Visibility.Hidden;
-                    lblUpperPop.Content = "Ready for Check Files";
-                    lblLowerPop.Content = "Click for Check Files";
+                {                    
+                    prgVisible = false;
+                    upperStr = "Ready for Check Files";
+                    lowerStr = "Click for Check Files";
                 }
                 else if (controller.processingMode == ProcessingMode.CollectFile)
-                {
-                    grdOuterPop.Height = 90;
-                    prgPop.Visibility = Visibility.Visible;
-                    //lblUpperPop.Content = "Ready for Check Files";
-                    //lblLowerPop.Content = "Click for Check Files";
+                {                    
+                    prgVisible = true;                    
                 }
                 else if (controller.processingMode == ProcessingMode.CheckDuplication)
                 {
-                    grdOuterPop.Width = 400;
-                    grdOuterPop.Height = 90;
-                    prgPop.Visibility = Visibility.Visible;
-                    lblUpperPop.Content = "Ready for Check Files";
-                    lblLowerPop.Content = "Click for Check Files";
+                    prgVisible = true;
+                    upperStr = "Ready for Check Files";
+                    lowerStr = "Click for Check Files";
                 }
                 else if (controller.processingMode == ProcessingMode.ReadyClean)
-                {
-                    grdOuterPop.Height = 90;
-                    prgPop.Visibility = Visibility.Hidden;
-                    lblUpperPop.Content = "Ready for Clean files";
-                    lblLowerPop.Content = "Click for Clean files\r\nRight Click for Show Details";
+                {                    
+                    prgVisible = false;
+                    upperStr = "Ready for Clean files";
+                    lowerStr = "Click for Clean files\r\nRight Click for Show Details";                    
                 }
                 else if (controller.processingMode == ProcessingMode.Clean)
-                {
-                    grdOuterPop.Height = 100;
-                    prgPop.Visibility = Visibility.Visible;
-                    //lblUpperPop.Content = "Ready for Clean files";
-                    //lblLowerPop.Content = "Click for Clean files";
+                {                    
+                    prgVisible = true;                    
                 }
+
+                SetPopUpDisplay(prgVisible, "Processing", upperStr, lowerStr);
             }
-            else if (btn == btnExit)
+            else if (currentMouserOverButton == btnExit)
             {
-                grdOuterPop.Width = 200;
-                grdOuterPop.Height = 80;
-                prgPop.Visibility = Visibility.Hidden;
-                lblBackgroundPop.Content = "Exit";
-                lblUpperPop.Content = "Click for exit application";
-                lblLowerPop.Content = "Right click for tray icon";
+                SetPopUpDisplay(false, "Exit", "Click for exit application", "Right click for tray icon");                
             }
         }
+
+        void OpenPopUp(Button btn)
+        {
+            //if ((!popMain.IsOpen) && ((!extended) || (prevPressedButton != btn)))
+            if (!popMain.IsOpen)
+            {
+                popMain.IsOpen = true;
+
+                DisplayPopUp();
+            }                
+        }
+
+        
 
         void ClosePopUp()
         {
@@ -394,41 +368,12 @@ namespace MusicFileManager
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.FolderBrowserDialog fd = new System.Windows.Forms.FolderBrowserDialog();            
-            fd.RootFolder = Environment.SpecialFolder.Desktop;
-            fd.ShowNewFolderButton = true;
-            System.Windows.Forms.DialogResult result = fd.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                searchLocation = fd.SelectedPath;
-                //txbLocation.Text = fd.SelectedPath;
-            }
-            e.Handled = true;
+            controller.BrowseDirectory();
         }
 
         private void btnProc_Click(object sender, RoutedEventArgs e)
         {
-            if (controller.processingMode == ProcessingMode.ReadyFind)
-            {
-                controller.Find(searchLocation);
-
-                using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
-                {
-                    SaveRegistryKeyValue(regKey);
-                }
-            }
-            else if (controller.processingMode == ProcessingMode.ReadyClean)
-            {
-                controller.Clean();
-            }
-            else if ((controller.processingMode == ProcessingMode.CollectFile) || (controller.processingMode == ProcessingMode.CheckDuplication))
-            {
-                controller.CancelFind();
-            }
-            else if (controller.processingMode == ProcessingMode.Clean)
-            {
-                controller.CancelClean();
-            }            
+            controller.Process();            
         }
 
         private void bdInnerBack_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

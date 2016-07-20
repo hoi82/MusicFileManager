@@ -11,15 +11,31 @@ using MusicFileManager.Duplication;
 using MusicFileManager.Cleaner;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Win32;
+using System.Windows;
+using System.Windows.Media;
+using System.Globalization;
+using System.Windows.Controls;
 
 namespace MusicFileManager
 {
     public enum ProcessingMode { ReadyFind, CollectFile, CheckDuplication, ReadyClean, Clean }
+    public enum DisplayPopUpMenu { Browse, Option, Proc, Exit }
     public delegate void MainControllerStartEvent(object sender);
     public delegate void MainContollerEndEvent(object sender);
 
     public class MainController
     {
+        string searchLocation = null;
+        string regKeyLocation = @"SOFTWARE\\Yong";
+        const string regKeySearch = "SearchLocation";
+        const string regKeyMultiFileInArchive = "DeleteArchiveHasMultiAudio";
+        const string regKeyDupAudioWithoutBitAndDur = "DeleteAudioWithoutBitRateAndDuration";
+        const string regKeyBitRate = "BitRate";
+        const string regKeyDuration = "Duration";
+
+        RegistryKey regKey = null;
+
         MainWindow window = null;        
 
         IFileFinder fileFinder = null;
@@ -108,18 +124,122 @@ namespace MusicFileManager
             fileCleaner.OnProgressAsync += fileCleaner_OnProgressAsync;
             fileCleaner.OnCancelAsync += fileCleaner_OnCancelAsync;
             fileCleaner.OnCompleteAsync += fileCleaner_OnCompleteAsync;
+
+            InitializeRegistryKey();
         }
+
+        public string SearchLocation { get { return this.searchLocation; } }
+
+        void InitializeRegistryKey()
+        {
+            using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
+            {
+                if (regKey == null)
+                {
+                    regKey = Registry.CurrentUser.CreateSubKey(regKeyLocation, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                    InitRegistryKeyValue(regKey);
+                }
+                OpenRegistryKeyValue(regKey);
+            }
+        }
+
+        void InitRegistryKeyValue(RegistryKey key)
+        {
+            try
+            {
+                key.SetValue(regKeySearch, AppDomain.CurrentDomain.BaseDirectory);
+                key.SetValue(regKeyMultiFileInArchive, false);
+                key.SetValue(regKeyDupAudioWithoutBitAndDur, false);
+                key.SetValue(regKeyBitRate, 0);
+                key.SetValue(regKeyDuration, 0);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        void OpenRegistryKeyValue(RegistryKey key)
+        {
+            try
+            {
+                searchLocation = key.GetValue(regKeySearch) as string;
+                window.option.DeleteArchiveWithMulipleAudio = Convert.ToBoolean(key.GetValue(regKeyMultiFileInArchive));
+                window.option.DeleteAudioWithOutBitRate = Convert.ToBoolean(key.GetValue(regKeyDupAudioWithoutBitAndDur));
+                window.option.AudioBitRate = Convert.ToInt32(key.GetValue(regKeyBitRate));
+                window.option.AudioDuration = TimeSpan.FromSeconds(Convert.ToDouble(key.GetValue(regKeyDuration)));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        void SaveRegistryKeyValue(RegistryKey key)
+        {
+            try
+            {
+                key.SetValue(regKeySearch, searchLocation);
+                key.SetValue(regKeyMultiFileInArchive, window.option.DeleteArchiveWithMulipleAudio);
+                key.SetValue(regKeyDupAudioWithoutBitAndDur, window.option.DeleteAudioWithOutBitRate);
+                key.SetValue(regKeyBitRate, window.option.AudioBitRate);
+                key.SetValue(regKeyDuration, window.option.AudioDuration.TotalSeconds);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public void BrowseDirectory()
+        {
+            System.Windows.Forms.FolderBrowserDialog fd = new System.Windows.Forms.FolderBrowserDialog();
+            fd.RootFolder = Environment.SpecialFolder.Desktop;
+            fd.ShowNewFolderButton = true;
+            System.Windows.Forms.DialogResult result = fd.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                searchLocation = fd.SelectedPath;                
+            }            
+        }        
+
+        public void Process()
+        {
+            if (processingMode == ProcessingMode.ReadyFind)
+            {
+                Find(searchLocation);
+
+                using (regKey = Registry.CurrentUser.OpenSubKey(regKeyLocation, true))
+                {
+                    SaveRegistryKeyValue(regKey);
+                }
+            }
+            else if (processingMode == ProcessingMode.ReadyClean)
+            {
+                Clean();
+            }
+            else if ((processingMode == ProcessingMode.CollectFile) || (processingMode == ProcessingMode.CheckDuplication))
+            {
+                CancelFind();
+            }
+            else if (processingMode == ProcessingMode.Clean)
+            {
+                CancelClean();
+            }
+        }        
 
         void fileCleaner_OnCompleteAsync(object sender, FileCleanerCompleteEventArgs e)
         {            
-            MessageBox.Show(string.Format("Deleted File : {0} "+"\r\n"+ "UnDeleted File : {1}", e.DeletedFiles.Count, e.UnDeletedFiles.Count));            
+            System.Windows.MessageBox.Show(string.Format("Deleted File : {0} "+"\r\n"+ "UnDeleted File : {1}", e.DeletedFiles.Count, e.UnDeletedFiles.Count));            
         }
 
         void fileCleaner_OnCancelAsync(object sender, EventArgs e)
         {
             processingMode = ProcessingMode.ReadyClean;
-            window.option.IsEnabled = true;
-            window.btnProc.Content = "Clean";
+            window.option.IsEnabled = true;            
         }
 
         void fileCleaner_OnProgressAsync(object sender, FileCleanerProgressEventArgs e)
@@ -132,17 +252,15 @@ namespace MusicFileManager
         void fileCleaner_OnStartAsync(object sender, EventArgs e)
         {
             processingMode = ProcessingMode.Clean;
-            window.option.IsEnabled = false;
-            window.btnProc.Content = "Cancel";
+            window.option.IsEnabled = false;            
             window.fileControl.Mode = CustomControls.MFMFileControlMode.Processing;
         }
 
         void audioDuplicationEvaluator_OnCompleteAsync(object sender, DuplicationEvaluatorEndEventArgs e)
         {
             window.lblUpperPop.Content = "Complete";
-            processingMode = ProcessingMode.ReadyClean;
-            window.btnProc.Content = "Clean";
-            window.DisplayPopUp(window.currentMouserOverButton);
+            processingMode = ProcessingMode.ReadyClean;            
+            window.DisplayPopUp();
             filetoClean.AddRange(e.DuplicatedFiles);                      
             foreach (var item in filetoClean)
             {
@@ -158,9 +276,8 @@ namespace MusicFileManager
 
         void audioDuplicationEvaluator_OnCancelAsync(object sender, EventArgs e)
         {
-            processingMode = ProcessingMode.ReadyFind;
-            window.btnProc.Content = "Find";
-            window.DisplayPopUp(window.currentMouserOverButton);
+            processingMode = ProcessingMode.ReadyFind;            
+            window.DisplayPopUp();
             window.option.IsEnabled = true;
         }
 
@@ -172,7 +289,7 @@ namespace MusicFileManager
         void audioDuplicationEvaluator_OnStartAsync(object sender, EventArgs e)
         {
             window.prgPop.Value = 0;
-            window.DisplayPopUp(window.currentMouserOverButton);
+            window.DisplayPopUp();
         }
 
         void archiveDuplicationEvaluator_OnCompleteAsync(object sender, DuplicationEvaluatorEndEventArgs e)
@@ -184,9 +301,8 @@ namespace MusicFileManager
 
         void archiveDuplicationEvaluator_OnCancelAsync(object sender, EventArgs e)
         {
-            processingMode = ProcessingMode.ReadyFind;
-            window.btnProc.Content = "Find";
-            window.DisplayPopUp(window.currentMouserOverButton);
+            processingMode = ProcessingMode.ReadyFind;            
+            window.DisplayPopUp();
             window.option.IsEnabled = true;
         }
 
@@ -198,7 +314,7 @@ namespace MusicFileManager
         void archiveDuplicationEvaluator_OnStartAsync(object sender, EventArgs e)
         {
             window.prgPop.Value = 0;
-            window.DisplayPopUp(window.currentMouserOverButton);            
+            window.DisplayPopUp();            
         }
 
         void archivedAudioFinder_OnCompleteAsync(object sender, FileFinderEndEventArgs e)
@@ -211,9 +327,8 @@ namespace MusicFileManager
 
         void archivedAudioFinder_OnCancelAsync(object sender, EventArgs e)
         {
-            processingMode = ProcessingMode.ReadyFind;
-            window.btnProc.Content = "Find";
-            window.DisplayPopUp(window.currentMouserOverButton);
+            processingMode = ProcessingMode.ReadyFind;            
+            window.DisplayPopUp();
             window.option.IsEnabled = true;
         }
 
@@ -225,7 +340,7 @@ namespace MusicFileManager
         void archivedAudioFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
         {
             window.prgPop.Value = 0;
-            window.DisplayPopUp(window.currentMouserOverButton);
+            window.DisplayPopUp();
         }
 
         void archiveFinder_OnCompleteAsync(object sender, FileFinderEndEventArgs e)
@@ -235,9 +350,8 @@ namespace MusicFileManager
 
         void archiveFinder_OnCancelAsync(object sender, EventArgs e)
         {
-            processingMode = ProcessingMode.ReadyFind;
-            window.btnProc.Content = "Find";
-            window.DisplayPopUp(window.currentMouserOverButton);
+            processingMode = ProcessingMode.ReadyFind;            
+            window.DisplayPopUp();
             window.option.IsEnabled = true;
         }
 
@@ -249,7 +363,7 @@ namespace MusicFileManager
         void archiveFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
         {
             window.prgPop.Value = 0;
-            window.DisplayPopUp(window.currentMouserOverButton);
+            window.DisplayPopUp();
         }
 
         void audioFinder_OnCompleteAsync(object sender, FileFinderEndEventArgs e)
@@ -260,9 +374,8 @@ namespace MusicFileManager
 
         void audioFinder_OnCancelAsync(object sender, EventArgs e)
         {
-            processingMode = ProcessingMode.ReadyFind;
-            window.btnProc.Content = "Find";
-            window.DisplayPopUp(window.currentMouserOverButton);
+            processingMode = ProcessingMode.ReadyFind;            
+            window.DisplayPopUp();
             window.option.IsEnabled = true;
         }
 
@@ -274,7 +387,7 @@ namespace MusicFileManager
         void audioFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
         {
             window.prgPop.Value = 0;
-            window.DisplayPopUp(window.currentMouserOverButton);
+            window.DisplayPopUp();
         }
 
         void fileFinder_OnCompleteAsync(object sender, FileFinderEndEventArgs e)
@@ -284,9 +397,8 @@ namespace MusicFileManager
 
         void fileFinder_OnCancelAsync(object sender, EventArgs e)
         {
-            processingMode = ProcessingMode.ReadyFind;
-            window.btnProc.Content = "Find";
-            window.DisplayPopUp(window.currentMouserOverButton);
+            processingMode = ProcessingMode.ReadyFind;            
+            window.DisplayPopUp();
             window.option.IsEnabled = true;
         }
 
@@ -297,10 +409,9 @@ namespace MusicFileManager
 
         void fileFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
         {
-            processingMode = ProcessingMode.CollectFile;
-            window.btnProc.Content = "Cancel";
+            processingMode = ProcessingMode.CollectFile;            
             window.prgPop.Value = 0;
-            window.DisplayPopUp(window.currentMouserOverButton);
+            window.DisplayPopUp();
             window.lblLowerPop.Content = "Click for cancel";
             window.option.IsEnabled = false;
         }                                                
@@ -333,9 +444,8 @@ namespace MusicFileManager
             {
                 window.Dispatcher.Invoke(() => 
                 {
-                    window.lblUpperPop.Content = message;
                     window.prgPop.Value = (float)current / (float)total * 100;
-                    window.lblLowerPop.Content = "Click for Cancel";
+                    window.SetPopUpDisplay(true, "Processing", message, "Click for Cancel");                    
                 });                               
             } 
         }

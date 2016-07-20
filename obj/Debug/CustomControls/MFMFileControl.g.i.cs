@@ -88,7 +88,7 @@ namespace MusicFileManager.CustomControls {
         #line hidden
         
         
-        #line 16 "..\..\..\CustomControls\MFMFileControl.xaml"
+        #line 19 "..\..\..\CustomControls\MFMFileControl.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Border innerPopBorder;
         
@@ -96,7 +96,7 @@ namespace MusicFileManager.CustomControls {
         #line hidden
         
         
-        #line 17 "..\..\..\CustomControls\MFMFileControl.xaml"
+        #line 20 "..\..\..\CustomControls\MFMFileControl.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBlock tblItemContent;
         

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MusicFileManager.Duplication
-{
+{    
     public class DuplicationEvaluatorEndEventArgs : EventArgs
     {
         List<DuplicatedFiles> duplicatedFiles = null;
@@ -23,20 +23,20 @@ namespace MusicFileManager.Duplication
         int innerCurrent = 0;
         int innerTotal = 0;
         int outerCurrent = 0;
-        int outerTotal = 0;
+        int outerTotal = 0;        
 
         public DuplicationEvaluatorProgressEventArgs(int innerCurrent, int innerTotal, int outerCurrent, int outerTotal)
         {
             this.innerCurrent = innerCurrent;
             this.innerTotal = innerTotal;
             this.outerCurrent = outerCurrent;
-            this.outerTotal = outerTotal;
+            this.outerTotal = outerTotal;            
         }
 
         public int InnerCurrent { get { return this.innerCurrent; } }
         public int InnerTotal { get { return this.innerTotal; } }
         public int OuterCurrent { get { return this.outerCurrent; } }
-        public int OuterTotal { get { return this.outerTotal; } }
+        public int OuterTotal { get { return this.outerTotal; } }        
     }
 
     public delegate void DuplicationEvaluatorStartEventHandler(object sender, EventArgs e);

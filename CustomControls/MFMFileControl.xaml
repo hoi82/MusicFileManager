@@ -12,9 +12,14 @@
         <Label x:Name="lbTitle" Content="{Binding Title, ElementName=userControl}" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" Height="30" FontSize="16"/>
         <Popup x:Name="popItem" AllowsTransparency="True" PopupAnimation="Fade">
             <Grid x:Name="grdItemContent" Height="100" Width="300">                
-                <Border x:Name="outerPopBorder" Background="#FF1E1E1E" CornerRadius="10"/>
-                <Border x:Name="innerPopBorder" Background="#FF323232" CornerRadius="7" Margin="5"/>
-                <TextBlock x:Name="tblItemContent" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" FontSize="{Binding FontSize, ElementName=userControl}" Foreground="#FFFF6400" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold"/>
+                <Border x:Name="outerPopBorder" Background="#FF1E1E1E" CornerRadius="10" Margin="15">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10"/>
+                    </Border.Effect>
+                    <Border x:Name="innerPopBorder" Background="#FF323232" CornerRadius="7" Margin="5">
+                        <TextBlock x:Name="tblItemContent" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" FontSize="{Binding FontSize, ElementName=userControl}" Foreground="#FFFF6400" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold" Margin="10,10,0,0"/>
+                    </Border>
+                </Border>
             </Grid>
         </Popup>
     </Grid>
