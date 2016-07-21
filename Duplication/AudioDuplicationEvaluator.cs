@@ -41,7 +41,12 @@ namespace MusicFileManager.Duplication
                     //옵션에서 처리 안하게 되어있거나 같은 파일일 경우 건너뛴다.
                     if (option != null)
                     {
-                        if ((i == j) | (!option.SatifyOption(targetFiles[j]))) continue;
+                        if ((i == j) | (!option.SatifyOption(targetFiles[j])))
+                        {
+                            current = j;
+                            OnProcedure();
+                            continue;
+                        }                            
                     }
 
                     DuplicatedFiles d = duplicationChecker.CheckDuplication(sourceFiles[i], targetFiles[j]);
@@ -52,12 +57,10 @@ namespace MusicFileManager.Duplication
                     }
 
                     current = j;
-
                     OnProcedure();
                 }
 
                 outerCurrent = i;
-
                 OnProcedure();
             }            
         }        

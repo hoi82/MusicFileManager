@@ -69,7 +69,7 @@ namespace MusicFileManager.Duplication
                         }
 
                         total = targetFiles.Count();
-                        current = k + 1;
+                        current = k;
 
                         d = duplicationChecker.CheckDuplication(extractedAudioFiles[j], targetFiles[k]);
 

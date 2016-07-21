@@ -61,7 +61,6 @@ E:\Mytest\MS\MusicFileManager\obj\Debug\CustomControls\OldFileToCleanControl.bam
 E:\Mytest\MS\MusicFileManager\obj\Debug\CustomControls\MFMOption.baml
 E:\Mytest\MS\MusicFileManager\obj\Debug\TestPage.baml
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\MusicFileManager.csprojResolveAssemblyReference.cache
-E:\Mytest\MS\MusicFileManager\bin\Debug\SevenZipSharp.dll
 E:\Mytest\MS\MusicFileManager\bin\Debug\SevenZipSharp.pdb
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\SevenZipSharp.dll
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\SevenZipSharp.pdb
@@ -76,3 +75,15 @@ C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\ru\Microsoft.Expression.Dr
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\zh-Hans\Microsoft.Expression.Drawing.resources.dll
 C:\Mytest\MusicFileManager\MusicFileManager\bin\Debug\zh-Hant\Microsoft.Expression.Drawing.resources.dll
 C:\Mytest\MusicFileManager\MusicFileManager\obj\Debug\App.baml
+E:\Mytest\MS\MusicFileManager\bin\Debug\Microsoft.Expression.Drawing.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\de\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\es\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\fr\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\it\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\ja\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\ko\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\ru\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\zh-Hans\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\bin\Debug\zh-Hant\Microsoft.Expression.Drawing.resources.dll
+E:\Mytest\MS\MusicFileManager\obj\Debug\MusicFileManager.csprojResolveAssemblyReference.cache
+E:\Mytest\MS\MusicFileManager\obj\Debug\App.baml
