@@ -174,15 +174,16 @@ namespace MusicFileManager
             ResetExtendedMode();
             if (mode == ExtendMode.File)
             {
-                fileControl.Height = 388;
-                fileControl.Margin = new Thickness(10, 150, 10, 10);
+                //fileControl.Height = 388;
+				fileControl.Height = double.NaN;
+                fileControl.Margin = new Thickness(10, 150, 10, 30);
                 fileControl.Background = new SolidColorBrush(Color.FromArgb(100, 50, 50, 50));
                 grdMain.Children.Add(fileControl);                
             }
             else if (mode == ExtendMode.Option)
             {                
-                option.Height = 388;
-                option.Margin = new Thickness(10, 150, 10, 10);
+                option.Height = double.NaN;
+                option.Margin = new Thickness(10, 150, 10, 30);
                 grdMain.Children.Add(option);
             }
         }

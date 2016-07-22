@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Background="{Binding Background, ElementName=userControl}">
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,30,0,0">
+        <ScrollViewer Margin="0,30,0,0" Template="{DynamicResource MFMScrollViewer}" VerticalScrollBarVisibility="Auto">
             <WrapPanel x:Name="wpMain" ClipToBounds="{Binding ClipToBounds, ElementName=userControl}" ItemHeight="{Binding ItemSize, ElementName=userControl, Mode=OneWay}" ItemWidth="{Binding ItemSize, ElementName=userControl, Mode=OneWay}"/>
         </ScrollViewer>
         <Label x:Name="lbTitle" Content="{Binding Title, ElementName=userControl}" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" Height="30" FontSize="16"/>

@@ -6,21 +6,21 @@
     <Grid x:Name="grdBackground" Margin="0">
         <Border x:Name="bdOuterBack" CornerRadius="20" Background="#FF323232" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Height="170">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="10"/>
+                <DropShadowEffect BlurRadius="10" Direction="0" ShadowDepth="2"/>
             </Border.Effect>
             <Border x:Name="bdInnerBack" BorderThickness="1" Margin="10" CornerRadius="15" Background="#FF1E1E1E" MouseLeftButtonDown="bdInnerBack_MouseLeftButtonDown">
                 <Grid x:Name="grdMain">
                     <Button x:Name="btnOption" HorizontalAlignment="Left" Margin="83,15,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnOption_Click" Style="{DynamicResource MFMButtonStyle}" Background="{x:Null}">
-                        <Image Source="Images/cog_icon&amp;48.png" Stretch="Fill" Width="40" Height="40"/>
+                        <Image Source="Images/cog_icon&amp;48.png" Width="40" Height="40"/>
                     </Button>
                     <Button x:Name="btnProc" HorizontalAlignment="Left" Margin="15,83,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseRightButtonDown="btnProc_MouseRightButtonDown" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnProc_Click" Style="{DynamicResource MFMButtonStyle}" BorderBrush="{x:Null}" Background="{x:Null}">
-                        <Image Source="Images/zoom_icon&amp;48.png" Stretch="Fill" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-3,0,0,0"/>
+                        <Image Source="Images/zoom_icon&amp;48.png" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-3,0,0,0"/>
                     </Button>
                     <Button x:Name="btnBrowse" HorizontalAlignment="Left" Margin="15,15,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseEnter="btn_MouseEnter" MouseMove="btn_MouseMove" MouseLeave="btn_MouseLeave" Click="btnBrowse_Click" Style="{DynamicResource MFMButtonStyle}" Background="{x:Null}" BorderBrush="{x:Null}">
-                        <Image Source="Images/folder_open_icon&amp;48.png" Stretch="Fill" Width="40" Height="40"/>
+                        <Image Source="Images/folder_open_icon&amp;48.png" Width="40" Height="40"/>
                     </Button>
                     <Button x:Name="btnExit" HorizontalAlignment="Left" Margin="83,83,0,0" VerticalAlignment="Top" Width="50" Height="50" Click="btnExit_Click" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Style="{DynamicResource MFMButtonStyle}" BorderBrush="{x:Null}" Background="{x:Null}">
-                        <Image Source="Images/on-off_icon&amp;48.png" Stretch="Fill" Width="40" Height="40" Margin="-3,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image Source="Images/on-off_icon&amp;48.png" Width="40" Height="40" Margin="-3,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                 </Grid>
             </Border>
@@ -36,7 +36,16 @@
                             <Label x:Name="lblBackgroundPop" Content="Processing" FontFamily="/MusicFileManager;component/Fonts/#Walkway Black" VerticalContentAlignment="Center" FontSize="36" Foreground="#FF282828" UseLayoutRounding="False" HorizontalContentAlignment="Center"/>
                             <Label x:Name="lblUpperPop" xml:space="preserve" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Foreground="#FFFF6400" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold" FontSize="24" Content="Ready for finding files to clean"/>
 							<Label x:Name="lblLowerPop" Content="*Click for show detail options" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Foreground="White" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold" RenderTransformOrigin="0.474,-0.619"/>
-							<ProgressBar x:Name="prgPop" Height="10" Margin="10,40,10,0" VerticalAlignment="Top" BorderBrush="{x:Null}" Background="White" BorderThickness="0"/>
+							<ProgressBar x:Name="prgPop" Height="10" Margin="10,40,10,0" VerticalAlignment="Top" BorderBrush="#80B5FFA9" Background="#FF141414" BorderThickness="0" Style="{DynamicResource MFMProgressBarStyle}" Value="50">
+								<ProgressBar.Foreground>
+									<LinearGradientBrush EndPoint="5,5" MappingMode="Absolute" SpreadMethod="Repeat">
+										<GradientStop Color="#FFFFA000" Offset="0"/>
+										<GradientStop Color="#FFFF6400" Offset="1"/>
+										<GradientStop Color="#FFFFA000" Offset="0.5"/>
+										<GradientStop Color="#FFFF6400" Offset="0.5"/>
+									</LinearGradientBrush>
+								</ProgressBar.Foreground>
+							</ProgressBar>
 						</Grid>
                     </Border>
                 </Border>
