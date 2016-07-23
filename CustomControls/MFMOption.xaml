@@ -13,7 +13,7 @@
     <Grid>
         <Border BorderThickness="1" Margin="10" Background="#FF323232" CornerRadius="10">
         	<Border.Effect>
-        		<DropShadowEffect BlurRadius="10" Direction="0" ShadowDepth="2"/>
+        		<DropShadowEffect BlurRadius="20" Direction="0" ShadowDepth="2"/>
         	</Border.Effect>
         	<Grid>
         		<Grid.RowDefinitions>
@@ -23,12 +23,12 @@
         		</Grid.RowDefinitions>
         		<Border BorderThickness="1" Margin="10,40,10,10" Background="#FF282828" CornerRadius="7" Grid.Row="1">
         			<Border.Effect>
-        				<DropShadowEffect Direction="0" ShadowDepth="1"/>
+        				<DropShadowEffect Direction="0" ShadowDepth="2" BlurRadius="10"/>
         			</Border.Effect>
         		</Border>
         		<Border Margin="10,30,10,10" Grid.Row="2" Background="#FF282828" CornerRadius="7" Padding="5,0,0,0" Height="148">
         			<Border.Effect>
-        				<DropShadowEffect ShadowDepth="1"/>
+        				<DropShadowEffect BlurRadius="10" Direction="0" ShadowDepth="2"/>
         			</Border.Effect>
         		</Border>
         		<CheckBox x:Name="cbMultiAudioInArchive" Margin="20,57,20,0" VerticalAlignment="Top" Foreground="#FF969696" Height="15" IsChecked="{Binding DeleteArchiveWithMulipleAudio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MFMOption}}}" IsEnabled="{Binding IsEnabled, ElementName=userControl}" Style="{DynamicResource MFMCheckBox}" Background="{x:Null}" BorderBrush="#FFFFA000" Grid.Row="1">
