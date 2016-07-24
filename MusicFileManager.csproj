@@ -57,6 +57,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Drawing" />
+    <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
       <HintPath>packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
       <Private>True</Private>
@@ -70,6 +71,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />

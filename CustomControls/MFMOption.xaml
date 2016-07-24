@@ -31,7 +31,10 @@
         				<DropShadowEffect BlurRadius="10" Direction="0" ShadowDepth="2"/>
         			</Border.Effect>
         		</Border>
-        		<CheckBox x:Name="cbMultiAudioInArchive" Margin="20,57,20,0" VerticalAlignment="Top" Foreground="#FF969696" Height="15" IsChecked="{Binding DeleteArchiveWithMulipleAudio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MFMOption}}}" IsEnabled="{Binding IsEnabled, ElementName=userControl}" Style="{DynamicResource MFMCheckBox}" Background="{x:Null}" BorderBrush="#FFFFA000" Grid.Row="1">
+        		<CheckBox x:Name="cbMultiAudioInArchive" Margin="20,57,20,0" VerticalAlignment="Top" Foreground="#FFFFA000" Height="15" IsChecked="{Binding DeleteArchiveWithMulipleAudio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MFMOption}}}" IsEnabled="{Binding IsEnabled, ElementName=userControl}" Style="{DynamicResource MFMCheckBoxStyle}" Background="White" BorderBrush="#FF646464" Grid.Row="1" BorderThickness="2">
+        			<CheckBox.Effect>
+        				<DropShadowEffect BlurRadius="10" Direction="270" ShadowDepth="2"/>
+        			</CheckBox.Effect>
         			<TextBlock TextWrapping="Wrap" Text="여러 개의 음악 파일이 있는 압축 파일 삭제" ToolTip="2개 이상의 음악 파일을 가지고 있는 압축 파일과 1개 이상의 음악 파일이 유사할 경우 압축 파일을 삭제합니다." Margin="0,-1,0,0"/>
         		</CheckBox>
         		<Label Content="Bit Rate" HorizontalAlignment="Left" Margin="20,81.016,0,0" VerticalAlignment="Top" Foreground="#FFFFA000" Grid.Row="2" FontSize="16" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold"/>
@@ -40,8 +43,11 @@
         		<Slider x:Name="sldDuration" Margin="100,130,100,0" VerticalAlignment="Top" TickPlacement="Both" IsSnapToTickEnabled="True" Maximum="600" TickFrequency="10" LargeChange="60" SmallChange="10" Value="{Binding AudioDuration, Converter={StaticResource TimeSpanToDoubleConverter}, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MFMOption}}}" IsEnabled="{Binding IsEnabled, ElementName=userControl}" Style="{DynamicResource MFMSliderStyle}" Foreground="#FFFF6400" Grid.Row="2"/>
         		<Label x:Name="lblBitRate" Content="{Binding Value, ElementName=sldBitRate}" HorizontalAlignment="Right" Margin="0,80,10,0" VerticalAlignment="Top" Width="85" Foreground="#FFC8C8C8" ContentStringFormat="{}{0} kbps" Grid.Row="2" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold" FontSize="16"/>
         		<Label x:Name="lblDuration" Content="{Binding Value, ElementName=sldDuration}" HorizontalAlignment="Right" Margin="0,130,10,0" VerticalAlignment="Top" Width="85" Foreground="#FFC8C8C8" ContentStringFormat="{}{0} sec" Grid.Row="2" FontSize="16" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold"/>
-        		<CheckBox x:Name="cbDeleteWithOutFiltering" Margin="20,47,20,0" VerticalAlignment="Top" Foreground="#FFC8C8C8" Height="15" IsChecked="{Binding DeleteAudioWithOutBitRate, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MFMOption}}}" IsEnabled="{Binding IsEnabled, ElementName=userControl}" Checked="cbDeleteWithOutFiltering_Checked" Unchecked="cbDeleteWithOutFiltering_Unchecked" BorderBrush="#FFFFA000" Style="{DynamicResource MFMCheckBox}" Background="{x:Null}" Grid.Row="2">
-        			<TextBlock TextWrapping="Wrap" Text="이름과 태그가 유사한 파일이 있을 경우 무조건 삭제" ToolTip="2개 이상의 음악 파일을 가지고 있는 압축 파일과 1개 이상의 음악 파일이 유사할 경우 압축 파일을 삭제합니다." Margin="0,-1,0,0" Foreground="#FF969696"/>
+        		<CheckBox x:Name="cbDeleteWithOutFiltering" Margin="20,47,20,0" VerticalAlignment="Top" Foreground="#FFFFA000" Height="15" IsChecked="{Binding DeleteAudioWithOutBitRate, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MFMOption}}}" IsEnabled="{Binding IsEnabled, ElementName=userControl}" Checked="cbDeleteWithOutFiltering_Checked" Unchecked="cbDeleteWithOutFiltering_Unchecked" BorderBrush="#FF646464" Style="{DynamicResource MFMCheckBoxStyle}" Background="White" Grid.Row="2" BorderThickness="2">
+        			<CheckBox.Effect>
+        				<DropShadowEffect BlurRadius="10" Direction="270" ShadowDepth="2"/>
+        			</CheckBox.Effect>
+        			<TextBlock TextWrapping="Wrap" Text="이름과 태그가 유사한 파일이 있을 경우 무조건 삭제" ToolTip="2개 이상의 음악 파일을 가지고 있는 압축 파일과 1개 이상의 음악 파일이 유사할 경우 압축 파일을 삭제합니다." Margin="0,-1,0,0"/>
         		</CheckBox>
         		<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Options" VerticalAlignment="Top" Margin="20,10,0,0" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold" FontSize="32" Foreground="#FFFF6400">
         			<TextBlock.Effect>

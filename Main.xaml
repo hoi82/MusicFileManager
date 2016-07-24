@@ -10,29 +10,29 @@
             </Border.Effect>
             <Border x:Name="bdInnerBack" BorderThickness="1" Margin="10" CornerRadius="15" Background="#FF1E1E1E" MouseLeftButtonDown="bdInnerBack_MouseLeftButtonDown">
                 <Grid x:Name="grdMain">
-                    <Button x:Name="btnOption" HorizontalAlignment="Left" Margin="83,15,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnOption_Click" Style="{DynamicResource MFMButtonStyle}" Background="#FF323232">
+                    <Button x:Name="btnOption" HorizontalAlignment="Left" Margin="83,15,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnOption_Click" Style="{DynamicResource MFMButtonStyle}" Background="#FF323232" BorderThickness="2">
                     	<Button.Effect>
                     		<DropShadowEffect BlurRadius="10" Direction="0" ShadowDepth="2"/>
                     	</Button.Effect>
-                        <Image Source="Images/cog_icon&amp;48.png" Width="40" Height="40"/>
+                        <Image Source="Images/cog_icon&amp;48.png" Width="30" Height="30"/>
                     </Button>
-                    <Button x:Name="btnProc" HorizontalAlignment="Left" Margin="15,83,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseRightButtonDown="btnProc_MouseRightButtonDown" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnProc_Click" Style="{DynamicResource MFMButtonStyle}" Background="#FF323232">
+                    <Button x:Name="btnProc" HorizontalAlignment="Left" Margin="15,83,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseRightButtonDown="btnProc_MouseRightButtonDown" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Click="btnProc_Click" Style="{DynamicResource MFMButtonStyle}" Background="#FF323232" BorderThickness="2">
                     	<Button.Effect>
                     		<DropShadowEffect BlurRadius="10" Direction="0" ShadowDepth="2"/>
                     	</Button.Effect>
-                        <Image Source="Images/zoom_icon&amp;48.png" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-3,0,0,0"/>
+                        <Image Source="Images/zoom_icon&amp;48.png" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-3,0,0,0"/>
                     </Button>
-                    <Button x:Name="btnBrowse" HorizontalAlignment="Left" Margin="15,15,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseEnter="btn_MouseEnter" MouseMove="btn_MouseMove" MouseLeave="btn_MouseLeave" Click="btnBrowse_Click" Style="{DynamicResource MFMButtonStyle}" Background="#FF323232">
+                    <Button x:Name="btnBrowse" HorizontalAlignment="Left" Margin="15,15,0,0" VerticalAlignment="Top" Width="50" Height="50" MouseEnter="btn_MouseEnter" MouseMove="btn_MouseMove" MouseLeave="btn_MouseLeave" Click="btnBrowse_Click" Style="{DynamicResource MFMButtonStyle}" Background="#FF323232" BorderThickness="2">
                     	<Button.Effect>
                     		<DropShadowEffect BlurRadius="10" Direction="0" ShadowDepth="2"/>
                     	</Button.Effect>
-                        <Image Source="Images/folder_open_icon&amp;48.png" Width="40" Height="40"/>
+                        <Image Source="Images/folder_open_icon&amp;48.png" Width="30" Height="30"/>
                     </Button>
-                    <Button x:Name="btnExit" HorizontalAlignment="Left" Margin="83,83,0,0" VerticalAlignment="Top" Width="50" Height="50" Click="btnExit_Click" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Style="{DynamicResource MFMButtonStyle}" Background="#FF323232">
+                    <Button x:Name="btnExit" HorizontalAlignment="Left" Margin="83,83,0,0" VerticalAlignment="Top" Width="50" Height="50" Click="btnExit_Click" MouseEnter="btn_MouseEnter" MouseLeave="btn_MouseLeave" MouseMove="btn_MouseMove" Style="{DynamicResource MFMButtonStyle}" Background="#FF323232" BorderThickness="2">
                     	<Button.Effect>
                     		<DropShadowEffect BlurRadius="10" Direction="0" ShadowDepth="2"/>
                     	</Button.Effect>
-                        <Image Source="Images/on-off_icon&amp;48.png" Width="40" Height="40" Margin="-3,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image Source="Images/on-off_icon&amp;48.png" Width="30" Height="30" Margin="-3,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                 </Grid>
             </Border>

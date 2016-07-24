@@ -8,34 +8,43 @@
     	<Style x:Key="MFMButtonStyle" TargetType="{x:Type Button}">
     		<Setter Property="Template">
     			<Setter.Value>
-    				<ControlTemplate TargetType="{x:Type Button}">
-    					<ControlTemplate.Resources>
-    						<Storyboard x:Key="MouseEnter">
-    							<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.OpacityMask).(SolidColorBrush.Color)" Storyboard.TargetName="background">
-    								<EasingColorKeyFrame KeyTime="0" Value="Black"/>
-    								<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#00000000"/>
-    							</ColorAnimationUsingKeyFrames>
-    							<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="animation">
-    								<EasingColorKeyFrame KeyTime="0" Value="#00FFA000"/>
-    								<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#FFFFA000"/>
-    							</ColorAnimationUsingKeyFrames>
-    						</Storyboard>
-    						<Storyboard x:Key="MouseLeave">
-    							<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="animation">
-    								<EasingColorKeyFrame KeyTime="0" Value="#FFFFA000"/>
-    								<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#00FFA000"/>
-    							</ColorAnimationUsingKeyFrames>
-    							<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.OpacityMask).(SolidColorBrush.Color)" Storyboard.TargetName="background">
-    								<EasingColorKeyFrame KeyTime="0" Value="#00000000"/>
-    								<EasingColorKeyFrame KeyTime="0:0:0.3" Value="Black"/>
-    							</ColorAnimationUsingKeyFrames>
-    						</Storyboard>
-    					</ControlTemplate.Resources>
+    				<ControlTemplate TargetType="{x:Type Button}">    					
     					<Grid>
-    						<Rectangle x:Name="background" RadiusX="10" RadiusY="10" Fill="{TemplateBinding Background}" OpacityMask="Black" Stroke="{TemplateBinding BorderBrush}"/>
-    						<Rectangle x:Name="animation" Fill="#00FFA000" Height="Auto" RadiusY="10" RadiusX="10" Width="Auto"/>
+    						<VisualStateManager.VisualStateGroups>
+    							<VisualStateGroup x:Name="CommonStates">
+    								<VisualStateGroup.Transitions>
+    									<VisualTransition GeneratedDuration="0:0:0.2"/>
+    									<VisualTransition GeneratedDuration="0" To="Pressed"/>
+    								</VisualStateGroup.Transitions>
+    								<VisualState x:Name="Normal"/>
+    								<VisualState x:Name="MouseOver">
+    									<Storyboard>
+    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Animation">
+    											<EasingColorKeyFrame KeyTime="0" Value="#FFFF6400"/>
+    										</ColorAnimationUsingKeyFrames>
+    									</Storyboard>
+    								</VisualState>
+    								<VisualState x:Name="Pressed">
+    									<Storyboard>
+    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Animation">
+    											<EasingColorKeyFrame KeyTime="0" Value="#FF0064FF"/>
+    										</ColorAnimationUsingKeyFrames>
+    									</Storyboard>
+    								</VisualState>
+    								<VisualState x:Name="Disabled">
+    									<Storyboard>
+    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Animation">
+    											<EasingColorKeyFrame KeyTime="0" Value="#FFC8C8C8"/>
+    										</ColorAnimationUsingKeyFrames>
+    									</Storyboard>
+    								</VisualState>
+    							</VisualStateGroup>
+    						</VisualStateManager.VisualStateGroups>
+    						<Border x:Name="Background" Background="{TemplateBinding BorderBrush}" CornerRadius="10"/>
+    						<Border x:Name="Inner" Margin="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="10"/>
+    						<Border x:Name="Animation" CornerRadius="10" Margin="{TemplateBinding BorderThickness}" BorderBrush="Black" Background="#00000000"/>
     						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-    						<Border x:Name="glow" CornerRadius="10">
+    						<Border x:Name="glow" CornerRadius="10" Margin="{TemplateBinding BorderThickness}">
     							<Border.Background>
     								<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
     									<GradientStop Color="#00000000" Offset="0"/>
@@ -45,16 +54,10 @@
     							</Border.Background>
     						</Border>
     					</Grid>
-    					<ControlTemplate.Triggers>
-    						<EventTrigger RoutedEvent="Mouse.MouseLeave">
-    							<BeginStoryboard x:Name="MouseLeave_BeginStoryboard" Storyboard="{StaticResource MouseLeave}"/>
-    						</EventTrigger>
+    					<ControlTemplate.Triggers>    						
     						<Trigger Property="IsFocused" Value="True"/>
     						<Trigger Property="IsDefaulted" Value="True"/>
-    						<Trigger Property="IsMouseOver" Value="True"/>
-    						<EventTrigger RoutedEvent="Mouse.MouseEnter">
-    							<BeginStoryboard x:Name="MouseEnter_BeginStoryboard" Storyboard="{StaticResource MouseEnter}"/>
-    						</EventTrigger>
+    						<Trigger Property="IsMouseOver" Value="True"/>    						
     						<Trigger Property="IsPressed" Value="True"/>
     						<Trigger Property="IsEnabled" Value="False"/>
     					</ControlTemplate.Triggers>
@@ -596,59 +599,149 @@
         </Style>
 
         <SolidColorBrush x:Key="CheckBoxFillNormal" Color="#F4F4F4"/>
-    	<SolidColorBrush x:Key="CheckBoxStroke" Color="#8E8F8F"/>
-    	<Style x:Key="EmptyCheckBoxFocusVisual">
-    		<Setter Property="Control.Template">
-    			<Setter.Value>
-    				<ControlTemplate>
-    					<Rectangle Margin="1" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-    				</ControlTemplate>
-    			</Setter.Value>
-    		</Setter>
-    	</Style>
-    	<Style x:Key="CheckRadioFocusVisual">
-    		<Setter Property="Control.Template">
-    			<Setter.Value>
-    				<ControlTemplate>
-    					<Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-    				</ControlTemplate>
-    			</Setter.Value>
-    		</Setter>
-    	</Style>
-    	<Style x:Key="MFMCheckBox" TargetType="{x:Type CheckBox}">
-    		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-    		<Setter Property="Background" Value="{StaticResource CheckBoxFillNormal}"/>
-    		<Setter Property="BorderBrush" Value="{StaticResource CheckBoxStroke}"/>
-    		<Setter Property="BorderThickness" Value="1"/>
-    		<Setter Property="FocusVisualStyle" Value="{StaticResource EmptyCheckBoxFocusVisual}"/>
-    		<Setter Property="Template">
-    			<Setter.Value>
-    				<ControlTemplate TargetType="{x:Type CheckBox}">
-    					<BulletDecorator Background="Transparent" SnapsToDevicePixels="true">
-    						<BulletDecorator.Bullet>
-    							<Border Width="15" Height="15" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" CornerRadius="1">
-    								<Ellipse x:Name="CheckMark" Height="Auto" Stroke="#FF00A0FF" StrokeThickness="2"/>
-								</Border>
-    						</BulletDecorator.Bullet>
-    						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-    					</BulletDecorator>
-    					<ControlTemplate.Triggers>
-    						<Trigger Property="IsChecked" Value="False">
-    							<Setter Property="Visibility" TargetName="CheckMark" Value="Hidden"/>
-    						</Trigger>
-    						<Trigger Property="HasContent" Value="true">
-    							<Setter Property="FocusVisualStyle" Value="{StaticResource CheckRadioFocusVisual}"/>
-    							<Setter Property="Padding" Value="4,0,0,0"/>
-    						</Trigger>
-    						<Trigger Property="IsEnabled" Value="false">
-    							<Setter Property="Foreground" Value="#FF4B4B4B"></Setter>
-							</Trigger>
-    					</ControlTemplate.Triggers>
-    				</ControlTemplate>
-    			</Setter.Value>
-    		</Setter>
-    	</Style>
-    	<LinearGradientBrush x:Key="VerticalScrollBarBackground" EndPoint="1,0" StartPoint="0,0">
+        <SolidColorBrush x:Key="CheckBoxStroke" Color="#8E8F8F"/>
+        <Style x:Key="EmptyCheckBoxFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="1" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CheckRadioFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MFMCheckBoxStyle" TargetType="{x:Type CheckBox}">
+            <!--<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="Background" Value="{StaticResource CheckBoxFillNormal}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource CheckBoxStroke}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="FocusVisualStyle" Value="{StaticResource EmptyCheckBoxFocusVisual}"/>-->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <BulletDecorator Background="Transparent" SnapsToDevicePixels="true">
+                            <BulletDecorator.Bullet>
+                                <Grid>
+                                    <Border x:Name="Border" Width="15" Height="15" CornerRadius="2" Background="{TemplateBinding BorderBrush}"/>
+                                    <Border x:Name="BorderEffect" Width="15" Height="15" CornerRadius="2" d:CopyToken="f702ab23-427f-4672-b14f-8357eab6ffd7" Background="#00C8C8C8"/>
+                                    <Border x:Name="BorderGlow" Width="15" Height="15" CornerRadius="2">
+                                        <Border.Background>
+                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                <GradientStop Color="#7F000000" Offset="0"/>
+                                                <GradientStop Color="#00000000" Offset="1"/>
+                                                <GradientStop Color="#99000000" Offset="0.25"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                    </Border>
+                                    <Grid Margin="{TemplateBinding BorderThickness}">
+                                        <Border x:Name="Background" CornerRadius="1.5" Background="{TemplateBinding Background}"/>
+                                        <Border x:Name="Animation" CornerRadius="1.5" Background="#00C8C8C8"/>
+                                        <Path x:Name="CheckMark" Data="M0.87450021,5.0203795 C7.4995078,9.8539046 2.7380779,9.8719586 10.124511,1.7707099" HorizontalAlignment="Left" Height="8.552" Margin="-0.125,0.77,-0.125,0" Stretch="Fill" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="2" VerticalAlignment="Top" Width="11.25" Visibility="Collapsed"/>
+                                        <Path x:Name="CheckMarkEffect" Data="M0.87450021,5.0203795 C7.4995078,9.8539046 2.7380779,9.8719586 10.124511,1.7707099" HorizontalAlignment="Left" Height="8.552" Margin="-0.125,0.77,-0.125,0" Stretch="Fill" StrokeThickness="2" VerticalAlignment="Top" Width="11.25" Stroke="#00C8C8C8" Visibility="Collapsed"/>
+                                        <Border x:Name="Glow" CornerRadius="1.5">
+                                            <Border.Background>
+                                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                    <GradientStop Color="#00000000" Offset="0"/>
+                                                    <GradientStop Color="#4C000000" Offset="1"/>
+                                                    <GradientStop Color="#66000000" Offset="0.75"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </BulletDecorator.Bullet>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0"/>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="BorderEffect">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#FFFF6400"/>
+                                            </ColorAnimationUsingKeyFrames>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)" Storyboard.TargetName="CheckMarkEffect">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#FFFF6400"/>
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="BorderEffect">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#FF0064FF"/>
+                                            </ColorAnimationUsingKeyFrames>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)" Storyboard.TargetName="CheckMarkEffect">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#FF0064FF"/>
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="BorderEffect">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#FFC8C8C8"/>
+                                            </ColorAnimationUsingKeyFrames>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)" Storyboard.TargetName="CheckMarkEffect">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#FFC8C8C8"/>
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0"/>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CheckMarkEffect">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CheckMark">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CheckMark">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CheckMarkEffect">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Indeterminate"/>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource CheckRadioFocusVisual}"/>
+                                <Setter Property="Padding" Value="4,0,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Visibility" TargetName="Border" Value="Collapsed"/>
+                                <Setter Property="Visibility" TargetName="BorderEffect" Value="Visible"/>
+                                <Setter Property="Visibility" TargetName="CheckMark" Value="Collapsed"/>
+                                <Setter Property="Visibility" TargetName="CheckMarkEffect" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <LinearGradientBrush x:Key="VerticalScrollBarBackground" EndPoint="1,0" StartPoint="0,0">
     		<GradientStop Color="#E1E1E1" Offset="0"/>
     		<GradientStop Color="#EDEDED" Offset="0.20"/>
     		<GradientStop Color="#EDEDED" Offset="0.80"/>
