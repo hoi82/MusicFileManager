@@ -477,7 +477,8 @@ namespace MusicFileManager.CustomControls
             b.ProcessingFailBackground = this.ProcessingFailItemBackground;
             b.ProcessingFailForeground = this.ProcessingFailItemForeground;
 
-            b.Mode = this.Mode;                        
+            b.Mode = this.Mode;
+            b.Selected = true;          
 
             b.Click += b_Click;
 
@@ -513,8 +514,8 @@ namespace MusicFileManager.CustomControls
             {
                 string message = bi.Data.ToString();
                 tblItemContent.Text = message;
-                grdItemContent.Width = MeasureString(message).Width + 20;
-                grdItemContent.Height = MeasureString(message).Height + 20;
+                grdItemContent.Width = MeasureString(message).Width + ((outerPopBorder.Margin.Left + innerPopBorder.Margin.Left + tblItemContent.Margin.Left) * 2);
+                grdItemContent.Height = MeasureString(message).Height + ((outerPopBorder.Margin.Top + innerPopBorder.Margin.Top + tblItemContent.Margin.Top) * 2);
             }                
             else
                 tblItemContent.Text = null;
@@ -532,8 +533,8 @@ namespace MusicFileManager.CustomControls
 
             Point currentPos = e.GetPosition(bi);
 
-            popItem.HorizontalOffset = currentPos.X + 10;
-            popItem.VerticalOffset = currentPos.Y + 10;
+            popItem.HorizontalOffset = currentPos.X;
+            popItem.VerticalOffset = currentPos.Y - 10;
         }
 
         void b_Click(object sender, RoutedEventArgs e)

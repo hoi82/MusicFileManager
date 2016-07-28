@@ -31,7 +31,10 @@ namespace MusicFileManager.Extractor
         {
             foreach (string s in extractedFiles)
             {
-                DeleteFile(s);
+                FileInfo fi = new FileInfo(s);
+
+                if (!IsFileLocked(fi))
+                    DeleteFile(s);
             }
 
             extractedDir.Sort(delegate(string x, string y) 
@@ -49,6 +52,39 @@ namespace MusicFileManager.Extractor
             {
                 DeleteDirectroy(extractedDir[i]);
             }
+        }
+
+        bool IsFileLocked(FileInfo fi)
+        {
+            FileStream stream = null;
+
+            try
+            {
+                //Don't change FileAccess to ReadWrite, 
+                //because if a file is in readOnly, it fails.
+                stream = fi.Open
+                (
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.None
+                );
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
+            return false;
         }
 
         void DeleteFile(string fileName)

@@ -235,7 +235,9 @@ namespace MusicFileManager.CustomControls
             {                
                 this.iconName = value;
                 if (this.lblText != null)
-                    this.lblText.Content = value;
+                {
+                    this.lblText.Content = value.Substring(0,2);
+                }                    
             }
         }
 

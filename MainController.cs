@@ -440,7 +440,7 @@ namespace MusicFileManager
 
         public void DisplayProgressPopUp(string message, int current, int total)
         {
-            if (window.currentMouserOverButton == window.btnProc)
+            if ((window.currentMouserOverButton == window.btnProc))
             {
                 window.Dispatcher.Invoke(() => 
                 {

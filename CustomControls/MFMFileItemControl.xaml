@@ -4,9 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" MouseLeave="UserControl_MouseLeave" MouseLeftButtonDown="UserControl_MouseLeftButtonDown" MouseLeftButtonUp="UserControl_MouseLeftButtonUp">
+             d:DesignHeight="300" d:DesignWidth="300" MouseLeave="UserControl_MouseLeave" MouseLeftButtonDown="UserControl_MouseLeftButtonDown" MouseLeftButtonUp="UserControl_MouseLeftButtonUp" Width="Auto" Height="Auto">
     <Grid>
-        <Ellipse x:Name="elBack" Fill="#FFFF8484" Margin="1" x:FieldModifier="private"/>
-        <Label x:Name="lblText" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" Padding="0" x:FieldModifier="private" FontFamily="/MusicFileManager;component/Fonts/#Walkway Bold"/>
+        <Ellipse x:Name="elBackGround" Fill="#FFC8C8C8" Margin="1" x:FieldModifier="private"/>
+        <Ellipse x:Name="elBack" Fill="#FFFF8484" Margin="4" x:FieldModifier="private"/>
+        <Ellipse x:Name="elGlow" Margin="4" x:FieldModifier="private">
+        	<Ellipse.Fill>
+        		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+        			<GradientStop Color="#00000000" Offset="0"/>
+        			<GradientStop Color="#99000000" Offset="1"/>
+        			<GradientStop Color="#7F000000" Offset="0.75"/>
+        		</LinearGradientBrush>
+        	</Ellipse.Fill>
+        </Ellipse>
+        <Label x:Name="lblText" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" x:FieldModifier="private" FontFamily="/MusicFileManager;component/Fonts/#Walkway Black" Content="T1" FontSize="13.333" FontWeight="Bold"/>
     </Grid>
 </UserControl>

@@ -33,39 +33,33 @@ namespace MusicFileManager
         DoubleAnimation aniWidth = null;
         DoubleAnimation aniHeight = null;
 
-        bool extended = false;
-
-        public MFMOption option = null;
-        public MFMFileControl fileControl = null;
+        bool extended = false;        
 
         ExtendMode mode = ExtendMode.File;
         Button prevPressedButton = null;
         public Button currentMouserOverButton = null;
 
+        const double EXTEND_SIZE = 400;
+        double extendedWidth = 0;
+        double extendedHeight = 0;
+        double shrinkedWidth = 0;
+        double shrinkedHeight = 0;
+
         public MainWindow()
         {
-            InitializeComponent();
-
-            option = new MFMOption();            
-            
-            fileControl = new MFMFileControl();
-            fileControl.SelectedItemBackground = Brushes.Orange;
-            fileControl.SelectedItemForeground = Brushes.White;
-            fileControl.UnSelectedItemBackground = Brushes.Aquamarine;
-            fileControl.UnSelectedItemForeground = Brushes.White;
-            fileControl.ProcessingFailItemBackground = Brushes.Red;
-            fileControl.ProcessingFailItemForeground = Brushes.White;
-            fileControl.ProcessingReadyItemBackground = Brushes.Orange;
-            fileControl.ProcessingReadyItemForeground = Brushes.White;
-            fileControl.ProcessingSuccessItemBackground = Brushes.Green;
-            fileControl.ProcessingSuccessItemForeground = Brushes.White;            
-            fileControl.ItemSize = 20;
+            InitializeComponent();            
 
             controller = new MainController(this);                                          
         }                                     
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            shrinkedWidth = bdOuterBack.Width;
+            shrinkedHeight = bdOuterBack.Height;
+
+            extendedWidth = shrinkedWidth + EXTEND_SIZE;
+            extendedHeight = shrinkedHeight + EXTEND_SIZE;
+
             sb = new Storyboard();
 
             InitializeStoryBoard(sb);
@@ -116,7 +110,7 @@ namespace MusicFileManager
             {
                 this.mode = mode;
                 SetUpAnimationInfo();
-                sb.Begin();
+                sb.Begin();                
                 extended = false;
             }
             else if ((prevPressedButton != pressedButton) && (extended))
@@ -145,10 +139,10 @@ namespace MusicFileManager
             if (extended)
             {
                 aniWidth.From = bdOuterBack.Width;
-                aniWidth.To = bdOuterBack.Width - 400;
+                aniWidth.To = shrinkedWidth;
 
                 aniHeight.From = bdOuterBack.Height;
-                aniHeight.To = bdOuterBack.Height - 400;
+                aniHeight.To = shrinkedHeight;
             }
             else
             {
@@ -156,17 +150,17 @@ namespace MusicFileManager
                 this.Height += 400;
 
                 aniWidth.From = bdOuterBack.Width;
-                aniWidth.To = bdOuterBack.Width + 400;
+                aniWidth.To = extendedWidth;
 
                 aniHeight.From = bdOuterBack.Height;
-                aniHeight.To = bdOuterBack.Height + 400;
+                aniHeight.To = extendedHeight;
             }
         }
 
         void ResetExtendedMode()
         {
-            grdMain.Children.Remove(fileControl);
-            grdMain.Children.Remove(option);
+            option.Visibility = Visibility.Collapsed;
+            fileControl.Visibility = Visibility.Collapsed;
         }
 
         void DisplayExtendedMode(ExtendMode mode)
@@ -175,16 +169,12 @@ namespace MusicFileManager
             if (mode == ExtendMode.File)
             {
                 //fileControl.Height = 388;
-				fileControl.Height = double.NaN;
-                fileControl.Margin = new Thickness(10, 150, 10, 30);
-                fileControl.Background = new SolidColorBrush(Color.FromArgb(100, 50, 50, 50));
-                grdMain.Children.Add(fileControl);                
+                fileControl.Visibility = Visibility.Visible;
+				
             }
             else if (mode == ExtendMode.Option)
-            {                
-                option.Height = double.NaN;
-                option.Margin = new Thickness(10, 150, 10, 30);
-                grdMain.Children.Add(option);
+            {
+                option.Visibility = Visibility.Visible;
             }
         }
 
@@ -192,11 +182,11 @@ namespace MusicFileManager
         {
             if (mode == ExtendMode.File)
             {
-                grdMain.Children.Remove(fileControl);
+                fileControl.Visibility = Visibility.Collapsed;
             }
             else if (mode == ExtendMode.Option)
             {
-                grdMain.Children.Remove(option);  
+                option.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -389,14 +379,14 @@ namespace MusicFileManager
             if ((controller.processingMode == ProcessingMode.ReadyClean) || (controller.processingMode == ProcessingMode.Clean))
             {
                 DoExtendAnimation(ExtendMode.File, sender as Button);
-                ClosePopUp();
+                //ClosePopUp();
             }            
         }
 
         private void btnOption_Click(object sender, RoutedEventArgs e)
         {
             DoExtendAnimation(ExtendMode.Option, sender as Button);
-            ClosePopUp();
+            //ClosePopUp();
         }
 
         private void btn_MouseEnter(object sender, MouseEventArgs e)
