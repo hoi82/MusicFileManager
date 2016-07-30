@@ -23,6 +23,9 @@ namespace MusicFileManager.Duplication
 
             for (int i = 0; i < sourceFiles.Count(); i++)
             {
+                int start = 0;
+                int end = 0;
+
                 DuplicatedFiles d = null;
 
                 outerTotal = sourceFiles.Count();
@@ -49,6 +52,8 @@ namespace MusicFileManager.Duplication
                 bool isDuplicated = false;
                 string audioFileName = null;
 
+                start = Environment.TickCount;
+
                 for (int j = 0; j < extractedAudioFiles.Count(); j++)
                 {
                     if ((e != null) && Canceled())
@@ -57,8 +62,8 @@ namespace MusicFileManager.Duplication
                         break;
                     }
 
-                    //outerTotal = extractedAudioFiles.Count();
-                    //outerCurrent = j;
+                    outerTotal = extractedAudioFiles.Count();
+                    outerCurrent = j;
 
                     for (int k = 0; k < targetFiles.Count(); k++)
                     {
@@ -80,8 +85,7 @@ namespace MusicFileManager.Duplication
                             audioFileName = targetFiles[k];
                             break;
                         }
-
-                        //IncCount();
+                        
                         OnProcedure();
                     }
 
@@ -90,6 +94,10 @@ namespace MusicFileManager.Duplication
 
                     OnProcedure();
                 }
+
+                end = Environment.TickCount;
+
+                int gap = end - start;
 
                 if (isDuplicated)
                 {

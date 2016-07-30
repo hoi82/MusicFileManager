@@ -34,7 +34,7 @@ namespace MusicFileManager.Extractor
                 FileInfo fi = new FileInfo(s);
 
                 if (!IsFileLocked(fi))
-                    DeleteFile(s);
+                    DeleteFile(s);                  
             }
 
             extractedDir.Sort(delegate(string x, string y) 
@@ -154,10 +154,9 @@ namespace MusicFileManager.Extractor
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                
-                throw;
+                                
             }
             finally
             {

@@ -283,7 +283,7 @@ namespace MusicFileManager
 
         void audioDuplicationEvaluator_OnProgressAsync(object sender, DuplicationEvaluatorProgressEventArgs e)
         {
-            DisplayProgressPopUp(string.Format("Finding Duplicated Music Files {0}/{1} of {2}/{3}", e.InnerCurrent + 1, e.InnerTotal, e.OuterCurrent + 1, e.OuterTotal), e.InnerCurrent + 1, e.InnerTotal);            
+            DisplayProgressPopUp(string.Format("Finding Duplicated Music Files {0}/{1} of {2}/{3}", e.InnerCurrent + 1, e.InnerTotal, e.OuterCurrent + 1, e.OuterTotal), e.InnerCurrent + 1, e.InnerTotal);                        
         }
 
         void audioDuplicationEvaluator_OnStartAsync(object sender, EventArgs e)
@@ -308,7 +308,7 @@ namespace MusicFileManager
 
         void archiveDuplicationEvaluator_OnProgressAsync(object sender, DuplicationEvaluatorProgressEventArgs e)
         {
-            DisplayProgressPopUp(string.Format("Finding Duplicated Archive Files {0}/{1} of {2}/{3}", e.InnerCurrent + 1, e.InnerTotal, e.OuterCurrent + 1, e.OuterTotal), e.InnerCurrent + 1, e.InnerTotal);            
+            DisplayProgressPopUp(string.Format("Finding Duplicated Archive Files {0}/{1} of {2}/{3}", e.InnerCurrent + 1, e.InnerTotal, e.OuterCurrent + 1, e.OuterTotal), e.InnerCurrent + 1, e.InnerTotal);                        
         }
 
         void archiveDuplicationEvaluator_OnStartAsync(object sender, EventArgs e)
