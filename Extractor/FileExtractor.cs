@@ -154,7 +154,7 @@ namespace MusicFileManager.Extractor
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                                 
             }

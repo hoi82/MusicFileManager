@@ -207,9 +207,7 @@ namespace MusicFileManager
         {
             const double PADDING_BETWEEN_CONTROL = 10;
             double width = 0;
-            double height = 0;
-            //grdOuterPop.Width = width;
-            //grdOuterPop.Height = height;
+            double height = 0;            
 
             if (progressBarVisible)
                 prgPop.Visibility = Visibility.Visible;
@@ -286,31 +284,48 @@ namespace MusicFileManager
                 string lowerStr = null;
 
                 lblBackgroundPop.Content = "Processing";
-                if (controller.processingMode == ProcessingMode.ReadyFind)
-                {                    
-                    prgVisible = false;
-                    upperStr = "Ready for Check Files";
-                    lowerStr = "Click for Check Files";
-                }
-                else if (controller.processingMode == ProcessingMode.CollectFile)
-                {                    
-                    prgVisible = true;                    
-                }
-                else if (controller.processingMode == ProcessingMode.CheckDuplication)
+
+                switch (controller.processingMode)
                 {
-                    prgVisible = true;
-                    upperStr = "Ready for Check Files";
-                    lowerStr = "Click for Check Files";
-                }
-                else if (controller.processingMode == ProcessingMode.ReadyClean)
-                {                    
-                    prgVisible = false;
-                    upperStr = "Ready for Clean files";
-                    lowerStr = "Click for Clean files\r\nRight Click for Show Details";                    
-                }
-                else if (controller.processingMode == ProcessingMode.Clean)
-                {                    
-                    prgVisible = true;                    
+                    case ProcessingStep.ReadyFind:
+                        {
+                            prgVisible = false;
+                            upperStr = "Ready for Check Files";
+                            lowerStr = "Click for Check Files";
+                        }
+                        break;
+                    case ProcessingStep.CollectFile:
+                        {                            
+                            prgVisible = true;
+                            upperStr = controller.progressMessage;
+                            lowerStr = "Click for cancel check";
+                        }
+                        break;
+                    case ProcessingStep.CheckDuplication:
+                        {
+                            prgVisible = true;
+                            upperStr = controller.progressMessage;
+                            lowerStr = "Click for cancel check";
+                            //upperStr = "Ready for Check Files";
+                            //lowerStr = "Click for Check Files";
+                        }
+                        break;
+                    case ProcessingStep.ReadyClean:
+                        {
+                            prgVisible = false;
+                            upperStr = "Ready for Clean files";
+                            lowerStr = "Click for Clean files\r\nRight Click for Show Details";       
+                        }
+                        break;
+                    case ProcessingStep.Clean:
+                        {
+                            prgVisible = true;
+                            upperStr = controller.progressMessage;
+                            lowerStr = "Click for cancel clean";
+                        }
+                        break;
+                    default:
+                        break;
                 }
 
                 SetPopUpDisplay(prgVisible, "Processing", upperStr, lowerStr);
@@ -322,8 +337,7 @@ namespace MusicFileManager
         }
 
         void OpenPopUp(Button btn)
-        {
-            //if ((!popMain.IsOpen) && ((!extended) || (prevPressedButton != btn)))
+        {            
             if (!popMain.IsOpen)
             {
                 popMain.IsOpen = true;
@@ -376,17 +390,15 @@ namespace MusicFileManager
         {
             Button b = sender as Button;
 
-            if ((controller.processingMode == ProcessingMode.ReadyClean) || (controller.processingMode == ProcessingMode.Clean))
+            if ((controller.processingMode == ProcessingStep.ReadyClean) || (controller.processingMode == ProcessingStep.Clean))
             {
-                DoExtendAnimation(ExtendMode.File, sender as Button);
-                //ClosePopUp();
+                DoExtendAnimation(ExtendMode.File, sender as Button);                
             }            
         }
 
         private void btnOption_Click(object sender, RoutedEventArgs e)
         {
-            DoExtendAnimation(ExtendMode.Option, sender as Button);
-            //ClosePopUp();
+            DoExtendAnimation(ExtendMode.Option, sender as Button);            
         }
 
         private void btn_MouseEnter(object sender, MouseEventArgs e)
