@@ -1254,7 +1254,67 @@
     				<Setter Property="Background" TargetName="Background" Value="{DynamicResource HorizentalSliderThumbDisabledBackground}"/>
     			</Trigger>
     		</ControlTemplate.Triggers>
-    	</ControlTemplate>    	      
+    	</ControlTemplate>
+    	<Style x:Key="MFMButtonSquareStyle" TargetType="{x:Type Button}">
+    		<Setter Property="Template">
+    			<Setter.Value>
+    				<ControlTemplate TargetType="{x:Type Button}">    					
+    					<Grid>
+    						<VisualStateManager.VisualStateGroups>
+    							<VisualStateGroup x:Name="CommonStates">
+    								<VisualStateGroup.Transitions>
+    									<VisualTransition GeneratedDuration="0:0:0.2"/>
+    									<VisualTransition GeneratedDuration="0" To="Pressed"/>
+    								</VisualStateGroup.Transitions>
+    								<VisualState x:Name="Normal"/>
+    								<VisualState x:Name="MouseOver">
+    									<Storyboard>
+    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Animation">
+    											<EasingColorKeyFrame KeyTime="0" Value="#FFFF6400"/>
+    										</ColorAnimationUsingKeyFrames>
+    									</Storyboard>
+    								</VisualState>
+    								<VisualState x:Name="Pressed">
+    									<Storyboard>
+    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Animation">
+    											<EasingColorKeyFrame KeyTime="0" Value="#FF0064FF"/>
+    										</ColorAnimationUsingKeyFrames>
+    									</Storyboard>
+    								</VisualState>
+    								<VisualState x:Name="Disabled">
+    									<Storyboard>
+    										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Animation">
+    											<EasingColorKeyFrame KeyTime="0" Value="#FFC8C8C8"/>
+    										</ColorAnimationUsingKeyFrames>
+    									</Storyboard>
+    								</VisualState>
+    							</VisualStateGroup>
+    						</VisualStateManager.VisualStateGroups>
+    						<Border x:Name="Background" Background="{TemplateBinding BorderBrush}" CornerRadius="0"/>
+    						<Border x:Name="Inner" Margin="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="0"/>
+    						<Border x:Name="Animation" CornerRadius="0" Margin="{TemplateBinding BorderThickness}" BorderBrush="Black" Background="#00000000"/>
+    						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+    						<Border x:Name="glow" CornerRadius="0" Margin="{TemplateBinding BorderThickness}">
+    							<Border.Background>
+    								<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+    									<GradientStop Color="#00000000" Offset="0"/>
+    									<GradientStop Color="#7F000000" Offset="1"/>
+    									<GradientStop Color="#99000000" Offset="0.75"/>
+    								</LinearGradientBrush>
+    							</Border.Background>
+    						</Border>
+    					</Grid>
+    					<ControlTemplate.Triggers>    						
+    						<Trigger Property="IsFocused" Value="True"/>
+    						<Trigger Property="IsDefaulted" Value="True"/>
+    						<Trigger Property="IsMouseOver" Value="True"/>    						
+    						<Trigger Property="IsPressed" Value="True"/>
+    						<Trigger Property="IsEnabled" Value="False"/>
+    					</ControlTemplate.Triggers>
+    				</ControlTemplate>
+    			</Setter.Value>
+    		</Setter>
+    	</Style>    	      
          
     </Application.Resources>
 </Application>

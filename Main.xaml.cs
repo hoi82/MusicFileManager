@@ -104,6 +104,17 @@ namespace MusicFileManager
             sb.Completed += sb_Completed;
         }
 
+        public void ResetExtendAnimation()
+        {
+            if ((this.mode == ExtendMode.File) && extended)
+            {
+                SetUpAnimationInfo();
+                sb.Begin();
+                fileControl.ClearItems();
+                extended = false;
+            }
+        }
+
         void DoExtendAnimation(ExtendMode mode, Button pressedButton)
         {
             if ((prevPressedButton == pressedButton) && (extended))
@@ -344,9 +355,7 @@ namespace MusicFileManager
 
                 DisplayPopUp();
             }                
-        }
-
-        
+        }        
 
         void ClosePopUp()
         {

@@ -19,7 +19,9 @@ namespace MusicFileManager.Duplication
         protected override void Process(System.ComponentModel.DoWorkEventArgs e = null)
         {
             duplicatedFiles = new List<DuplicatedFiles>();
-            //ResetCount(targetFiles.Count());
+
+            if ((sourceFiles == null) || (targetFiles == null))
+                return;
 
             for (int i = 0; i < sourceFiles.Count(); i++)
             {
@@ -118,7 +120,7 @@ namespace MusicFileManager.Duplication
         }
 
         public override List<DuplicatedFiles> GetDuplications(List<string> list1, List<string> list2, bool aSync)
-        {
+        {                         
             sourceFiles = list1;
             targetFiles = list2;
             if (aSync)

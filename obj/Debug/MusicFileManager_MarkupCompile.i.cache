@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-E:\Workspace\Work\WPF\MusicFileManager\obj\Debug\
+C:\Mytest\Works\WPF\MusicFileManager\obj\Debug\
 MusicFileManager
 none
 false
 DEBUG;TRACE
-E:\Workspace\Work\WPF\MusicFileManager\App.xaml
-8-1578528646
+C:\Mytest\Works\WPF\MusicFileManager\App.xaml
+9-725615212
 
-502119637810
-21-2134609146
-CustomControls\MFMFileControl.xaml;CustomControls\MFMFileItemControl.xaml;CustomControls\OldFileToCleanControl.xaml;Main.xaml;CustomControls\MFMOption.xaml;CustomControls\ModalDialogControl.xaml;CustomControls\ProgressControl.xaml;TestPage.xaml;
+511971656744
+21265362333
+CleanResultModal.xaml;CustomControls\MFMFileControl.xaml;CustomControls\MFMFileItemControl.xaml;CustomControls\OldFileToCleanControl.xaml;Main.xaml;CustomControls\MFMOption.xaml;CustomControls\ModalDialogControl.xaml;CustomControls\ProgressControl.xaml;TestPage.xaml;
 
 False
 

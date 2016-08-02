@@ -98,6 +98,9 @@
     <Compile Include="Checker\DefaultFileChecker.cs" />
     <Compile Include="Cleaner\FileCleanerResult.cs" />
     <Compile Include="Cleaner\IFileCleaner.cs" />
+    <Compile Include="CleanResultModal.xaml.cs">
+      <DependentUpon>CleanResultModal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\MFMFileControl.xaml.cs">
       <DependentUpon>MFMFileControl.xaml</DependentUpon>
     </Compile>
@@ -137,6 +140,10 @@
     <Compile Include="MainController.cs" />
     <Compile Include="Data\DuplicatedFiles.cs" />
     <Compile Include="SerializedAsync\ISerializedAsync.cs" />
+    <Page Include="CleanResultModal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\MFMFileControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

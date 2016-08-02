@@ -234,8 +234,11 @@ namespace MusicFileManager
 
         void fileCleaner_OnCompleteAsync(object sender, FileCleanerCompleteEventArgs e)
         {
-            progressMessage = string.Format("Deleted File : {0} " + "\r\n" + "UnDeleted File : {1}", e.DeletedFiles.Count, e.UnDeletedFiles.Count);
-            System.Windows.MessageBox.Show(progressMessage);            
+            progressMessage = string.Format("Deleted File : {0} " + Environment.NewLine + "UnDeleted File : {1}", e.DeletedFiles.Count, e.UnDeletedFiles.Count);
+            CleanResultModal crm = new CleanResultModal(progressMessage);
+            crm.ShowDialog();
+            processingMode = ProcessingStep.ReadyFind;
+            window.option.IsEnabled = true;            
         }
 
         void fileCleaner_OnCancelAsync(object sender, EventArgs e)
@@ -264,7 +267,8 @@ namespace MusicFileManager
             window.lblUpperPop.Content = "Complete";
             processingMode = ProcessingStep.ReadyClean;            
             window.DisplayPopUp();
-            filetoClean.AddRange(e.DuplicatedFiles);                      
+            filetoClean.AddRange(e.DuplicatedFiles);
+            window.fileControl.Mode = CustomControls.MFMFileControlMode.Editing;     
             foreach (var item in filetoClean)
             {
                 window.fileControl.AddItem(new CustomControls.MFMFileItemControl() 
@@ -417,8 +421,10 @@ namespace MusicFileManager
         }
 
         void fileFinder_OnStartAsync(object sender, FileFinderStartEventAtgs e)
-        {
-            processingMode = ProcessingStep.CollectFile;            
+        {            
+            processingMode = ProcessingStep.CollectFile;
+            filetoClean.Clear();
+            window.ResetExtendAnimation();            
             window.prgPop.Value = 0;
             window.DisplayPopUp();
             window.lblLowerPop.Content = "Click for cancel";
@@ -427,7 +433,7 @@ namespace MusicFileManager
 
         public void Find(string directory)
         {
-            fileFinder.GetMatchedFilesAsync(directory);             
+            fileFinder.GetMatchedFilesAsync(directory);                         
         }
 
         public void CancelFind()

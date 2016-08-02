@@ -17,8 +17,12 @@ namespace MusicFileManager.Duplication
         protected override void Process(System.ComponentModel.DoWorkEventArgs e = null)
         {
             duplicatedFiles = new List<DuplicatedFiles>();            
+
+            if ((sourceFiles == null) || (targetFiles == null)) 
+                return;
+
             outerTotal = sourceFiles.Count();
-            outerCurrent = 0;
+            outerCurrent = 0;            
 
             for (int i = 0; i < sourceFiles.Count(); i++)
             {
